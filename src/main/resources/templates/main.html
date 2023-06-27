@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{layouts/layout1}">
+
+<!-- 각 페이지의 CSS가 작성될 위치 -->
+<th:block layout:fragment="css">
+	<link th:href="@{css/main.css}" rel="stylesheet">
+</th:block>
+
+<div layout:fragment="content">
+	<div class="main_wrap">
+		<div class="main_background"><img alt="학교 이미지" src="/images/campus.jpg"></div>
+			<div class="main_content_wrap d-flex">			
+				<div>
+					<div class="main_content">
+						<h3>공지사항</h3>
+						<div>
+							<ul>
+								<li><a>게시글1</a></li>
+								<li><a>게시글2</a></li>
+								<li><a>게시글3</a></li>
+								<li><a>게시글4</a></li>
+								<li><a>게시글5</a></li>
+							</ul>
+						</div>
+					</div>
+				</div>
+				<div>
+					<div class="main_content">
+						<h3>학사일정</h3>
+						<div>
+							<ul>
+								<li><a>게시글1</a></li>
+								<li><a>게시글2</a></li>
+								<li><a>게시글3</a></li>
+								<li><a>게시글4</a></li>
+								<li><a>게시글5</a></li>
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div>
+	</div>
+</div>
+
+</html>

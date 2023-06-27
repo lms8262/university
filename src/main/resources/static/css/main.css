@@ -1,0 +1,23 @@
+@charset "UTF-8";
+
+.main_background img {
+	width: 1200px;
+}
+
+.main_content_wrap {
+	margin-top: 20px;
+}
+
+.main_content {
+	width: 500px;
+	margin-right: 100px;
+}
+
+.main_content h3 {
+	padding-bottom: 5px;
+	border-bottom: 1px solid silver;
+}
+
+.main_content ul {
+	padding: 0;
+}

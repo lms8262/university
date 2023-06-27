@@ -1,7 +1,24 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 	<div th:fragment="header" class="header">
-		<div class="header_top"></div>
-		<nav class="header_menu"></nav>
+		<div class="header_top">
+			<ul class="d-flex justify-content-end">
+				<li><i class="fa-solid fa-circle-user fa-lg"></i></li>
+				<li>이문수님 (60130135)</li>
+				<li>|</li>
+				<li><i class="fa-solid fa-arrow-right-from-bracket fa-lg"></i></li>
+				<li><a>로그아웃</a></li>
+			</ul>
+		</div>
+		<nav class="navbar header_menu justify-content-start">
+			<a><i class="fa-solid fa-graduation-cap fa-xl" style="color: #cadfe3;"></i><span>이젠 대학교</span></a>
+			<ul class="d-flex">
+				<li><a>홈</a></li>
+				<li><a>내 정보</a></li>
+				<li><a>수강신청</a></li>
+				<li><a>성적</a></li>
+				<li><a>학사정보</a></li>
+			</ul>
+		</nav>
 	</div>
 </html>
