@@ -10,4 +10,9 @@ public class MainController {
 	public String main() {
 		return "main";
 	}
+	
+	@GetMapping(value="/totalgrade")
+	public String totalGrade() {
+		return "student/totalgrade";
+	}
 }

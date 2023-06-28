@@ -14,10 +14,11 @@ ul {
 	list-style: none;
 }
 
+/* 헤더 부분 */
 .header {
 	min-width: 1200px;
 	margin: 0 10px 30px 10px;
-	border-bottom: 1px solid silver;
+	border-bottom: 1px solid silver; 
 }
 
 .header_top {
@@ -79,6 +80,58 @@ ul {
 	color: cadetblue !important;
 }
 
+/* 중간부분 */
 .content {
 	min-width: 1200px;
 }
+
+/* 사이드바 */
+.sidebar {
+	width: 250px;
+	text-align: center;
+}
+
+.sidebar_subject {
+	width: 80%;
+	border-bottom: 3px solid cadetblue;
+}
+
+.sidebar_subject h3 {
+	margin-bottom: 15px;
+	font-weight: bold;
+}
+
+.sidebar_list {
+	width: 70%;
+}
+
+.sidebar_list ul {
+	padding: 0px;
+	font-size: 20px;
+}
+
+.sidebar_list ul li {
+	margin-bottom: 15px;
+	padding-top: 15px;
+}
+
+.sidebar_list ul li:not(:first-child) {
+	border-top: 1px solid silver;
+}
+
+/* 본문 */
+main {
+	width: 900px;
+	margin-left: 50px;
+}
+
+.main_subject {
+	border-bottom: 3px solid silver;
+	margin-bottom: 20px;
+}
+
+.main_subject h2 {
+	margin-bottom: 15px;
+	font-weight: bold;
+}
+
