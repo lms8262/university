@@ -8,12 +8,12 @@
 </th:block>
 
 <div layout:fragment="content">
-	<div class="d-flex">	
+	<div class="d-flex">
 		<aside class="sidebar d-flex flex-column align-items-center">
 			<div class="sidebar_subject">
 				<h3>성적</h3>
 			</div>
-			<div class="sidebar_list">			
+			<div class="sidebar_list">
 				<ul>
 					<li><a>메뉴1</a></li>
 					<li><a>메뉴2</a></li>
@@ -23,16 +23,47 @@
 				</ul>
 			</div>
 		</aside>
-		
+
 		<main>
 			<div class="main_subject">
 				<h2>메뉴1</h2>
 			</div>
-			<div class="main_content">컨텐츠</div>
+			<div class="main_content">
+				<table class="table table-bordered">
+					<thead class="table-light">
+						<tr>
+							<th scope="col">1열</th>
+							<th scope="col">2열</th>
+							<th scope="col">3열</th>
+							<th scope="col">4열</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td>1열</td>
+							<td>2열</td>
+							<td>3열</td>
+							<td>4열</td>
+						</tr>
+						<tr>
+							<td>1열</td>
+							<td>2열</td>
+							<td>3열</td>
+							<td>4열</td>
+						</tr>
+						<tr>
+							<td>1열</td>
+							<td>2열</td>
+							<td>3열</td>
+							<td>4열</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
 		</main>
 	</div>
 </div>
-	
+
 <!-- 각 페이지의 자바스크립트가 작성될 위치 -->
 <th:block layout:fragment="script"></th:block>
 

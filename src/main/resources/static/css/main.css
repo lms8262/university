@@ -21,3 +21,7 @@
 .index_content ul {
 	padding: 0;
 }
+
+.index_content li {
+	margin: 5px 0px;
+}

@@ -17,7 +17,7 @@ ul {
 /* 헤더 부분 */
 .header {
 	min-width: 1200px;
-	margin: 0 10px 40px 10px;
+	margin: 0 10px 30px 10px;
 	border-bottom: 1px solid silver; 
 }
 
@@ -44,6 +44,10 @@ ul {
 .header_top > ul li:nth-child(1),
 .header_top > ul li:nth-child(4) {
 	margin: 0 5px;
+}
+
+.header_top > ul li a:hover {
+	color: cadetblue !important;
 }
 
 .header_menu {
@@ -103,11 +107,12 @@ ul {
 
 .sidebar_list {
 	width: 70%;
+	font-size: 18px;
+	font-weight: bold;
 }
 
 .sidebar_list ul {
 	padding: 0px;
-	font-size: 20px;
 }
 
 .sidebar_list ul li {
@@ -134,7 +139,7 @@ main {
 }
 
 .main_subject {
-	border-bottom: 3px solid silver;
+	border-bottom: 2px solid silver;
 	margin-bottom: 20px;
 }
 
