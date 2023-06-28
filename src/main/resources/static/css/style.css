@@ -17,7 +17,7 @@ ul {
 /* 헤더 부분 */
 .header {
 	min-width: 1200px;
-	margin: 0 10px 30px 10px;
+	margin: 0 10px 40px 10px;
 	border-bottom: 1px solid silver; 
 }
 
@@ -113,6 +113,14 @@ ul {
 .sidebar_list ul li {
 	margin-bottom: 15px;
 	padding-top: 15px;
+}
+
+.sidebar_list ul li a {
+	padding: 0 10px;
+}
+
+.sidebar_list ul li a:hover {
+	color: cadetblue !important;
 }
 
 .sidebar_list ul li:not(:first-child) {
