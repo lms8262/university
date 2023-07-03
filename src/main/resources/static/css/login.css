@@ -1,0 +1,22 @@
+@charset "UTF-8";
+
+html, body {
+	height: 100%;
+}
+
+.content {
+	height: 100%;
+}
+
+.login_container {
+	max-width: 400px;
+	padding: 10px;
+}
+
+.login-title {
+	font-size: 23px;
+}
+
+.login-title > div > span {
+	margin-left: 10px;
+}
