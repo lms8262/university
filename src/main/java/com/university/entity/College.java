@@ -22,6 +22,6 @@ public class College {
 	@Column(nullable = false, length = 15)
 	private String name;
 	
-	@Column(nullable = false, length = 1)
+	@Column(columnDefinition = "char(1) unique" , nullable = false)
 	private Character collegeCode;
 }
