@@ -46,24 +46,23 @@ ul {
 	margin: 0 5px;
 }
 
+.header_top ul li a:link, 
+.header_top ul li a:visited {
+	color: black;
+}
+
 .header_top > ul li a:hover {
 	color: cadetblue !important;
 }
 
 .header_menu {
 	margin: 5px 0 5px 10px;
-}
-
-.header_menu a {
 	font-size: 25px;
 	font-weight: bold;
 }
 
-.header_menu > a {
+.header_menu > span {
 	margin-right: 10px;
-}
-
-.header_menu > a span {
 	color: cadetblue;
 	margin-left: 10px;
 }
@@ -78,6 +77,11 @@ ul {
 
 .header_menu ul li a {
 	padding: 0 20px;
+}
+
+.header_menu ul li a:link, 
+.header_menu ul li a:visited {
+	color: black;
 }
 
 .header_menu ul li a:hover {

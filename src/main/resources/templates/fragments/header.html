@@ -8,11 +8,11 @@
 				<li>이문수님 (60130135)</li>
 				<li>|</li>
 				<li><i class="fa-solid fa-arrow-right-from-bracket fa-lg"></i></li>
-				<li><a href="/user/logout" sec:authorize="isAuthenticated()">로그아웃</a></li>
+				<li><a href="/users/logout" sec:authorize="isAuthenticated()">로그아웃</a></li>
 			</ul>
 		</div>
 		<nav class="navbar header_menu justify-content-start">
-			<a><i class="fa-solid fa-graduation-cap fa-xl" style="color: #cadfe3;"></i><span>이젠 대학교</span></a>
+			<span><i class="fa-solid fa-graduation-cap fa-xl" style="color: #cadfe3;"></i> 이젠 대학교</span>
 			<!-- 학생용 메뉴 -->
 			<ul class="d-flex" sec:authorize="hasAnyAuthority('ROLE_STUDENT')">
 				<li><a>홈</a></li>

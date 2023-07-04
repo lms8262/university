@@ -19,20 +19,22 @@ public class SecurityConfig {
 		http.authorizeHttpRequests(authorize -> authorize // 페이지 접근권한에 관한 설정
 				// 모든 사용자가 로그인(인증) 없이 접근할 수 있도록 설정
 				.requestMatchers("/css/**", "/js/**", "/images/**").permitAll()
-				.requestMatchers("/", "/user/**").permitAll()
+				.requestMatchers("/", "/users/**").permitAll()
 				.requestMatchers("/favicon.ico", "/error").permitAll()
 				// 'staff'으로 시작하는 경로는 관리자만 접근가능하도록 설정
-				.requestMatchers("/staff/**").hasRole("STAFF")
-				.requestMatchers("/professor/**").hasRole("PROFESSOR")
+				.requestMatchers("/staffs/**", "/professors/**", "/students/**").permitAll()
+//				 .requestMatchers("/staffs/**").hasRole("STAFF")
+//				 .requestMatchers("/professors/**").hasRole("PROFESSOR")
+//				 .requestMatchers("/students/**").hasRole("STUDENT")
 				// 그 외의 페이지는 모두 로그인(인증을 받아야 한다)
 				.anyRequest().authenticated()).formLogin(formLogin -> formLogin // 2. 로그인에 관련된 설정
-						.loginPage("/user/login") // 로그인 페이지 URL 설정
+						.loginPage("/users/login") // 로그인 페이지 URL 설정
 						.defaultSuccessUrl("/main") // 로그인 성공시 이동할 페이지
 						.usernameParameter("id") // 로그인 시 id로 사용할 파라메터 이름
-						.failureUrl("/user/login/error")) // 로그인 실패시 이동할 URL
+						.failureUrl("/users/login/error")) // 로그인 실패시 이동할 URL
 				.logout(logout -> logout // 3. 로그아웃에 관련된 설정
-						.logoutRequestMatcher(new AntPathRequestMatcher("/user/logout")) // 로그아웃시 이동할 URL
-						.logoutSuccessUrl("/user/login")) // 로그아웃 성공시 이동할 URL
+						.logoutRequestMatcher(new AntPathRequestMatcher("/users/logout")) // 로그아웃시 이동할 URL
+						.logoutSuccessUrl("/users/login")) // 로그아웃 성공시 이동할 URL
 				.exceptionHandling(handling -> handling // 4. 인증되지 않은 사용자가 리소스에 접근했을때 설정(ex. 로그인 안했는데 cart페이지에 접근...)
 						.authenticationEntryPoint(new CustomAuthenticationEntryPoint()))
 				.rememberMe(Customizer.withDefaults());

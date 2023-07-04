@@ -19,7 +19,7 @@ import lombok.RequiredArgsConstructor;
 public class UserService implements UserDetailsService{
 	
 	private final UserRepository userRepository;
-
+	
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 		// 사용자가 입력한 id가 DB에 있는지 쿼리문을 사용
