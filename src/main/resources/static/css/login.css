@@ -20,3 +20,7 @@ html, body {
 .login-title > div > span {
 	margin-left: 10px;
 }
+
+.login_buttons > * {
+	margin: 0px 10px 0px 10px;
+}

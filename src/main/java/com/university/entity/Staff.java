@@ -1,6 +1,6 @@
 package com.university.entity;
 
-import java.sql.Date;
+import java.time.LocalDate;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -30,7 +30,7 @@ public class Staff {
 	private String gender;
 	
 	@Column(nullable = false)
-	private Date birthDate;
+	private LocalDate birthDate;
 	
 	@Column(nullable = false, length = 100)
 	private String address;
@@ -42,5 +42,5 @@ public class Staff {
 	private String tel;
 	
 	@Column(nullable = false)
-	private Date hireDate;
+	private LocalDate hireDate;
 }

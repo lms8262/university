@@ -2,6 +2,7 @@ package com.university.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -50,11 +51,11 @@ public class Lecture {
 	@Column(nullable = false)
 	private Integer endTime;
 	
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "lecture_room_id", nullable = false)
 	private LectureRoom lectureRoom;
 	
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "professor_id", nullable = false)
 	private Professor professor;
 }

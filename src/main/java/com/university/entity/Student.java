@@ -1,19 +1,16 @@
 package com.university.entity;
 
-import java.sql.Date;
-import java.util.HashSet;
-import java.util.Set;
+import java.time.LocalDate;
 
 import org.hibernate.annotations.ColumnDefault;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.TableGenerator;
 import lombok.Getter;
@@ -38,7 +35,7 @@ public class Student {
 	private String gender;
 
 	@Column(nullable = false)
-	private Date birthDate;
+	private LocalDate birthDate;
 
 	@Column(nullable = false, length = 100)
 	private String address;
@@ -50,7 +47,7 @@ public class Student {
 	private String tel;
 
 	@Column(nullable = false)
-	private Date entranceDate;
+	private LocalDate entranceDate;
 
 	@Column(nullable = false)
 	@ColumnDefault("1")
@@ -60,7 +57,7 @@ public class Student {
 	@ColumnDefault("1")
 	private Integer semester;
 
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "department_id", nullable = false)
 	private Department department;
 }

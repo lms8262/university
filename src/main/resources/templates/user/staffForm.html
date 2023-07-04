@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{layouts/layout2}">
+
+<!-- 각 페이지의 CSS가 작성될 위치 -->
+<th:block layout:fragment="css">
+	<link th:href="@{/css/login.css}" rel="stylesheet">
+</th:block>
+
+<div layout:fragment="content">
+	<div class="w-100 m-auto login_container">
+		<form action="/user/staff_register" method="post" th:object="${staffRegisterDto}">
+			<div class="mb-3 login-title">
+				<div><i class="fa-solid fa-graduation-cap fa-xl" style="color: #cadfe3;"></i><span>교직원 회원가입</span></div>
+			</div>
+			<div class="mb-3">
+				<label th:for="name" class="form-label">이름</label>
+				<input type="text" class="form-control" th:field="*{name}">
+			</div>
+			<div class="mb-3">
+				<label for="gender" class="form-label">성별</label>
+				<select class="form-select" name="gender" th:field="*{gender}">
+				  <option value="남성" selected>남성</option>
+				  <option value="여성">여성</option>
+				</select>
+			</div>
+			<div class="mb-3">
+				<label for="birhDate" class="form-label">생년월일</label>
+				<input type="date" class="form-control" th:field="*{birthDate}">
+			</div>
+			<div class="mb-3">
+				<label for="address" class="form-label">주소</label>
+				<input type="text" class="form-control" id="password" th:field="*{address}">
+			</div>
+			<div class="mb-3">
+				<label for="email" class="form-label">이메일</label>
+				<input type="text" class="form-control" id="password" th:field="*{email}">
+			</div>
+			<div class="mb-3">
+				<label for="tel" class="form-label">전화번호</label>
+				<input type="text" class="form-control" id="password" th:field="*{tel}">
+			</div>
+			<div class="d-flex justify-content-center login_buttons">
+				<button type="submit" class="btn btn-primary">회원가입</button>
+				<a class="btn btn-primary" th:href="@{/user/login}" role="button">돌아가기</a>
+			</div>
+		</form>
+	</div>
+</div>
+
+<!-- 각 페이지의 자바스크립트가 작성될 위치 -->
+<th:block layout:fragment="script"></th:block>
+
+</html>

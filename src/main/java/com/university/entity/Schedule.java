@@ -1,6 +1,6 @@
 package com.university.entity;
 
-import java.sql.Date;
+import java.time.LocalDate;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -22,10 +22,10 @@ public class Schedule {
 	private Long id;
 	
 	@Column(nullable = false)
-	private Date startDay;
+	private LocalDate startDay;
 	
 	@Column(nullable = false)
-	private Date endDay;
+	private LocalDate endDay;
 	
 	@Column(nullable = false, length = 50)
 	private String content;

@@ -1,9 +1,10 @@
 package com.university.entity;
 
-import java.sql.Date;
+import java.time.LocalDate;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -32,7 +33,7 @@ public class Professor {
 	private String gender;
 	
 	@Column(nullable = false)
-	private Date birthDate;
+	private LocalDate birthDate;
 	
 	@Column(nullable = false, length = 100)
 	private String address;
@@ -44,9 +45,9 @@ public class Professor {
 	private String tel;
 	
 	@Column(nullable = false)
-	private Date hireDate;
+	private LocalDate hireDate;
 	
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "department_id", nullable = false)
 	private Department department;
 }
