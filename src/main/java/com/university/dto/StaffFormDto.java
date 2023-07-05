@@ -12,9 +12,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class StaffRegisterDto {
-	
-	private Long id;
+public class StaffFormDto {
 	
 	@NotEmpty(message = "비밀번호는 필수입력 값입니다.")
 	@Length(min = 4, max = 16, message = "비밀번호는 4 ~ 16자 사이로 입력해주세요.")

@@ -4,7 +4,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
-import com.university.dto.StaffRegisterDto;
+import com.university.dto.StaffFormDto;
 
 @Controller
 public class UserController {
@@ -21,7 +21,7 @@ public class UserController {
 	
 	@GetMapping(value="/users/staff_register")
 	public String staffRegister(Model model) {
-		model.addAttribute("staffRegisterDto", new StaffRegisterDto());
+		model.addAttribute("StaffFormDto", new StaffFormDto());
 		return "user/staffForm";
 	}
 }
