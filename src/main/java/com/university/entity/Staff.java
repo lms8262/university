@@ -2,8 +2,14 @@ package com.university.entity;
 
 import java.time.LocalDate;
 
+import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.CreationTimestamp;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EntityListeners;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -19,6 +25,7 @@ import lombok.ToString;
 @Setter
 @ToString
 @TableGenerator(name = "staff_id_generator", table = "id_sequences", initialValue = 2301, allocationSize = 1)
+@EntityListeners(AuditingEntityListener.class)
 public class Staff {
 	
 	@Id
@@ -44,6 +51,7 @@ public class Staff {
 	private String tel;
 	
 	@Column(nullable = false)
+	@CreatedDate
 	private LocalDate hireDate;
 	
 }

@@ -24,3 +24,9 @@ html, body {
 .login_buttons > * {
 	margin: 0px 10px 0px 10px;
 }
+
+.register_block {
+	border: 1px solid #cadfe3;
+	border-radius: 10px
+}
+

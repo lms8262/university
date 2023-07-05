@@ -16,56 +16,58 @@
 <div layout:fragment="content">
 	<div class="w-100 m-auto login_container">
 		<form action="/users/student_register" method="post" th:object="${studentFormDto}">
-			<div class="mb-3 login-title">
-				<div><i class="fa-solid fa-graduation-cap fa-xl" style="color: #cadfe3;"></i><span>학생 회원가입</span></div>
-			</div>
-			<div class="mb-3">
-				<label th:for="name" class="form-label">이름</label>
-				<input type="text" class="form-control" th:field="*{name}">
-				<p th:if="${#fields.hasErrors('name')}" th:errors="*{name}" class="fieldError">Incorrect Data</p>
-			</div>
-			<div class="mb-3">
-				<label th:for="password" class="form-label">패스워드</label>
-				<input type="text" class="form-control" th:field="*{password}">
-				<p th:if="${#fields.hasErrors('password')}" th:errors="*{password}" class="fieldError">Incorrect Data</p>
-			</div>
-			<div class="mb-3">
-				<label for="departmentId" class="form-label">학과</label>
-				<select class="form-select" th:field="*{departmentId}">
-				  <option th:each="department : ${departmentList}" th:value="${department.id}" th:text="${department.name}"></option>
-				</select>
-				<p th:if="${#fields.hasErrors('departmentId')}" th:errors="*{departmentId}" class="fieldError">Incorrect Data</p>
-			</div>
-			<div class="mb-3">
-				<label for="gender" class="form-label">성별</label>
-				<select class="form-select" th:field="*{gender}">
-				  <option th:value="남성" th:text="남성" selected></option>
-				  <option th:value="여성" th:text="여성"></option>
-				</select>
-			</div>
-			<div class="mb-3">
-				<label for="birhDate" class="form-label">생년월일</label>
-				<input type="date" class="form-control" th:field="*{birthDate}">
-				<p th:if="${#fields.hasErrors('birthDate')}" th:errors="*{birthDate}" class="fieldError">Incorrect Data</p>
-			</div>
-			<div class="mb-3">
-				<label for="address" class="form-label">주소</label>
-				<input type="text" class="form-control" th:field="*{address}">
-				<p th:if="${#fields.hasErrors('address')}" th:errors="*{address}" class="fieldError">Incorrect Data</p>
-			</div>
-			<div class="mb-3">
-				<label for="email" class="form-label">이메일</label>
-				<input type="text" class="form-control" th:field="*{email}">
-				<p th:if="${#fields.hasErrors('email')}" th:errors="*{email}" class="fieldError">Incorrect Data</p>
-			</div>
-			<div class="mb-3">
-				<label for="tel" class="form-label">전화번호</label>
-				<input type="text" class="form-control" th:field="*{tel}">
-				<p th:if="${#fields.hasErrors('tel')}" th:errors="*{tel}" class="fieldError">Incorrect Data</p>
-			</div>
-			<div class="d-flex justify-content-center login_buttons">
-				<button type="submit" class="btn btn-primary">회원가입</button>
-				<a class="btn btn-primary" th:href="@{/users/login}" role="button">돌아가기</a>
+			<div class="register_block">
+				<div class="m-2 login-title">
+					<div><i class="fa-solid fa-graduation-cap fa-xl" style="color: #cadfe3;"></i><span>학생 회원가입</span></div>
+				</div>
+				<div class="m-2">
+					<label th:for="name" class="form-label">이름</label>
+					<input type="text" class="form-control" th:field="*{name}">
+					<p th:if="${#fields.hasErrors('name')}" th:errors="*{name}" class="fieldError">Incorrect Data</p>
+				</div>
+				<div class="m-2">
+					<label th:for="password" class="form-label">패스워드</label>
+					<input type="text" class="form-control" th:field="*{password}">
+					<p th:if="${#fields.hasErrors('password')}" th:errors="*{password}" class="fieldError">Incorrect Data</p>
+				</div>
+				<div class="m-2">
+					<label for="departmentId" class="form-label">학과</label>
+					<select class="form-select" th:field="*{departmentId}">
+					  <option th:each="department : ${departmentList}" th:value="${department.id}" th:text="${department.name}"></option>
+					</select>
+					<p th:if="${#fields.hasErrors('departmentId')}" th:errors="*{departmentId}" class="fieldError">Incorrect Data</p>
+				</div>
+				<div class="m-2">
+					<label for="gender" class="form-label">성별</label>
+					<select class="form-select" th:field="*{gender}">
+					  <option th:value="남성" th:text="남성" selected></option>
+					  <option th:value="여성" th:text="여성"></option>
+					</select>
+				</div>
+				<div class="m-2">
+					<label for="birhDate" class="form-label">생년월일</label>
+					<input type="date" class="form-control" th:field="*{birthDate}">
+					<p th:if="${#fields.hasErrors('birthDate')}" th:errors="*{birthDate}" class="fieldError">Incorrect Data</p>
+				</div>
+				<div class="m-2">
+					<label for="address" class="form-label">주소</label>
+					<input type="text" class="form-control" th:field="*{address}">
+					<p th:if="${#fields.hasErrors('address')}" th:errors="*{address}" class="fieldError">Incorrect Data</p>
+				</div>
+				<div class="m-2">
+					<label for="email" class="form-label">이메일</label>
+					<input type="text" class="form-control" th:field="*{email}">
+					<p th:if="${#fields.hasErrors('email')}" th:errors="*{email}" class="fieldError">Incorrect Data</p>
+				</div>
+				<div class="m-2 mb-4">
+					<label for="tel" class="form-label">전화번호</label>
+					<input type="text" class="form-control" th:field="*{tel}">
+					<p th:if="${#fields.hasErrors('tel')}" th:errors="*{tel}" class="fieldError">Incorrect Data</p>
+				</div>
+				<div class="m-2 d-flex justify-content-center login_buttons">
+					<button type="submit" class="btn btn-primary">회원가입</button>
+					<a class="btn btn-primary" th:href="@{/users/login}" role="button">돌아가기</a>
+				</div>
 			</div>
 			<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
 		</form>
