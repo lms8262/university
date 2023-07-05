@@ -14,6 +14,8 @@ import lombok.Setter;
 @Setter
 public class StaffRegisterDto {
 	
+	private Long id;
+	
 	@NotEmpty(message = "비밀번호는 필수입력 값입니다.")
 	@Length(min = 4, max = 16, message = "비밀번호는 4 ~ 16자 사이로 입력해주세요.")
 	private String password;
@@ -38,4 +40,5 @@ public class StaffRegisterDto {
 	@NotEmpty(message = "전화번호는 필수입력 값입니다.")
 	@Pattern(regexp = "^\\d{3}-\\d{3,4}-\\d{4}$", message = "전화번호 형식으로 입력해주세요.")
 	private String tel;
+	
 }
