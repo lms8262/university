@@ -6,6 +6,7 @@ import org.hibernate.validator.constraints.Length;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import lombok.Getter;
 import lombok.Setter;
@@ -24,7 +25,7 @@ public class ProfessorFormDto {
 	
 	private String gender;
 	
-	@NotEmpty(message = "생년월일은 필수입력 값입니다.")
+	@NotNull(message = "생년월일은 필수입력 값입니다.")
 	private LocalDate birthDate;
 	
 	@NotEmpty(message = "주소는 필수입력 값입니다.")
@@ -39,6 +40,6 @@ public class ProfessorFormDto {
 	@Pattern(regexp = "^\\d{3}-\\d{3,4}-\\d{4}$", message = "전화번호 형식으로 입력해주세요.")
 	private String tel;
 	
-	@NotEmpty(message = "학과는 필수선택 값입니다.")
+	@NotNull(message = "학과는 필수선택 값입니다.")
 	private Long departmentId;
 }

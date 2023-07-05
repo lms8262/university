@@ -6,6 +6,7 @@ import org.hibernate.validator.constraints.Length;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import lombok.Getter;
 import lombok.Setter;
@@ -24,7 +25,7 @@ public class StaffFormDto {
 	
 	private String gender;
 	
-	@NotEmpty(message = "생년월일은 필수입력 값입니다.")
+	@NotNull(message = "생년월일은 필수입력 값입니다.")
 	private LocalDate birthDate;
 	
 	@NotEmpty(message = "주소는 필수입력 값입니다.")
