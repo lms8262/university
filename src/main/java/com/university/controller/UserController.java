@@ -6,7 +6,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -15,7 +14,6 @@ import com.university.dto.DepartmentDto;
 import com.university.dto.ProfessorFormDto;
 import com.university.dto.StaffFormDto;
 import com.university.dto.StudentFormDto;
-import com.university.entity.Department;
 import com.university.service.DepartmentService;
 import com.university.service.UserService;
 
@@ -37,7 +35,7 @@ public class UserController {
 	
 	// 로그인 화면
 	@GetMapping(value="/users/login")
-	public String login(@RequestParam(required = false, defaultValue = "") Long userId) {
+	public String login(@RequestParam(required = false) Long userId) {
 		return "user/login";
 	}
 	
@@ -65,10 +63,8 @@ public class UserController {
 			return "user/staffForm";
 		}
 		
-		Long userId = 0L;
-		
 		try {
-			userId = userService.saveUser(staffFormDto);
+			Long userId = userService.saveUser(staffFormDto);
 			redirectAttributes.addFlashAttribute("userId", userId);
 		} catch (IllegalStateException e) {
 			model.addAttribute("errorMessage", e.getMessage());

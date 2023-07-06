@@ -1,5 +1,7 @@
 package com.university.entity;
 
+import java.time.LocalDate;
+
 import org.modelmapper.ModelMapper;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -33,5 +35,23 @@ public class User {
 	@Enumerated(EnumType.STRING)
 	@Column(nullable = false)
 	private Role role;
+	
+	@Column(nullable = false, length = 10)
+	private String name;
+	
+	@Column(columnDefinition = "char(2)", nullable = false)
+	private String gender;
+	
+	@Column(nullable = false)
+	private LocalDate birthDate;
+	
+	@Column(nullable = false, length = 100)
+	private String address;
+	
+	@Column(nullable = false, length = 50, unique = true)
+	private String email;
+	
+	@Column(nullable = false, length = 15, unique = true)
+	private String tel;
 	
 }

@@ -9,7 +9,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import jakarta.persistence.TableGenerator;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -19,11 +18,10 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-@TableGenerator(name = "department_id_generator", table = "id_sequences", initialValue = 101, allocationSize = 1)
 public class Department {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.TABLE, generator = "department_id_generator")
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
 	@Column(nullable = false, unique = true, length = 15)

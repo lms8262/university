@@ -14,7 +14,7 @@ import com.university.repository.DepartmentRepository;
 import lombok.RequiredArgsConstructor;
 
 @Service
-@Transactional
+@Transactional(readOnly = true) // 기본 readOnly로 설정해두고 read(search) 이외에는 메소드에 따로 어노테이션 붙이기
 @RequiredArgsConstructor
 public class DepartmentService {
 	

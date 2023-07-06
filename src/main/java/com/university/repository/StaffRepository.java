@@ -6,7 +6,4 @@ import com.university.entity.Staff;
 
 public interface StaffRepository extends JpaRepository<Staff, Long>{
 	
-	Staff findByEmail(String email);
-	
-	Staff findByTel(String tel);
 }

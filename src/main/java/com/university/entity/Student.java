@@ -13,7 +13,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import jakarta.persistence.TableGenerator;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -23,30 +22,11 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-@TableGenerator(name = "student_id_generator", table = "id_sequences", initialValue = 23000001, allocationSize = 1)
 public class Student {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.TABLE, generator = "student_id_generator")
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-
-	@Column(nullable = false, length = 10)
-	private String name;
-
-	@Column(columnDefinition = "char(2)", nullable = false)
-	private String gender;
-
-	@Column(nullable = false)
-	private LocalDate birthDate;
-
-	@Column(nullable = false, length = 100)
-	private String address;
-
-	@Column(nullable = false, length = 50)
-	private String email;
-
-	@Column(nullable = false, length = 15)
-	private String tel;
 
 	@Column(nullable = false)
 	private LocalDate entranceDate;

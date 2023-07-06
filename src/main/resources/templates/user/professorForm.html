@@ -75,6 +75,16 @@
 </div>
 
 <!-- 각 페이지의 자바스크립트가 작성될 위치 -->
-<th:block layout:fragment="script"></th:block>
+<th:block layout:fragment="script">
+	<script th:inline="javascript">
+		// 회원가입이 실패했을때 에러메세지를 보여줌
+		var errorMessage = [[${errorMessage}]];
+		
+		if(errorMessage != null) {
+			alert(errorMessage);
+		}
+		
+	</script>
+</th:block>
 
 </html>
