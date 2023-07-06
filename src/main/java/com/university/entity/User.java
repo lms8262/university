@@ -2,12 +2,7 @@ package com.university.entity;
 
 import java.time.LocalDate;
 
-import org.modelmapper.ModelMapper;
-import org.springframework.security.crypto.password.PasswordEncoder;
-
 import com.university.constant.Role;
-import com.university.dto.ProfessorFormDto;
-import com.university.dto.StaffFormDto;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

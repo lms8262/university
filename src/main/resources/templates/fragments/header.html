@@ -5,7 +5,7 @@
 		<div class="header_top">
 			<ul class="d-flex justify-content-end">
 				<li><i class="fa-solid fa-circle-user fa-lg"></i></li>
-				<li>이문수님 (60130135)</li>
+				<li>[[${#authentication.principal.name}]]님 ([[${#authentication.principal.username}]])</li>
 				<li>|</li>
 				<li><i class="fa-solid fa-arrow-right-from-bracket fa-lg"></i></li>
 				<li><a href="/users/logout" sec:authorize="isAuthenticated()">로그아웃</a></li>

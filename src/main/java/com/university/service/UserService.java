@@ -1,8 +1,12 @@
 package com.university.service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import org.modelmapper.ModelMapper;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -11,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.university.constant.Role;
+import com.university.dto.CustomUser;
 import com.university.dto.ProfessorFormDto;
 import com.university.dto.StaffFormDto;
 import com.university.dto.StudentFormDto;
@@ -85,18 +90,18 @@ public class UserService implements UserDetailsService{
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 		// 사용자가 입력한 id가 DB에 있는지 쿼리문을 사용
-		Optional<User> User = userRepository.findById(Long.parseLong(username));
+		Optional<User> searchUser = userRepository.findById(Long.parseLong(username));
 		
-		if(!User.isPresent()) { // 사용자가 없다면
+		if(!searchUser.isPresent()) { // 사용자가 없다면
 			throw new UsernameNotFoundException(username);
 		}
 		
+		User user = searchUser.get();
+		List<GrantedAuthority> authorities = new ArrayList<>();
+		authorities.add(new SimpleGrantedAuthority("ROLE_" + user.getRole().name())); // 권한 추가
+		
 		// 사용자가 있다면 DB에서 가져온 값으로 userDetails 객체를 만들어서 반환
-		return org.springframework.security.core.userdetails.User.builder()
-				.username(User.get().getId().toString())
-				.password(User.get().getPassword())
-				.roles(User.get().getRole().toString())
-				.build();
+		return new CustomUser(user, authorities);
 	}
 	
 	
