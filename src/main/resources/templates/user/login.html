@@ -57,14 +57,15 @@
 <th:block layout:fragment="script">
 	<script type="text/javascript" th:src="@{/js/cookie.js}"></script>
 	<script th:inline="javascript">
+	
 		/*<![CDATA[*/
-			var userId = /*[[${userId}]]*/;
-			
-			if(userId != null) {
-				alert("가입에 성공하셨습니다. id는 " + userId + "입니다.");
-			}
-			
-			/*]]>*/
+		var userId = [[${userId}]];
+		
+		if(userId != null && userId != "") {
+			alert("가입에 성공하셨습니다. id는 " + userId + "입니다.");
+		}
+		
+		/*]]>*/
 	
 		//쿠키를 이용한 아이디 기억
 		$(document).ready(function() {

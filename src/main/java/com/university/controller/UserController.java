@@ -6,7 +6,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.university.dto.DepartmentDto;
@@ -35,7 +37,7 @@ public class UserController {
 	
 	// 로그인 화면
 	@GetMapping(value="/users/login")
-	public String login() {
+	public String login(@RequestParam(required = false, defaultValue = "") Long userId) {
 		return "user/login";
 	}
 	
@@ -55,20 +57,25 @@ public class UserController {
 	
 	// 교직원 회원가입
 	@PostMapping(value="/users/staff_register")
-	public String staffRegister(@Valid StaffFormDto staffFormDto, BindingResult bindingResult, Model model) {
+	public String staffRegister(@Valid StaffFormDto staffFormDto, BindingResult bindingResult, Model model, RedirectAttributes redirectAttributes) {
 		// @Valid: 유효성을 검증하려는 객체 앞에 붙인다.
 		// BindingResult: 유효성 검증 후의 결과가 들어있다.
 		
 		if(bindingResult.hasErrors()) {
 			return "user/staffForm";
 		}
+		
+		Long userId = 0L;
+		
 		try {
-			Long userId = userService.saveUser(staffFormDto);
+			userId = userService.saveUser(staffFormDto);
+			redirectAttributes.addFlashAttribute("userId", userId);
 		} catch (IllegalStateException e) {
 			model.addAttribute("errorMessage", e.getMessage());
 			return "user/staffForm";
 		}
-		return "redirect:/users/login/";
+		
+		return "redirect:/users/login";
 	}
 	
 	// 교수 회원가입 화면
