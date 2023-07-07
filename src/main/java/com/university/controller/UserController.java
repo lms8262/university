@@ -14,6 +14,7 @@ import com.university.dto.DepartmentDto;
 import com.university.dto.ProfessorFormDto;
 import com.university.dto.StaffFormDto;
 import com.university.dto.StudentFormDto;
+import com.university.exption.NotFoundException;
 import com.university.service.DepartmentService;
 import com.university.service.UserService;
 
@@ -67,6 +68,7 @@ public class UserController {
 			Long userId = userService.saveUser(staffFormDto);
 			redirectAttributes.addFlashAttribute("userId", userId);
 		} catch (IllegalStateException e) {
+			e.printStackTrace();
 			model.addAttribute("errorMessage", e.getMessage());
 			return "user/staffForm";
 		}
@@ -86,8 +88,22 @@ public class UserController {
 	
 	// 교수 회원가입
 	@PostMapping(value="/users/professor_register")
-	public String staffRegister(@Valid ProfessorFormDto professorFormDto, BindingResult bindingResult, Model model) {
-		return "redirect:/";
+	public String staffRegister(@Valid ProfessorFormDto professorFormDto, BindingResult bindingResult, Model model, RedirectAttributes redirectAttributes) {
+		
+		if(bindingResult.hasErrors()) {
+			return "user/professorForm";
+		}
+		
+		try {
+			Long userId = userService.saveUser(professorFormDto);
+			redirectAttributes.addFlashAttribute("userId", userId);
+		} catch (Exception e) {
+			e.printStackTrace();
+			model.addAttribute("errorMessage", e.getMessage());
+			return "user/professorForm";
+		} 
+		
+		return "redirect:/users/login";
 	}
 	
 	// 학생 회원가입 화면
@@ -102,7 +118,21 @@ public class UserController {
 	
 	// 학생 회원가입
 	@PostMapping(value="/users/student_register")
-	public String staffRegister(@Valid StudentFormDto studentFormDto, BindingResult bindingResult, Model model) {
-		return "redirect:/";
+	public String staffRegister(@Valid StudentFormDto studentFormDto, BindingResult bindingResult, Model model, RedirectAttributes redirectAttributes) {
+		
+		if(bindingResult.hasErrors()) {
+			return "user/studentForm";
+		}
+		
+		try {
+			Long userId = userService.saveUser(studentFormDto);
+			redirectAttributes.addFlashAttribute("userId", userId);
+		} catch (Exception e) {
+			e.printStackTrace();
+			model.addAttribute("errorMessage", e.getMessage());
+			return "user/studentForm";
+		}
+		
+		return "redirect:/users/login";
 	}
 }

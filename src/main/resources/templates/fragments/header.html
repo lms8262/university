@@ -15,7 +15,7 @@
 			<span><i class="fa-solid fa-graduation-cap fa-xl" style="color: #cadfe3;"></i> 이젠 대학교</span>
 			<!-- 학생용 메뉴 -->
 			<ul class="d-flex" sec:authorize="hasAnyAuthority('ROLE_STUDENT')">
-				<li><a>홈</a></li>
+				<li><a href="/main">홈</a></li>
 				<li><a>내 정보</a></li>
 				<li><a>수강신청</a></li>
 				<li><a>성적</a></li>
@@ -24,7 +24,7 @@
 			
 			<!-- 교수용 메뉴 -->
 			<ul class="d-flex" sec:authorize="hasAnyAuthority('ROLE_PROFESSOR')">
-				<li><a>홈</a></li>
+				<li><a href="/main">홈</a></li>
 				<li><a>내 정보</a></li>
 				<li><a>강의</a></li>
 				<li><a>학사정보</a></li>
@@ -32,7 +32,7 @@
 			
 			<!-- 교직원용 메뉴 -->
 			<ul class="d-flex" sec:authorize="hasAnyAuthority('ROLE_STAFF')">
-				<li><a>홈</a></li>
+				<li><a href="/main">홈</a></li>
 				<li><a>내 정보</a></li>
 				<li><a>학사관리</a></li>
 				<li><a>학사정보</a></li>
