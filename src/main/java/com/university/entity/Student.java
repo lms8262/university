@@ -37,7 +37,7 @@ public class Student {
 	@Column(nullable = false)
 	@CreatedDate
 	private LocalDate entranceDate;
-
+	
 	@Column(nullable = false)
 	@ColumnDefault("1")
 	private Integer grade;

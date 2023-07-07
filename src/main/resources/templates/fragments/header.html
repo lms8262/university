@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
 	  xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+	  
 	<div th:fragment="header" class="header">
 		<div class="header_top">
 			<ul class="d-flex justify-content-end">
@@ -33,7 +34,7 @@
 			<!-- 교직원용 메뉴 -->
 			<ul class="d-flex" sec:authorize="hasAnyAuthority('ROLE_STAFF')">
 				<li><a href="/main">홈</a></li>
-				<li><a>내 정보</a></li>
+				<li><a href="/staffs/info">내 정보</a></li>
 				<li><a>학사관리</a></li>
 				<li><a>학사정보</a></li>
 			</ul>

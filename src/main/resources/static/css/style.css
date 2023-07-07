@@ -152,3 +152,7 @@ main {
 	font-weight: bold;
 }
 
+.active_tab {
+	color: cadetblue;
+}
+

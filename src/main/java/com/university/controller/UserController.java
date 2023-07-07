@@ -14,7 +14,6 @@ import com.university.dto.DepartmentDto;
 import com.university.dto.ProfessorFormDto;
 import com.university.dto.StaffFormDto;
 import com.university.dto.StudentFormDto;
-import com.university.exption.NotFoundException;
 import com.university.service.DepartmentService;
 import com.university.service.UserService;
 
