@@ -14,11 +14,13 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.university.config.CustomUser;
 import com.university.constant.Role;
-import com.university.dto.CustomUser;
 import com.university.dto.ProfessorFormDto;
 import com.university.dto.StaffFormDto;
+import com.university.dto.StaffInfoDto;
 import com.university.dto.StudentFormDto;
+import com.university.dto.UserInfoUpdateDto;
 import com.university.entity.Department;
 import com.university.entity.Professor;
 import com.university.entity.Staff;
@@ -129,7 +131,22 @@ public class UserService implements UserDetailsService {
 		}
 
 	}
-
+	
+	// 교직원 정보 가져오기
+	public StaffInfoDto loadStaffInfo(Long id) {
+		User user = userRepository.findById(id).orElseThrow(EntityNotFoundException::new);
+		Staff staff = staffRepository.findById(id).orElseThrow(EntityNotFoundException::new);
+		StaffInfoDto staffInfoDto = new StaffInfoDto(user, staff);
+		return staffInfoDto;
+	}
+	
+	// 수정용 유저 정보 가져오기
+	public UserInfoUpdateDto loadUserInfo(Long id) {
+		User user = userRepository.findById(id).orElseThrow(EntityNotFoundException::new);
+		UserInfoUpdateDto userInfoUpdateDto = modelMapper.map(user, UserInfoUpdateDto.class);
+		return userInfoUpdateDto;
+	}
+	
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 		// 사용자가 입력한 id가 DB에 있는지 쿼리문을 사용

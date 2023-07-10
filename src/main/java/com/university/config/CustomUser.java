@@ -1,4 +1,4 @@
-package com.university.dto;
+package com.university.config;
 
 import java.util.Collection;
 

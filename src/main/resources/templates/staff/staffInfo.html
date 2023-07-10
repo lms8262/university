@@ -13,6 +13,15 @@
 		h2 {
 			font-size: 32px;
 		}
+		
+		th {
+			width: 10%;
+			text-align: center;
+		}
+		
+		td {
+			width: 40%;
+		}
 	</style>
 </th:block>
 
@@ -34,37 +43,36 @@
 			<div class="main_subject">
 				<h2>내 정보</h2>
 			</div>
-			<div class="main_content">
+			<div class="main_content" th:object="${staffInfoDto}">
 				<table class="table table-bordered">
-					<thead class="table-light">
-						<tr>
-							<th>1열</th>
-							<th>2열</th>
-							<th>3열</th>
-							<th>4열</th>
-						</tr>
-					</thead>
-					<tbody>
-						<tr>
-							<td>1열</td>
-							<td>2열</td>
-							<td>3열</td>
-							<td>4열</td>
-						</tr>
-						<tr>
-							<td>1열</td>
-							<td>2열</td>
-							<td>3열</td>
-							<td>4열</td>
-						</tr>
-						<tr>
-							<td>1열</td>
-							<td>2열</td>
-							<td>3열</td>
-							<td>4열</td>
-						</tr>
-					</tbody>
+					<tr>
+						<th class="table-light">직번</th>
+						<td>[[${staffInfoDto.id}]]</td>
+						<th class="table-light">고용일</th>
+						<td>[[${staffInfoDto.hireDate}]]</td>
+					</tr>
+					<tr>
+						<th class="table-light">이름</th>
+						<td>[[${staffInfoDto.name}]]</td>
+						<th class="table-light">생년월일</th>
+						<td>[[${staffInfoDto.birthDate}]]</td>
+					</tr>
+					<tr>
+						<th class="table-light">성별</th>
+						<td>[[${staffInfoDto.gender}]]</td>
+						<th class="table-light">전화번호</th>
+						<td>[[${staffInfoDto.tel}]]</td>
+					</tr>
+					<tr>
+						<th class="table-light">이메일</th>
+						<td>[[${staffInfoDto.email}]]</td>
+						<th class="table-light">주소</th>
+						<td>[[${staffInfoDto.address}]]</td>
+					</tr>
 				</table>
+				<div class="d-flex justify-content-center">			
+					<a class="btn btn-primary" href="/staffs/info-modify" role="button">정보수정</a>
+				</div>
 			</div>
 		</main>
 	</div>

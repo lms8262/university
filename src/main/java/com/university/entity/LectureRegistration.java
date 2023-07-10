@@ -1,7 +1,5 @@
 package com.university.entity;
 
-import com.university.dto.LectureRegistrationId;
-
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
