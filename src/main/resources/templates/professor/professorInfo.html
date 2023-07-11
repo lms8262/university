@@ -33,7 +33,7 @@
 			</div>
 			<div class="sidebar_list">
 				<ul>
-					<li><a class="active_tab">내 정보</a></li>
+					<li><a class="active_tab" href="/professors/info">내 정보</a></li>
 					<li><a>비밀번호 변경</a></li>
 				</ul>
 			</div>
@@ -43,35 +43,35 @@
 			<div class="main_subject">
 				<h2>내 정보</h2>
 			</div>
-			<div class="main_content" th:object="${ProfessorInfoDto}">
+			<div class="main_content" th:object="${professorInfoDto}">
 				<table class="table table-bordered">
 					<tr>
 						<th class="table-light">교번</th>
-						<td>[[${ProfessorInfoDto.id}]]</td>
+						<td>[[${professorInfoDto.id}]]</td>
 						<th class="table-light">고용일</th>
-						<td>[[${ProfessorInfoDto.hireDate}]]</td>
+						<td>[[${professorInfoDto.hireDate}]]</td>
 					</tr>
 					<tr>
 						<th class="table-light">이름</th>
-						<td>[[${ProfessorInfoDto.name}]]</td>
+						<td>[[${professorInfoDto.name}]]</td>
 						<th class="table-light">생년월일</th>
-						<td>[[${ProfessorInfoDto.birthDate}]]</td>
+						<td>[[${professorInfoDto.birthDate}]]</td>
 					</tr>
 					<tr>
 						<th class="table-light">성별</th>
-						<td>[[${ProfessorInfoDto.gender}]]</td>
+						<td>[[${professorInfoDto.gender}]]</td>
 						<th class="table-light">전화번호</th>
-						<td>[[${ProfessorInfoDto.tel}]]</td>
-					</tr>
-					<tr>
-						<th class="table-light">이메일</th>
-						<td>[[${ProfessorInfoDto.email}]]</td>
-						<th class="table-light">주소</th>
-						<td>[[${ProfessorInfoDto.address}]]</td>
+						<td>[[${professorInfoDto.tel}]]</td>
 					</tr>
 					<tr>
 						<th class="table-light">학과</th>
-						<td>[[${ProfessorInfoDto.departmentName}]]</td>
+						<td>[[${professorInfoDto.departmentName}]]</td>
+						<th class="table-light">이메일</th>
+						<td>[[${professorInfoDto.email}]]</td>
+					</tr>
+					<tr>
+						<th class="table-light">주소</th>
+						<td>[[${professorInfoDto.address}]]</td>
 						<th class="table-light"></th>
 						<td></td>
 					</tr>

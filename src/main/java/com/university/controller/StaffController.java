@@ -21,6 +21,7 @@ public class StaffController {
 	
 	private final UserService userService;
 	
+	// 스태프 정보 화면
 	@GetMapping(value="/staffs/info")
 	public String staffInfo(Principal principal, Model model) {
 		Long id = Long.parseLong(principal.getName());

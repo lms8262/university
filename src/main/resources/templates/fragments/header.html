@@ -17,7 +17,7 @@
 			<!-- 학생용 메뉴 -->
 			<ul class="d-flex" sec:authorize="hasAnyAuthority('ROLE_STUDENT')">
 				<li><a href="/main">홈</a></li>
-				<li><a>내 정보</a></li>
+				<li><a href="/students/info">내 정보</a></li>
 				<li><a>수강신청</a></li>
 				<li><a>성적</a></li>
 				<li><a>학사정보</a></li>
@@ -26,7 +26,7 @@
 			<!-- 교수용 메뉴 -->
 			<ul class="d-flex" sec:authorize="hasAnyAuthority('ROLE_PROFESSOR')">
 				<li><a href="/main">홈</a></li>
-				<li><a>내 정보</a></li>
+				<li><a href="/professors/info">내 정보</a></li>
 				<li><a>강의</a></li>
 				<li><a>학사정보</a></li>
 			</ul>

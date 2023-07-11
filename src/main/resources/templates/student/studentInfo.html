@@ -33,7 +33,7 @@
 			</div>
 			<div class="sidebar_list">
 				<ul>
-					<li><a class="active_tab" href="/staffs/info">내 정보</a></li>
+					<li><a class="active_tab" href="/students/info">내 정보</a></li>
 					<li><a>비밀번호 변경</a></li>
 				</ul>
 			</div>
@@ -43,35 +43,47 @@
 			<div class="main_subject">
 				<h2>내 정보</h2>
 			</div>
-			<div class="main_content" th:object="${staffInfoDto}">
+			<div class="main_content" th:object="${studentInfoDto}">
 				<table class="table table-bordered">
 					<tr>
-						<th class="table-light">직번</th>
-						<td>[[${staffInfoDto.id}]]</td>
-						<th class="table-light">고용일</th>
-						<td>[[${staffInfoDto.hireDate}]]</td>
+						<th class="table-light">학번</th>
+						<td>[[${studentInfoDto.id}]]</td>
+						<th class="table-light">입학일</th>
+						<td>[[${studentInfoDto.entranceDate}]]</td>
 					</tr>
 					<tr>
 						<th class="table-light">이름</th>
-						<td>[[${staffInfoDto.name}]]</td>
+						<td>[[${studentInfoDto.name}]]</td>
 						<th class="table-light">생년월일</th>
-						<td>[[${staffInfoDto.birthDate}]]</td>
+						<td>[[${studentInfoDto.birthDate}]]</td>
 					</tr>
 					<tr>
 						<th class="table-light">성별</th>
-						<td>[[${staffInfoDto.gender}]]</td>
+						<td>[[${studentInfoDto.gender}]]</td>
 						<th class="table-light">전화번호</th>
-						<td>[[${staffInfoDto.tel}]]</td>
+						<td>[[${studentInfoDto.tel}]]</td>
 					</tr>
 					<tr>
+						<th class="table-light">학과</th>
+						<td>[[${studentInfoDto.departmentName}]]</td>
 						<th class="table-light">이메일</th>
-						<td>[[${staffInfoDto.email}]]</td>
+						<td>[[${studentInfoDto.email}]]</td>
+					</tr>
+					<tr>
+						<th class="table-light">학년</th>
+						<td>[[${studentInfoDto.grade}]]학년</td>
+						<th class="table-light">학기</th>
+						<td>[[${studentInfoDto.semester}]]학기</td>
+					</tr>
+					<tr>
 						<th class="table-light">주소</th>
-						<td>[[${staffInfoDto.address}]]</td>
+						<td>[[${studentInfoDto.address}]]</td>
+						<th class="table-light"></th>
+						<td></td>
 					</tr>
 				</table>
 				<div class="d-flex justify-content-center">			
-					<a class="btn btn-primary" href="/staffs/info-modify" role="button">정보수정</a>
+					<a class="btn btn-primary" href="/students/info-modify" role="button">정보수정</a>
 				</div>
 			</div>
 		</main>

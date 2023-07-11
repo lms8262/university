@@ -22,6 +22,7 @@ import com.university.dto.ProfessorInfoDto;
 import com.university.dto.StaffFormDto;
 import com.university.dto.StaffInfoDto;
 import com.university.dto.StudentFormDto;
+import com.university.dto.StudentInfoDto;
 import com.university.dto.UserInfoUpdateDto;
 import com.university.entity.Department;
 import com.university.entity.Professor;
@@ -144,7 +145,18 @@ public class UserService implements UserDetailsService {
 	
 	// 교수 정보 가져오기
 	public ProfessorInfoDto loadProfessorInfo(Long id) {
-		
+		User user = userRepository.findById(id).orElseThrow(EntityNotFoundException::new);
+		Professor professor = professorRepository.findById(id).orElseThrow(EntityNotFoundException::new);
+		ProfessorInfoDto professorInfoDto = new ProfessorInfoDto(user, professor);
+		return professorInfoDto;
+	}
+	
+	// 학생 정보 가져오기
+	public StudentInfoDto loadStudentInfo(Long id) {
+		User user = userRepository.findById(id).orElseThrow(EntityNotFoundException::new);
+		Student student = studentRepository.findById(id).orElseThrow(EntityNotFoundException::new);
+		StudentInfoDto studentInfoDto = new StudentInfoDto(user, student);
+		return studentInfoDto;
 	}
 	
 	// 수정용 유저 정보 가져오기
