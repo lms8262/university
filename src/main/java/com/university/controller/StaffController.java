@@ -40,7 +40,21 @@ public class StaffController {
 	
 	// 스태프 정보 수정
 	@PostMapping(value = "/staffs/info-modify")
-	public String modifyStaffInto(Principal principal,@Valid UserInfoUpdateDto userInfoUpdateDto, BindingResult bindingResult, Model model) {
-		return "redirect:/staff/staffInfo";
+	public String modifyStaffInto(Principal principal, @Valid UserInfoUpdateDto userInfoUpdateDto, BindingResult bindingResult, Model model) {
+		Long id = Long.parseLong(principal.getName());
+		
+		if(bindingResult.hasErrors()) {
+			return "staff/modifyStaffInfo";
+		}
+		
+		try {
+			userService.updateUserInfo(id, userInfoUpdateDto);			
+		} catch (Exception e) {
+			e.printStackTrace();
+			model.addAttribute("errorMessage", e.getMessage());
+			return "staff/modifyStaffInfo";
+		}
+		
+		return "redirect:/staffs/info";
 	}
 }

@@ -48,7 +48,7 @@ public class UserService implements UserDetailsService {
 	private final StudentRepository studentRepository;
 	private final DepartmentRepository departmentRepository;
 
-	// dto -> entity 변환 후 db에 저장(staff)
+	// 교직원 회원가입 insert
 	@Transactional
 	public Long saveUser(StaffFormDto staffFormDto) {
 		// dto -> entity 변환 후 staff 테이블에 저장
@@ -68,9 +68,9 @@ public class UserService implements UserDetailsService {
 		return staff.getId();
 	}
 
-	// dto -> entity 변환 후 db에 저장(professor)
+	// 교수 회원가입 insert
 	@Transactional
-	public Long saveUser(ProfessorFormDto professorFormDto) throws EntityNotFoundException {
+	public Long saveUser(ProfessorFormDto professorFormDto) {
 		// dto -> entity 변환 후 professor 테이블에 저장
 		Professor professor = modelMapper.map(professorFormDto, Professor.class);
 		// dto(사용자가 입력한 값)에 있는 email, tel 중복 검사
@@ -92,7 +92,7 @@ public class UserService implements UserDetailsService {
 		return professor.getId();
 	}
 
-	// dto -> entity 변환 후 db에 저장(student)
+	// 학생 회원가입 insert
 	@Transactional
 	public Long saveUser(StudentFormDto studentFormDto) {
 		// dto -> entity 변환 후 professor 테이블에 저장
@@ -145,6 +145,25 @@ public class UserService implements UserDetailsService {
 		User user = userRepository.findById(id).orElseThrow(EntityNotFoundException::new);
 		UserInfoUpdateDto userInfoUpdateDto = modelMapper.map(user, UserInfoUpdateDto.class);
 		return userInfoUpdateDto;
+	}
+	
+	// 유저 정보 수정
+	@Transactional
+	public void updateUserInfo(Long id, UserInfoUpdateDto userInfoUpdateDto) {
+		// 자신을 제외한 다른 유저가 사용중인 이메일, 전화번호인지 검사
+		User userEmailCheck = userRepository.findByEmailAndIdNot(userInfoUpdateDto.getEmail(), id);
+		User userTelCheck = userRepository.findByTelAndIdNot(userInfoUpdateDto.getTel(), id);
+		
+		if (userEmailCheck != null) {
+			throw new IllegalStateException("다른 회원이 사용중인 이메일입니다.");
+		}
+
+		if (userTelCheck != null) {
+			throw new IllegalStateException("다른 회원이 사용중인 전화번호입니다.");
+		}
+		
+		User user = userRepository.findById(id).orElseThrow(EntityNotFoundException::new);
+		user.updateUserInfo(userInfoUpdateDto.getAddress(), userInfoUpdateDto.getEmail(), userInfoUpdateDto.getTel());
 	}
 	
 	@Override

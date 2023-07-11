@@ -49,4 +49,10 @@ public class User {
 	@Column(nullable = false, length = 15, unique = true)
 	private String tel;
 	
+	public void updateUserInfo(String address, String email, String tel) {
+		this.address = address;
+		this.email = email;
+		this.tel = tel;
+	}
+	
 }
