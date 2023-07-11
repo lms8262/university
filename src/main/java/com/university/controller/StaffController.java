@@ -40,7 +40,7 @@ public class StaffController {
 	
 	// 스태프 정보 수정
 	@PostMapping(value = "/staffs/info-modify")
-	public String modifyStaffInto(Principal principal, @Valid UserInfoUpdateDto userInfoUpdateDto, BindingResult bindingResult, Model model) {
+	public String modifyStaffInto(String password, Principal principal, @Valid UserInfoUpdateDto userInfoUpdateDto, BindingResult bindingResult, Model model) {
 		Long id = Long.parseLong(principal.getName());
 		
 		if(bindingResult.hasErrors()) {
@@ -48,7 +48,7 @@ public class StaffController {
 		}
 		
 		try {
-			userService.updateUserInfo(id, userInfoUpdateDto);			
+			userService.updateUserInfo(id, password, userInfoUpdateDto);			
 		} catch (Exception e) {
 			e.printStackTrace();
 			model.addAttribute("errorMessage", e.getMessage());

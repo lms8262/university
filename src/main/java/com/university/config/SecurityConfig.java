@@ -22,10 +22,10 @@ public class SecurityConfig {
 				.requestMatchers("/", "/users/**").permitAll()
 				.requestMatchers("/favicon.ico", "/error").permitAll()
 				// 'staff'으로 시작하는 경로는 관리자만 접근가능하도록 설정
-				.requestMatchers("/staffs/**", "/professors/**", "/students/**").permitAll()
-//				 .requestMatchers("/staffs/**").hasRole("STAFF")
-//				 .requestMatchers("/professors/**").hasRole("PROFESSOR")
-//				 .requestMatchers("/students/**").hasRole("STUDENT")
+//				.requestMatchers("/staffs/**", "/professors/**", "/students/**").permitAll()
+				 .requestMatchers("/staffs/**").hasRole("STAFF")
+				 .requestMatchers("/professors/**").hasRole("PROFESSOR")
+				 .requestMatchers("/students/**").hasRole("STUDENT")
 				// 그 외의 페이지는 모두 로그인(인증을 받아야 한다)
 				.anyRequest().authenticated()).formLogin(formLogin -> formLogin // 2. 로그인에 관련된 설정
 						.loginPage("/users/login") // 로그인 페이지 URL 설정

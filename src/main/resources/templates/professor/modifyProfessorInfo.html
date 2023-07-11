@@ -39,7 +39,7 @@
 			</div>
 			<div class="main_content">
 				
-				<form method="post" action="/staffs/info-modify" th:object="${userInfoUpdateDto}">
+				<form method="post" action="/professors/info-modify" th:object="${userInfoUpdateDto}">
 					<div class="row mb-3">
 				    	<label th:for="address" class="col-2 col-form-label">주소</label>
 				    	<div class="col-3">
@@ -76,7 +76,7 @@
 				  	<p></p>
 				  	<div class="d-flex justify-content-center">
 				  		<button type="submit" class="btn btn-primary mx-2">수정완료</button>
-				  		<a class="btn btn-danger mx-2" href="/staffs/info" role="button">수정취소</a>
+				  		<a class="btn btn-danger mx-2" href="/professors/info" role="button">수정취소</a>
 				  	</div>
 				  	<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
 				</form>

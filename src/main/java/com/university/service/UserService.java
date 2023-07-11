@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.modelmapper.ModelMapper;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -17,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.university.config.CustomUser;
 import com.university.constant.Role;
 import com.university.dto.ProfessorFormDto;
+import com.university.dto.ProfessorInfoDto;
 import com.university.dto.StaffFormDto;
 import com.university.dto.StaffInfoDto;
 import com.university.dto.StudentFormDto;
@@ -140,6 +142,11 @@ public class UserService implements UserDetailsService {
 		return staffInfoDto;
 	}
 	
+	// 교수 정보 가져오기
+	public ProfessorInfoDto loadProfessorInfo(Long id) {
+		
+	}
+	
 	// 수정용 유저 정보 가져오기
 	public UserInfoUpdateDto loadUserInfo(Long id) {
 		User user = userRepository.findById(id).orElseThrow(EntityNotFoundException::new);
@@ -147,9 +154,14 @@ public class UserService implements UserDetailsService {
 		return userInfoUpdateDto;
 	}
 	
+	// 유저가 입력한 비밀번호와 db에 저장된 암호화된 비밀번호가 같은지 비교
+	public boolean validatePassword(String inputPassword, String dbPassword) {
+		return passwordEncoder.matches(inputPassword, dbPassword); 
+	}
+	
 	// 유저 정보 수정
 	@Transactional
-	public void updateUserInfo(Long id, UserInfoUpdateDto userInfoUpdateDto) {
+	public void updateUserInfo(Long id, String Password, UserInfoUpdateDto userInfoUpdateDto) {
 		// 자신을 제외한 다른 유저가 사용중인 이메일, 전화번호인지 검사
 		User userEmailCheck = userRepository.findByEmailAndIdNot(userInfoUpdateDto.getEmail(), id);
 		User userTelCheck = userRepository.findByTelAndIdNot(userInfoUpdateDto.getTel(), id);
@@ -163,6 +175,12 @@ public class UserService implements UserDetailsService {
 		}
 		
 		User user = userRepository.findById(id).orElseThrow(EntityNotFoundException::new);
+		
+		// 비밀번호 맞는지 확인
+		if(!validatePassword(Password, user.getPassword())) {
+			throw new BadCredentialsException("비밀번호가 맞지 않습니다.");
+		}
+		
 		user.updateUserInfo(userInfoUpdateDto.getAddress(), userInfoUpdateDto.getEmail(), userInfoUpdateDto.getTel());
 	}
 	

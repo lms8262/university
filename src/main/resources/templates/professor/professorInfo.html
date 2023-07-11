@@ -43,35 +43,41 @@
 			<div class="main_subject">
 				<h2>내 정보</h2>
 			</div>
-			<div class="main_content" th:object="${staffInfoDto}">
+			<div class="main_content" th:object="${ProfessorInfoDto}">
 				<table class="table table-bordered">
 					<tr>
-						<th class="table-light">직번</th>
-						<td>[[${staffInfoDto.id}]]</td>
+						<th class="table-light">교번</th>
+						<td>[[${ProfessorInfoDto.id}]]</td>
 						<th class="table-light">고용일</th>
-						<td>[[${staffInfoDto.hireDate}]]</td>
+						<td>[[${ProfessorInfoDto.hireDate}]]</td>
 					</tr>
 					<tr>
 						<th class="table-light">이름</th>
-						<td>[[${staffInfoDto.name}]]</td>
+						<td>[[${ProfessorInfoDto.name}]]</td>
 						<th class="table-light">생년월일</th>
-						<td>[[${staffInfoDto.birthDate}]]</td>
+						<td>[[${ProfessorInfoDto.birthDate}]]</td>
 					</tr>
 					<tr>
 						<th class="table-light">성별</th>
-						<td>[[${staffInfoDto.gender}]]</td>
+						<td>[[${ProfessorInfoDto.gender}]]</td>
 						<th class="table-light">전화번호</th>
-						<td>[[${staffInfoDto.tel}]]</td>
+						<td>[[${ProfessorInfoDto.tel}]]</td>
 					</tr>
 					<tr>
 						<th class="table-light">이메일</th>
-						<td>[[${staffInfoDto.email}]]</td>
+						<td>[[${ProfessorInfoDto.email}]]</td>
 						<th class="table-light">주소</th>
-						<td>[[${staffInfoDto.address}]]</td>
+						<td>[[${ProfessorInfoDto.address}]]</td>
+					</tr>
+					<tr>
+						<th class="table-light">학과</th>
+						<td>[[${ProfessorInfoDto.departmentName}]]</td>
+						<th class="table-light"></th>
+						<td></td>
 					</tr>
 				</table>
 				<div class="d-flex justify-content-center">			
-					<a class="btn btn-primary" href="/staffs/info-modify" role="button">정보수정</a>
+					<a class="btn btn-primary" href="/professors/info-modify" role="button">정보수정</a>
 				</div>
 			</div>
 		</main>
