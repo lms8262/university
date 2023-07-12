@@ -57,6 +57,7 @@ select * from grade_score;
 select * from college;
 select * from department;
 select * from lecture_room;
+select * from lecture;
 
 select * from lecture_room;
 
@@ -111,9 +112,26 @@ insert into lecture(name, professor_id, lecture_room_id, credit, capacity, type,
 -- 컴퓨터공학과(103) 강의 등록
 insert into lecture(name, professor_id, lecture_room_id, credit, capacity, type, year, semester, day, start_time, end_time) values('이산수학', 230012, 'C301', 3, 30, '전공', 2023, 1, '월', 9, 12);
 insert into lecture(name, professor_id, lecture_room_id, credit, capacity, type, year, semester, day, start_time, end_time) values('이산수학', 230012, 'C301', 3, 30, '전공', 2023, 1, '월', 13, 16);
-
+insert into lecture(name, professor_id, lecture_room_id, credit, capacity, type, year, semester, day, start_time, end_time) values('컴퓨터 프로그래밍', 230015, 'C302', 3, 30, '전공', 2023, 1, '화', 10, 13);
+insert into lecture(name, professor_id, lecture_room_id, credit, capacity, type, year, semester, day, start_time, end_time) values('컴퓨터 프로그래밍', 230015, 'C302', 3, 30, '전공', 2023, 1, '화', 14, 17);
+insert into lecture(name, professor_id, lecture_room_id, credit, capacity, type, year, semester, day, start_time, end_time) values('자료구조', 230030, 'C303', 3, 30, '전공', 2023, 1, '수', 11, 14);
+insert into lecture(name, professor_id, lecture_room_id, credit, capacity, type, year, semester, day, start_time, end_time) values('자료구조', 230030, 'C303', 3, 30, '전공', 2023, 1, '수', 15, 18);
+insert into lecture(name, professor_id, lecture_room_id, credit, capacity, type, year, semester, day, start_time, end_time) values('컴퓨터과학이 여는 세계', 230035, 'C304', 3, 30, '교양', 2023, 1, '목', 12, 15);
+insert into lecture(name, professor_id, lecture_room_id, credit, capacity, type, year, semester, day, start_time, end_time) values('컴퓨터과학이 여는 세계', 230036, 'C305', 3, 30, '교양', 2023, 1, '목', 12, 15);
+insert into lecture(name, professor_id, lecture_room_id, credit, capacity, type, year, semester, day, start_time, end_time) values('알고리즘', 230038, 'C304', 3, 30, '전공', 2023, 1, '금', 9, 12);
+insert into lecture(name, professor_id, lecture_room_id, credit, capacity, type, year, semester, day, start_time, end_time) values('알고리즘', 230038, 'C305', 3, 30, '전공', 2023, 1, '금', 15, 18);
 
 -- 사회복지학과(104) 강의 등록
+insert into lecture(name, professor_id, lecture_room_id, credit, capacity, type, year, semester, day, start_time, end_time) values('사회복지개론', 230004, 'D401', 3, 30, '전공', 2023, 1, '월', 9, 12);
+insert into lecture(name, professor_id, lecture_room_id, credit, capacity, type, year, semester, day, start_time, end_time) values('사회복지개론', 230004, 'D401', 3, 30, '전공', 2023, 1, '월', 13, 16);
+insert into lecture(name, professor_id, lecture_room_id, credit, capacity, type, year, semester, day, start_time, end_time) values('사회복지정책', 230005, 'D402', 3, 30, '전공', 2023, 1, '화', 10, 13);
+insert into lecture(name, professor_id, lecture_room_id, credit, capacity, type, year, semester, day, start_time, end_time) values('사회복지정책', 230005, 'D402', 3, 30, '전공', 2023, 1, '화', 14, 17);
+insert into lecture(name, professor_id, lecture_room_id, credit, capacity, type, year, semester, day, start_time, end_time) values('인간행동과 사회환경', 230007, 'D403', 3, 30, '전공', 2023, 1, '수', 11, 14);
+insert into lecture(name, professor_id, lecture_room_id, credit, capacity, type, year, semester, day, start_time, end_time) values('인간행동과 사회환경', 230007, 'D403', 3, 30, '전공', 2023, 1, '수', 15, 18);
+insert into lecture(name, professor_id, lecture_room_id, credit, capacity, type, year, semester, day, start_time, end_time) values('복지국가의 이해', 230008, 'D404', 3, 30, '교양', 2023, 1, '목', 12, 15);
+insert into lecture(name, professor_id, lecture_room_id, credit, capacity, type, year, semester, day, start_time, end_time) values('복지국가의 이해', 230010, 'D405', 3, 30, '교양', 2023, 1, '목', 12, 15);
+insert into lecture(name, professor_id, lecture_room_id, credit, capacity, type, year, semester, day, start_time, end_time) values('복지국가론', 230017, 'D404', 3, 30, '전공', 2023, 1, '금', 9, 12);
+insert into lecture(name, professor_id, lecture_room_id, credit, capacity, type, year, semester, day, start_time, end_time) values('복지국가론', 230017, 'D405', 3, 30, '전공', 2023, 1, '금', 15, 18);
 
 
 

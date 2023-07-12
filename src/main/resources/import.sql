@@ -32,7 +32,6 @@ insert into lecture_room(id, college_id) values('B201', 2),('B202', 2),('B203', 
 insert into lecture_room(id, college_id) values('C301', 3),('C302', 3),('C303', 3),('C304', 3),('C305', 3),('C306', 3),('C307', 3),('C308', 3),('C309', 3),('C310', 3);
 insert into lecture_room(id, college_id) values('D401', 4),('D402', 4),('D403', 4),('D404', 4),('D405', 4),('D406', 4),('D407', 4),('D408', 4),('D409', 4),('D410', 4);
 
--- 강의 등록
 
 
 -- 교직원 등록
@@ -644,3 +643,56 @@ insert into student(entrance_date, department_id) values('2023-03-02', 104);
 insert into user(id, password, role, name, gender, birth_date, address, email, tel) values(23000199, '$2a$10$.roP8m203SXTwZumEVSsj.0bA7WFd6o.94j4pRLq3XuMPYG.KQmSa', 'STUDENT', '백롱창', '남성', '2003-07-16', '서울시 강북구', 'ltfoxb93@naver.com', '010-5756-9522');
 insert into student(entrance_date, department_id) values('2023-03-02', 104);
 insert into user(id, password, role, name, gender, birth_date, address, email, tel) values(23000200, '$2a$10$3.A./zlojvZlTECowsGx4OQHnMr/3efV.WKBJPLngwranAboIdIJu', 'STUDENT', '어희직', '여성', '2003-12-26', '인천시 연수구', 'akmvhh55@naver.com', '010-7611-1150');
+
+
+
+-- 강의 등록
+-- 일어일문학과(101) 강의 등록
+insert into lecture(name, professor_id, lecture_room_id, credit, capacity, type, year, semester, day, start_time, end_time) values('전공기초일본어', 230003, 'A101', 3, 30, '전공', 2023, 1, '월', 9, 12);
+insert into lecture(name, professor_id, lecture_room_id, credit, capacity, type, year, semester, day, start_time, end_time) values('전공기초일본어', 230003, 'A101', 3, 30, '전공', 2023, 1, '월', 13, 16);
+insert into lecture(name, professor_id, lecture_room_id, credit, capacity, type, year, semester, day, start_time, end_time) values('일어학의 이해', 230011, 'A102', 3, 30, '전공', 2023, 1, '화', 10, 13);
+insert into lecture(name, professor_id, lecture_room_id, credit, capacity, type, year, semester, day, start_time, end_time) values('일어학의 이해', 230011, 'A102', 3, 30, '전공', 2023, 1, '화', 14, 17);
+insert into lecture(name, professor_id, lecture_room_id, credit, capacity, type, year, semester, day, start_time, end_time) values('일문학의 이해', 230014, 'A103', 3, 30, '전공', 2023, 1, '수', 11, 14);
+insert into lecture(name, professor_id, lecture_room_id, credit, capacity, type, year, semester, day, start_time, end_time) values('일문학의 이해', 230014, 'A103', 3, 30, '전공', 2023, 1, '수', 15, 18);
+insert into lecture(name, professor_id, lecture_room_id, credit, capacity, type, year, semester, day, start_time, end_time) values('일본문화여행', 230016, 'A104', 3, 30, '교양', 2023, 1, '목', 12, 15);
+insert into lecture(name, professor_id, lecture_room_id, credit, capacity, type, year, semester, day, start_time, end_time) values('일본문화여행', 230019, 'A105', 3, 30, '교양', 2023, 1, '목', 12, 15);
+insert into lecture(name, professor_id, lecture_room_id, credit, capacity, type, year, semester, day, start_time, end_time) values('커뮤니케이션 일본어', 230024, 'A104', 3, 30, '전공', 2023, 1, '금', 9, 12);
+insert into lecture(name, professor_id, lecture_room_id, credit, capacity, type, year, semester, day, start_time, end_time) values('커뮤니케이션 일본어', 230024, 'A105', 3, 30, '전공', 2023, 1, '금', 15, 18);
+
+-- 경영학과(102) 강의 등록
+insert into lecture(name, professor_id, lecture_room_id, credit, capacity, type, year, semester, day, start_time, end_time) values('회계원리', 230001, 'B201', 3, 30, '전공', 2023, 1, '월', 9, 12);
+insert into lecture(name, professor_id, lecture_room_id, credit, capacity, type, year, semester, day, start_time, end_time) values('회계원리', 230001, 'B201', 3, 30, '전공', 2023, 1, '월', 13, 16);
+insert into lecture(name, professor_id, lecture_room_id, credit, capacity, type, year, semester, day, start_time, end_time) values('재무회계', 230002, 'B202', 3, 30, '전공', 2023, 1, '화', 10, 13);
+insert into lecture(name, professor_id, lecture_room_id, credit, capacity, type, year, semester, day, start_time, end_time) values('재무회계', 230002, 'B202', 3, 30, '전공', 2023, 1, '화', 14, 17);
+insert into lecture(name, professor_id, lecture_room_id, credit, capacity, type, year, semester, day, start_time, end_time) values('원가회계', 230006, 'B203', 3, 30, '전공', 2023, 1, '수', 11, 14);
+insert into lecture(name, professor_id, lecture_room_id, credit, capacity, type, year, semester, day, start_time, end_time) values('원가회계', 230006, 'B203', 3, 30, '전공', 2023, 1, '수', 15, 18);
+insert into lecture(name, professor_id, lecture_room_id, credit, capacity, type, year, semester, day, start_time, end_time) values('경상통계학', 230009, 'B204', 3, 30, '교양', 2023, 1, '목', 12, 15);
+insert into lecture(name, professor_id, lecture_room_id, credit, capacity, type, year, semester, day, start_time, end_time) values('경상통계학', 230013, 'B205', 3, 30, '교양', 2023, 1, '목', 12, 15);
+insert into lecture(name, professor_id, lecture_room_id, credit, capacity, type, year, semester, day, start_time, end_time) values('인적자원관리', 230020, 'B204', 3, 30, '전공', 2023, 1, '금', 9, 12);
+insert into lecture(name, professor_id, lecture_room_id, credit, capacity, type, year, semester, day, start_time, end_time) values('인적자원관리', 230020, 'B205', 3, 30, '전공', 2023, 1, '금', 15, 18);
+
+-- 컴퓨터공학과(103) 강의 등록
+insert into lecture(name, professor_id, lecture_room_id, credit, capacity, type, year, semester, day, start_time, end_time) values('이산수학', 230012, 'C301', 3, 30, '전공', 2023, 1, '월', 9, 12);
+insert into lecture(name, professor_id, lecture_room_id, credit, capacity, type, year, semester, day, start_time, end_time) values('이산수학', 230012, 'C301', 3, 30, '전공', 2023, 1, '월', 13, 16);
+insert into lecture(name, professor_id, lecture_room_id, credit, capacity, type, year, semester, day, start_time, end_time) values('컴퓨터 프로그래밍', 230015, 'C302', 3, 30, '전공', 2023, 1, '화', 10, 13);
+insert into lecture(name, professor_id, lecture_room_id, credit, capacity, type, year, semester, day, start_time, end_time) values('컴퓨터 프로그래밍', 230015, 'C302', 3, 30, '전공', 2023, 1, '화', 14, 17);
+insert into lecture(name, professor_id, lecture_room_id, credit, capacity, type, year, semester, day, start_time, end_time) values('자료구조', 230030, 'C303', 3, 30, '전공', 2023, 1, '수', 11, 14);
+insert into lecture(name, professor_id, lecture_room_id, credit, capacity, type, year, semester, day, start_time, end_time) values('자료구조', 230030, 'C303', 3, 30, '전공', 2023, 1, '수', 15, 18);
+insert into lecture(name, professor_id, lecture_room_id, credit, capacity, type, year, semester, day, start_time, end_time) values('컴퓨터과학이 여는 세계', 230035, 'C304', 3, 30, '교양', 2023, 1, '목', 12, 15);
+insert into lecture(name, professor_id, lecture_room_id, credit, capacity, type, year, semester, day, start_time, end_time) values('컴퓨터과학이 여는 세계', 230036, 'C305', 3, 30, '교양', 2023, 1, '목', 12, 15);
+insert into lecture(name, professor_id, lecture_room_id, credit, capacity, type, year, semester, day, start_time, end_time) values('알고리즘', 230038, 'C304', 3, 30, '전공', 2023, 1, '금', 9, 12);
+insert into lecture(name, professor_id, lecture_room_id, credit, capacity, type, year, semester, day, start_time, end_time) values('알고리즘', 230038, 'C305', 3, 30, '전공', 2023, 1, '금', 15, 18);
+
+-- 사회복지학과(104) 강의 등록
+insert into lecture(name, professor_id, lecture_room_id, credit, capacity, type, year, semester, day, start_time, end_time) values('사회복지개론', 230004, 'D401', 3, 30, '전공', 2023, 1, '월', 9, 12);
+insert into lecture(name, professor_id, lecture_room_id, credit, capacity, type, year, semester, day, start_time, end_time) values('사회복지개론', 230004, 'D401', 3, 30, '전공', 2023, 1, '월', 13, 16);
+insert into lecture(name, professor_id, lecture_room_id, credit, capacity, type, year, semester, day, start_time, end_time) values('사회복지정책', 230005, 'D402', 3, 30, '전공', 2023, 1, '화', 10, 13);
+insert into lecture(name, professor_id, lecture_room_id, credit, capacity, type, year, semester, day, start_time, end_time) values('사회복지정책', 230005, 'D402', 3, 30, '전공', 2023, 1, '화', 14, 17);
+insert into lecture(name, professor_id, lecture_room_id, credit, capacity, type, year, semester, day, start_time, end_time) values('인간행동과 사회환경', 230007, 'D403', 3, 30, '전공', 2023, 1, '수', 11, 14);
+insert into lecture(name, professor_id, lecture_room_id, credit, capacity, type, year, semester, day, start_time, end_time) values('인간행동과 사회환경', 230007, 'D403', 3, 30, '전공', 2023, 1, '수', 15, 18);
+insert into lecture(name, professor_id, lecture_room_id, credit, capacity, type, year, semester, day, start_time, end_time) values('복지국가의 이해', 230008, 'D404', 3, 30, '교양', 2023, 1, '목', 12, 15);
+insert into lecture(name, professor_id, lecture_room_id, credit, capacity, type, year, semester, day, start_time, end_time) values('복지국가의 이해', 230010, 'D405', 3, 30, '교양', 2023, 1, '목', 12, 15);
+insert into lecture(name, professor_id, lecture_room_id, credit, capacity, type, year, semester, day, start_time, end_time) values('복지국가론', 230017, 'D404', 3, 30, '전공', 2023, 1, '금', 9, 12);
+insert into lecture(name, professor_id, lecture_room_id, credit, capacity, type, year, semester, day, start_time, end_time) values('복지국가론', 230017, 'D405', 3, 30, '전공', 2023, 1, '금', 15, 18);
+
+
