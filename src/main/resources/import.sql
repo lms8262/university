@@ -26,6 +26,14 @@ insert into department (name, college_id) values('경영학과', 2);
 insert into department (name, college_id) values('컴퓨터공학과', 3);
 insert into department (name, college_id) values('사회복지학과', 4);
 
+-- 강의실 등록
+insert into lecture_room(id, college_id) values('A101', 1),('A102', 1),('A103', 1),('A104', 1),('A105', 1),('A106', 1),('A107', 1),('A108', 1),('A109', 1),('A110', 1);
+insert into lecture_room(id, college_id) values('B201', 2),('B202', 2),('B203', 2),('B204', 2),('B205', 2),('B206', 2),('B207', 2),('B208', 2),('B209', 2),('B210', 2);
+insert into lecture_room(id, college_id) values('C301', 3),('C302', 3),('C303', 3),('C304', 3),('C305', 3),('C306', 3),('C307', 3),('C308', 3),('C309', 3),('C310', 3);
+insert into lecture_room(id, college_id) values('D401', 4),('D402', 4),('D403', 4),('D404', 4),('D405', 4),('D406', 4),('D407', 4),('D408', 4),('D409', 4),('D410', 4);
+
+-- 강의 등록
+
 
 -- 교직원 등록
 insert into staff(hire_date) values(now());
