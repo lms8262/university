@@ -1,5 +1,8 @@
 package com.university.entity;
 
+import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.DynamicInsert;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -18,6 +21,7 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
+@DynamicInsert
 public class Lecture {
 	
 	@Id
@@ -32,6 +36,10 @@ public class Lecture {
 	
 	@Column(nullable = false)
 	private Integer capacity;
+	
+	@Column(nullable = false)
+	@ColumnDefault("0")
+	private Integer numOfStudent;
 	
 	@Column(columnDefinition = "char(2)" , nullable = false)
 	private String type;

@@ -47,14 +47,14 @@ public class UserController {
 	}
 	
 	// 교직원 회원가입 화면
-	@GetMapping(value="/users/staff-register")
+	@GetMapping(value="/users/staff/register")
 	public String staffRegister(Model model) {
 		model.addAttribute("staffFormDto", new StaffFormDto());
 		return "user/staffForm";
 	}
 	
 	// 교직원 회원가입
-	@PostMapping(value="/users/staff-register")
+	@PostMapping(value="/users/staff/register")
 	public String staffRegister(@Valid StaffFormDto staffFormDto, BindingResult bindingResult, Model model, RedirectAttributes redirectAttributes) {
 		// @Valid: 유효성을 검증하려는 객체 앞에 붙인다.
 		// BindingResult: 유효성 검증 후의 결과가 들어있다.
@@ -76,7 +76,7 @@ public class UserController {
 	}
 	
 	// 교수 회원가입 화면
-	@GetMapping(value="/users/professor-register")
+	@GetMapping(value="/users/professor/register")
 	public String professorRegister(Model model) {
 		model.addAttribute("professorFormDto", new ProfessorFormDto());
 		// departmentList 가져와서 model에 추가
@@ -86,7 +86,7 @@ public class UserController {
 	}
 	
 	// 교수 회원가입
-	@PostMapping(value="/users/professor-register")
+	@PostMapping(value="/users/professor/register")
 	public String staffRegister(@Valid ProfessorFormDto professorFormDto, BindingResult bindingResult, Model model, RedirectAttributes redirectAttributes) {
 		
 		if(bindingResult.hasErrors()) {
@@ -106,7 +106,7 @@ public class UserController {
 	}
 	
 	// 학생 회원가입 화면
-	@GetMapping(value="/users/student-register")
+	@GetMapping(value="/users/student/register")
 	public String studentRegister(Model model) {
 		model.addAttribute("studentFormDto", new StudentFormDto());
 		// departmentList 가져와서 model에 추가
@@ -116,7 +116,7 @@ public class UserController {
 	}
 	
 	// 학생 회원가입
-	@PostMapping(value="/users/student-register")
+	@PostMapping(value="/users/student/register")
 	public String staffRegister(@Valid StudentFormDto studentFormDto, BindingResult bindingResult, Model model, RedirectAttributes redirectAttributes) {
 		
 		if(bindingResult.hasErrors()) {

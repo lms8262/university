@@ -124,10 +124,6 @@ ul {
 	padding-top: 15px;
 }
 
-.sidebar_list ul li a {
-	padding: 0 10px;
-}
-
 .sidebar_list ul li a:hover {
 	color: cadetblue !important;
 }
@@ -152,7 +148,36 @@ main {
 	font-weight: bold;
 }
 
+.main_content > * {
+	margin: 20px 0px;
+}
+
 .active_tab {
 	color: cadetblue;
+}
+
+/* 검색창 */
+.search_form {
+	padding: 10px;
+	width: 665px;
+	background-color: whitesmoke;
+	border: 1px solid whitesmoke;
+	border-radius: 5px;
+}
+
+.search_form > * {
+	margin: 0 5px;
+}
+
+.search_form > select, input {
+	border: 1px solid rgb(118, 118, 118);
+	border-radius: 3px;
+}
+
+.search_form > button {
+	border: 1px solid dimgray;
+	border-radius: 3px;
+	background-color: dimgray;
+	color: white;
 }
 

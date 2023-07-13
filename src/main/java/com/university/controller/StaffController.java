@@ -31,7 +31,7 @@ public class StaffController {
 	}
 	
 	// 스태프 정보 수정 화면
-	@GetMapping(value = "/staffs/info-modify")
+	@GetMapping(value = "/staffs/info/modify")
 	public String modifyStaffInto(Principal principal, Model model) {
 		Long id = Long.parseLong(principal.getName());
 		UserInfoUpdateDto userInfoUpdateDto = userService.loadUserInfo(id);
@@ -40,7 +40,7 @@ public class StaffController {
 	}
 	
 	// 스태프 정보 수정
-	@PostMapping(value = "/staffs/info-modify")
+	@PostMapping(value = "/staffs/info/modify")
 	public String modifyStaffInto(String password, Principal principal, @Valid UserInfoUpdateDto userInfoUpdateDto, BindingResult bindingResult, Model model) {
 		Long id = Long.parseLong(principal.getName());
 		

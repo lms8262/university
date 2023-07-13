@@ -31,7 +31,7 @@ public class ProfessorController {
 	}
 	
 	// 교수 정보 수정 화면
-	@GetMapping(value = "/professors/info-modify")
+	@GetMapping(value = "/professors/info/modify")
 	public String modifyProfessorInfo(Principal principal, Model model) {
 		Long id = Long.parseLong(principal.getName());
 		UserInfoUpdateDto userInfoUpdateDto = userService.loadUserInfo(id);
@@ -40,7 +40,7 @@ public class ProfessorController {
 	}
 	
 	// 교수 정보 수정
-	@PostMapping(value = "/professors/info-modify")
+	@PostMapping(value = "/professors/info/modify")
 	public String modifyStaffInfo(String password, Principal principal, @Valid UserInfoUpdateDto userInfoUpdateDto, BindingResult bindingResult, Model model) {
 		Long id = Long.parseLong(principal.getName());
 		

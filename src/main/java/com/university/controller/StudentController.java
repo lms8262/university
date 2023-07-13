@@ -31,7 +31,7 @@ public class StudentController {
 	}
 	
 	// 학생 정보 수정 화면
-	@GetMapping(value = "/students/info-modify")
+	@GetMapping(value = "/students/info/modify")
 	public String modifyStudentInfo(Principal principal, Model model) {
 		Long id = Long.parseLong(principal.getName());
 		UserInfoUpdateDto userInfoUpdateDto = userService.loadUserInfo(id);
@@ -40,7 +40,7 @@ public class StudentController {
 	}
 	
 	// 학생 정보 수정
-	@PostMapping(value = "/students/info-modify")
+	@PostMapping(value = "/students/info/modify")
 	public String modifyStudentInfo(String password, Principal principal, @Valid UserInfoUpdateDto userInfoUpdateDto, BindingResult bindingResult, Model model) {
 		Long id = Long.parseLong(principal.getName());
 		
@@ -57,6 +57,11 @@ public class StudentController {
 		}
 		
 		return "redirect:/students/info"; 
+	}
+	
+	@GetMapping(value = "/students/lecture/list")
+	public String lctureList() {
+		return "student/lectureList";
 	}
 	
 	@GetMapping(value="/totalgrade")
