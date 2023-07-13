@@ -60,6 +60,10 @@ public class Lecture {
 	private Integer endTime;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "department_id", nullable = false)
+	private Department department;
+	
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "lecture_room_id", nullable = false)
 	private LectureRoom lectureRoom;
 	
