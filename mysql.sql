@@ -61,8 +61,6 @@ select * from lecture;
 select * from lecture_registration;
 select * from student_lecture;
 
-select * from lecture_room;
-
 use university;
 
 -- 교수 테이블에 있는 학과번호로 학과명 가져오기

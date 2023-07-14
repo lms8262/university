@@ -25,8 +25,8 @@ public class LectureService {
 		return lectureRepository.getLectureScheduleList(lectureSearchDto, pageable);
 	}
 	
-	public Page<LectureScheduleDto> getRegistrationAbleLectureList(Long id, Pageable pageable) {
-		Student student = studentRepository.findById(id).orElseThrow(EntityNotFoundException::new);
+	public Page<LectureScheduleDto> getRegistrationAbleLectureList(Long userId, Pageable pageable) {
+		Student student = studentRepository.findById(userId).orElseThrow(EntityNotFoundException::new);
 		Long departmentId = student.getDepartment().getId();
 		return lectureRepository.getRegistrationAbleLectureList(departmentId, pageable);
 	}

@@ -3,6 +3,8 @@ package com.university.entity;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
 
+import com.university.exception.OutOfCapacityException;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -70,4 +72,12 @@ public class Lecture {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "professor_id", nullable = false)
 	private Professor professor;
+	
+	public void addNumOfStudent() {
+		if(numOfStudent >= capacity) {
+			throw new OutOfCapacityException("강의 정원 초과입니다.");
+		}
+		
+		numOfStudent++;
+	}
 }

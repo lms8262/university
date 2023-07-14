@@ -7,13 +7,15 @@ import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.university.dto.DepartmentDto;
 import com.university.dto.LectureScheduleDto;
@@ -21,6 +23,7 @@ import com.university.dto.LectureSearchDto;
 import com.university.dto.StudentInfoDto;
 import com.university.dto.UserInfoUpdateDto;
 import com.university.service.DepartmentService;
+import com.university.service.LectureRegistrationService;
 import com.university.service.LectureService;
 import com.university.service.UserService;
 
@@ -34,6 +37,7 @@ public class StudentController {
 	private final UserService userService;
 	private final DepartmentService departmentService;
 	private final LectureService lectureService;
+	private final LectureRegistrationService lectureRegistrationService;
 	
 	// 학생 정보 화면
 	@GetMapping(value = "/students/info")
@@ -89,22 +93,29 @@ public class StudentController {
 	}
 	
 	// 수강신청 화면
-	@GetMapping(value = {"/students/lecture/registration", "/students/lecture/registration/{page}"})
+	@GetMapping(value = {"/students/lecture/registration/list", "/students/lecture/registration/list/{page}"})
 	public String lectureRegistrationPage(Principal principal, @PathVariable("page") Optional<Integer> page, Model model) {
 		Pageable pageable = PageRequest.of(page.isPresent() ? page.get() : 0, 10);
-		Long id = Long.parseLong(principal.getName());
-		Page<LectureScheduleDto> lectureSchedules = lectureService.getRegistrationAbleLectureList(id, pageable) ;
+		Long userId = Long.parseLong(principal.getName());
+		Page<LectureScheduleDto> lectureSchedules = lectureService.getRegistrationAbleLectureList(userId, pageable);
 		
 		model.addAttribute("lectureSchedules", lectureSchedules);
+		model.addAttribute("page", pageable.getPageNumber());
 		model.addAttribute("maxPage", 5);
 		
 		return "student/lectureRegistration";
 	}
 	
 	// 수강신청
-	@GetMapping(value = "/students/lecture/registration")
-	public String lectureRegistration(@RequestParam Long lectureId) {
-		return "redirect:/students/lecture/registration";
+	@PostMapping(value = "/students/lecture/registration/{lectureId}")
+	public @ResponseBody ResponseEntity lectureRegistration(@PathVariable("lectureId") Long lectureId, Principal principal) {
+		Long studentId = Long.parseLong(principal.getName());
+		if(!lectureRegistrationService.checkLectureRegistration(lectureId, studentId)) {
+			return new ResponseEntity<String>("이미 수강신청한 과목입니다.", HttpStatus.FORBIDDEN);
+		}
+		
+		lectureRegistrationService.lectureRegistration(lectureId, studentId);
+		return new ResponseEntity<String>("수강신청을 완료했습니다." ,HttpStatus.OK);
 	}
 	
 	@GetMapping(value = "/totalgrade")

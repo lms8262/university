@@ -28,4 +28,15 @@ public class LectureRegistration {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "lecture_id")
 	private Lecture lecture;
+	
+	// 수강신청용 정적 팩토리 메소드
+	public static LectureRegistration createLectureRegistration(Student student, Lecture lecture) {
+		LectureRegistration lectureRegistration = new LectureRegistration();
+		lectureRegistration.setLecture(lecture);
+		lectureRegistration.setStudent(student);
+		
+		lecture.addNumOfStudent();
+		
+		return lectureRegistration;
+	}
 }
