@@ -9,7 +9,8 @@ public class LectureSearchDto {
 	
 	private String type;
 	
-	private String departmentId;
+	private Long departmentId;
 	
-	private String lectureName;
+	private String lectureName = "";
+	
 }

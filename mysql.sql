@@ -58,8 +58,12 @@ select * from college;
 select * from department;
 select * from lecture_room;
 select * from lecture;
+select * from lecture_registration;
+select * from student_lecture;
 
 select * from lecture_room;
+
+use university;
 
 -- 교수 테이블에 있는 학과번호로 학과명 가져오기
 select name 학과명 from department where id = (select department_id from professor where id = 230003);
@@ -145,13 +149,22 @@ and lecture.department_id = 101
 and lecture.name like '%전공%'
 order by lecture.id asc;
 
+-- 수강신청 가능 강의 
+select department.name 개설학과, lecture.id 강의번호, lecture.type 강의구분, lecture.name 강의명, user.name 담당교수, lecture.credit 학점, lecture.day 요일, 
+lecture.start_time 시작시간, lecture.end_time 종료시간, lecture.num_of_student 현재인원, lecture.capacity 정원
+from lecture, department, user, lecture_room
+where lecture.department_id = department.id
+and lecture.professor_id = user.id
+and lecture.lecture_room_id = lecture_room.id
+and (lecture.department_id = 101 or lecture.type = '교양')
+order by lecture.id asc;
+
+
 
 
 
 select * from lecture;
 delete from lecture where id = 10002;
-
-use university;
 
 SELECT AUTO_INCREMENT
 FROM information_schema.tables

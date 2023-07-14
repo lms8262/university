@@ -14,7 +14,7 @@
 			font-size: 32px;
 		}
 		.fieldError {
-		color: #bd2130;
+			color: #bd2130;
 		}
 	</style>
 </th:block>	
@@ -94,7 +94,10 @@
 		if(errorMessage != null) {
 			alert(errorMessage);
 		}
-	
+		
+		$(document).ready(function() {
+			$(".info").addClass("active_tab");
+		});
 	</script>
 </th:block>
 

@@ -132,9 +132,14 @@ ul {
 	border-top: 1px solid silver;
 }
 
+.sidebar_list ul li a:link,
+.sidebar_list ul li a:visited {
+	color: black;
+}
+
 /* 본문 */
 main {
-	width: 900px;
+	min-width: 850px;
 	margin-left: 50px;
 }
 
@@ -157,16 +162,17 @@ main {
 }
 
 .active_tab {
-	color: cadetblue;
+	color: cadetblue !important;
 }
 
-.active_page {
+.active_page .page-link {
 	font-weight: bold;
 	color: cadetblue !important;
 }
 
 /* 검색창 */
 .search_form {
+	margin-bottom: 20px;
 	padding: 10px;
 	width: 100%;
 	background-color: whitesmoke;

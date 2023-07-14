@@ -30,12 +30,12 @@ public class LectureRepositoryCustomImpl implements LectureRepositoryCustom {
 	
 	// 전공 교양 여부 전체일때 null 처리
 	private BooleanExpression typeEq(String type) {
-		return type == null ? null : QLecture.lecture.type.eq(type); 
+		return StringUtils.isEmpty(type) ? null : QLecture.lecture.type.eq(type); 
 	}
 	
 	// 학과 전체일때 null 처리
-	private BooleanExpression departmentIdEq(String departmentId) {
-		return departmentId == null ? null : QLecture.lecture.department.id.eq(Long.parseLong(departmentId));
+	private BooleanExpression departmentIdEq(Long departmentId) {
+		return departmentId == null ? null : QLecture.lecture.department.id.eq(departmentId);
 	}
 	
 	// 검색어(강의명)가 빈문자열 일때 처리
@@ -45,7 +45,7 @@ public class LectureRepositoryCustomImpl implements LectureRepositoryCustom {
 	
 	// 강의 시간표 리스트 가져오기 + 페이징
 	@Override
-	public Page<LectureScheduleDto> getLectureSchedule(LectureSearchDto lectureSearchDto, Pageable pageable) {
+	public Page<LectureScheduleDto> getLectureScheduleList(LectureSearchDto lectureSearchDto, Pageable pageable) {
 		QLecture lecture = QLecture.lecture;
 		QDepartment department = QDepartment.department;
 		QUser user = QUser.user;
@@ -70,8 +70,8 @@ public class LectureRepositoryCustomImpl implements LectureRepositoryCustom {
 						)
 				.from(lecture)
 				.join(lecture.department, department)
-				.join(user).on(lecture.department.id.eq(user.id))
 				.join(lecture.lectureRoom, lectureRoom)
+				.join(user).on(lecture.professor.id.eq(user.id))
 				.where(typeEq(lectureSearchDto.getType()))
 				.where(departmentIdEq(lectureSearchDto.getDepartmentId()))
 				.where(lectureNameLike(lectureSearchDto.getLectureName()))
@@ -84,8 +84,8 @@ public class LectureRepositoryCustomImpl implements LectureRepositoryCustom {
 				.select(Wildcard.count)
 				.from(lecture)
 				.join(lecture.department, department)
-				.join(user).on(lecture.department.id.eq(user.id))
 				.join(lecture.lectureRoom, lectureRoom)
+				.join(user).on(lecture.professor.id.eq(user.id))
 				.where(typeEq(lectureSearchDto.getType()))
 				.where(departmentIdEq(lectureSearchDto.getDepartmentId()))
 				.where(lectureNameLike(lectureSearchDto.getLectureName()))
@@ -93,5 +93,56 @@ public class LectureRepositoryCustomImpl implements LectureRepositoryCustom {
 				
 		return new PageImpl<>(content, pageable, total);
 	}
+	
+	// 수강신청 가능 과목 가져오기 + 페이징
+	@Override
+	public Page<LectureScheduleDto> getRegistrationAbleLectureList(Long departmentId, Pageable pageable) {
+		QLecture lecture = QLecture.lecture;
+		QDepartment department = QDepartment.department;
+		QUser user = QUser.user;
+		QLectureRoom lectureRoom = QLectureRoom.lectureRoom;
+		
+		List<LectureScheduleDto> content = queryFactory
+				.select(
+					new QLectureScheduleDto(
+							department.name, 
+							lecture.id, 
+							lecture.type, 
+							lecture.name, 
+							user.name, 
+							lecture.credit, 
+							lecture.day, 
+							lecture.startTime, 
+							lecture.endTime, 
+							lectureRoom.id, 
+							lecture.numOfStudent, 
+							lecture.capacity
+							)
+						)
+				.from(lecture)
+				.join(lecture.department, department)
+				.join(lecture.lectureRoom, lectureRoom)
+				.join(user).on(lecture.professor.id.eq(user.id))
+				.where(lecture.department.id.eq(departmentId)
+						.or(lecture.type.eq("교양")))
+				.orderBy(lecture.type.desc())
+				.offset(pageable.getOffset())
+				.limit(pageable.getPageSize())
+				.fetch();
+		
+		long total = queryFactory
+				.select(Wildcard.count)
+				.from(lecture)
+				.join(lecture.department, department)
+				.join(lecture.lectureRoom, lectureRoom)
+				.join(user).on(lecture.professor.id.eq(user.id))
+				.where(lecture.department.id.eq(departmentId)
+						.or(lecture.type.eq("교양")))
+				.fetchOne();
+		
+		
+		return new PageImpl<>(content, pageable, total);
+	}
+	
 	
 }
