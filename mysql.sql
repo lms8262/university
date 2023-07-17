@@ -61,6 +61,8 @@ select * from lecture;
 select * from lecture_registration;
 select * from student_lecture;
 
+select * from lecture_room;
+
 use university;
 
 -- 교수 테이블에 있는 학과번호로 학과명 가져오기
@@ -155,9 +157,10 @@ where lecture.department_id = department.id
 and lecture.professor_id = user.id
 and lecture.lecture_room_id = lecture_room.id
 and (lecture.department_id = 101 or lecture.type = '교양')
-order by lecture.id asc;
+order by lecture.type desc;
 
 
+select sum(lecture.credit) total_credit from lecture_registration, lecture where lecture_registration.lecture_id = lecture.id;
 
 
 

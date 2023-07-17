@@ -1,12 +1,17 @@
 package com.university.service;
 
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.thymeleaf.util.StringUtils;
 
 import com.university.entity.Lecture;
 import com.university.entity.LectureRegistration;
 import com.university.entity.LectureRegistrationId;
 import com.university.entity.Student;
+import com.university.exception.OutOfCreditException;
+import com.university.exception.TimeOverlapException;
 import com.university.repository.LectureRegistrationRepository;
 import com.university.repository.LectureRepository;
 import com.university.repository.StudentRepository;
@@ -43,11 +48,29 @@ public class LectureRegistrationService {
 		Lecture lecture = lectureRepository.findById(lectureId).orElseThrow(EntityNotFoundException::new);
 		Student student = studentRepository.findById(studentId).orElseThrow(EntityNotFoundException::new);
 		
-		// 학생id로 수강신청 목록에서 리스트 뽑아서 신청하려는 강의시간하고 겹치는지 확인
-		// 학생id로 수강신청 목록에서 총 신청 학점 뽑아서 18점 이상인지 확인
+		// 학생id로 수강신청 목록에서 총 신청 학점 뽑아서, 기존 학점 + 신청과목 학점 = 18점 초과하는지 확인
+		Integer totalCredit = lectureRegistrationRepository.getTotalCreaditByStudentId(studentId);
+		if(totalCredit + lecture.getCredit() > 18) {
+			throw new OutOfCreditException("최대 신청 학점 초과입니다. 현재 총 신청 학점은" + totalCredit + " 점 입니다.");
+		}
+		
+		// 학생id로 수강신청 목록에서 리스트 뽑아서 신청하려는 강의하고 요일, 시간 겹치는지 확인
+		String day = lecture.getDay();
+		Integer startTime = lecture.getStartTime();
+		Integer endTime = lecture.getEndTime();
+		
+		List<Lecture> registrationLectureListOfStudent = lectureRegistrationRepository.getRegistrationLectureListOfStudent(studentId);
+		for(Lecture lec : registrationLectureListOfStudent) {
+			if(StringUtils.equals(lec.getDay(), day)) {
+				if((startTime <= lec.getStartTime() && lec.getStartTime() < endTime)
+						||(startTime < lec.getEndTime() && lec.getEndTime() < endTime)) {
+					throw new TimeOverlapException("이전에 신청한 강의와 시간이 중복됩니다.");
+				}
+			}
+		}
 		
 		LectureRegistration lectureRegistration = LectureRegistration.createLectureRegistration(student, lecture);
-		
+
 		lectureRegistrationRepository.save(lectureRegistration);
 	}
 }

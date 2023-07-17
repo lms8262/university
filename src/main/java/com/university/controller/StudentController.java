@@ -114,7 +114,13 @@ public class StudentController {
 			return new ResponseEntity<String>("이미 수강신청한 과목입니다.", HttpStatus.FORBIDDEN);
 		}
 		
-		lectureRegistrationService.lectureRegistration(lectureId, studentId);
+		try {
+			lectureRegistrationService.lectureRegistration(lectureId, studentId);			
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new ResponseEntity<String>(e.getMessage(), HttpStatus.FORBIDDEN);
+		}
+		
 		return new ResponseEntity<String>("수강신청을 완료했습니다." ,HttpStatus.OK);
 	}
 	

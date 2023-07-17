@@ -13,6 +13,7 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.university.dto.LectureScheduleDto;
 import com.university.dto.LectureSearchDto;
 import com.university.dto.QLectureScheduleDto;
+import com.university.entity.Lecture;
 import com.university.entity.QDepartment;
 import com.university.entity.QLecture;
 import com.university.entity.QLectureRoom;
@@ -143,6 +144,5 @@ public class LectureRepositoryCustomImpl implements LectureRepositoryCustom {
 		
 		return new PageImpl<>(content, pageable, total);
 	}
-	
 	
 }
