@@ -7,42 +7,32 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class LectureScheduleDto {
-	private String departmentName;
-	
+public class ProfessorLectureDto {
 	private Long lectureId;
-	
+
 	private String type;
-	
+
 	private String lectureName;
-	
-	private String professorName;
-	
+
 	private Integer credit;
-	
+
 	private String day;
-	
+
 	private Integer startTime;
-	
+
 	private Integer endTime;
-	
+
 	private String lectureRoomId;
-	
+
 	private Integer numOfStudent;
-	
+
 	private Integer capacity;
 	
-	private String lectureCodeDetail;
-	
 	@QueryProjection
-	public LectureScheduleDto(String departmentName, Long lectureId, String type, String lectureName,
-			String professorName, Integer credit, String day, Integer startTime, Integer endTime,
-			String lectureRoomId, Integer numOfStudent, Integer capacity, String lectureCodeDetail) {
-		this.departmentName = departmentName;
+	public ProfessorLectureDto(Long lectureId, String type, String lectureName, Integer credit, String day, Integer startTime, Integer endTime, String lectureRoomId, Integer numOfStudent, Integer capacity) {
 		this.lectureId = lectureId;
 		this.type = type;
 		this.lectureName = lectureName;
-		this.professorName = professorName;
 		this.credit = credit;
 		this.day = day;
 		this.startTime = startTime;
@@ -50,7 +40,5 @@ public class LectureScheduleDto {
 		this.lectureRoomId = lectureRoomId;
 		this.numOfStudent = numOfStudent;
 		this.capacity = capacity;
-		this.lectureCodeDetail = lectureCodeDetail;
 	}
-	
 }

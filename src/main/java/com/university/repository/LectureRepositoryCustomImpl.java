@@ -12,10 +12,12 @@ import com.querydsl.core.types.dsl.Wildcard;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.university.dto.LectureScheduleDto;
 import com.university.dto.LectureSearchDto;
+import com.university.dto.ProfessorLectureDto;
 import com.university.dto.QLectureScheduleDto;
 import com.university.entity.Lecture;
 import com.university.entity.QDepartment;
 import com.university.entity.QLecture;
+import com.university.entity.QLectureCode;
 import com.university.entity.QLectureRoom;
 import com.university.entity.QUser;
 
@@ -51,6 +53,7 @@ public class LectureRepositoryCustomImpl implements LectureRepositoryCustom {
 		QDepartment department = QDepartment.department;
 		QUser user = QUser.user;
 		QLectureRoom lectureRoom = QLectureRoom.lectureRoom;
+		QLectureCode lectureCode = QLectureCode.lectureCode; 
 		
 		List<LectureScheduleDto> content = queryFactory
 				.select(
@@ -60,18 +63,20 @@ public class LectureRepositoryCustomImpl implements LectureRepositoryCustom {
 							lecture.type, 
 							lecture.name, 
 							user.name, 
-							lecture.credit, 
+							lecture.credit,
 							lecture.day, 
 							lecture.startTime, 
 							lecture.endTime, 
 							lectureRoom.id, 
 							lecture.numOfStudent, 
-							lecture.capacity
+							lecture.capacity,
+							lectureCode.detail
 							)
 						)
 				.from(lecture)
 				.join(lecture.department, department)
 				.join(lecture.lectureRoom, lectureRoom)
+				.join(lecture.lectureCode, lectureCode)
 				.join(user).on(lecture.professor.id.eq(user.id))
 				.where(typeEq(lectureSearchDto.getType()))
 				.where(departmentIdEq(lectureSearchDto.getDepartmentId()))
@@ -102,6 +107,7 @@ public class LectureRepositoryCustomImpl implements LectureRepositoryCustom {
 		QDepartment department = QDepartment.department;
 		QUser user = QUser.user;
 		QLectureRoom lectureRoom = QLectureRoom.lectureRoom;
+		QLectureCode lectureCode = QLectureCode.lectureCode;
 		
 		List<LectureScheduleDto> content = queryFactory
 				.select(
@@ -117,12 +123,14 @@ public class LectureRepositoryCustomImpl implements LectureRepositoryCustom {
 							lecture.endTime, 
 							lectureRoom.id, 
 							lecture.numOfStudent, 
-							lecture.capacity
+							lecture.capacity,
+							lectureCode.detail
 							)
 						)
 				.from(lecture)
 				.join(lecture.department, department)
 				.join(lecture.lectureRoom, lectureRoom)
+				.join(lecture.lectureCode, lectureCode)
 				.join(user).on(lecture.professor.id.eq(user.id))
 				.where(lecture.department.id.eq(departmentId)
 						.or(lecture.type.eq("교양")))
@@ -145,4 +153,11 @@ public class LectureRepositoryCustomImpl implements LectureRepositoryCustom {
 		return new PageImpl<>(content, pageable, total);
 	}
 	
+	@Override
+	public List<ProfessorLectureDto> getProfessorLectureListOfCurrentSemester(Long professorId, int year,
+			int semester) {
+		
+		return null;
+	}
+
 }

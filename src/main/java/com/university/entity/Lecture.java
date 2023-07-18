@@ -73,6 +73,10 @@ public class Lecture {
 	@JoinColumn(name = "professor_id", nullable = false)
 	private Professor professor;
 	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "lecture_code_id", nullable = false)
+	private LectureCode lectureCode;
+	
 	// 수강신청시 수강인원 추가
 	public void addNumOfStudent() {
 		if(numOfStudent >= capacity) {

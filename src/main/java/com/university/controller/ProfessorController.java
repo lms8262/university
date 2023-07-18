@@ -59,4 +59,11 @@ public class ProfessorController {
 		return "redirect:/professors/info";
 	}
 	
+	@GetMapping(value = "/professors/lecture/list")
+	public String myLectureList(Principal principal, Model model) {
+		Long professorId = Long.parseLong(principal.getName());
+		
+		return "professor/myLectureList";
+	}
+	
 }

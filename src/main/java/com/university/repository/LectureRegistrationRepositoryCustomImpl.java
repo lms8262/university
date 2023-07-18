@@ -6,8 +6,10 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.university.dto.LectureScheduleDto;
 import com.university.dto.QLectureScheduleDto;
 import com.university.entity.Lecture;
+import com.university.entity.LectureRegistration;
 import com.university.entity.QDepartment;
 import com.university.entity.QLecture;
+import com.university.entity.QLectureCode;
 import com.university.entity.QLectureRegistration;
 import com.university.entity.QLectureRoom;
 import com.university.entity.QUser;
@@ -59,6 +61,7 @@ public class LectureRegistrationRepositoryCustomImpl implements LectureRegistrat
 		QDepartment department = QDepartment.department;
 		QUser user = QUser.user;
 		QLectureRoom lectureRoom = QLectureRoom.lectureRoom;
+		QLectureCode lectureCode = QLectureCode.lectureCode;
 		
 		List<LectureScheduleDto> content = queryFactory
 				.select(
@@ -74,16 +77,33 @@ public class LectureRegistrationRepositoryCustomImpl implements LectureRegistrat
 								lecture.endTime, 
 								lectureRoom.id, 
 								lecture.numOfStudent, 
-								lecture.capacity
+								lecture.capacity,
+								lectureCode.detail
 								)
 						)
 				.from(lectureRegistration)
 				.join(lectureRegistration.lecture, lecture)
 				.join(lecture.department, department)
 				.join(lecture.lectureRoom, lectureRoom)
+				.join(lecture.lectureCode, lectureCode)
 				.join(user).on(lecture.professor.id.eq(user.id))
 				.where(lectureRegistration.student.id.eq(studentId))
 				.fetch();			
+		
+		return content;
+	}
+
+	@Override
+	public LectureRegistration findbyLectureCodeId(Long lectureCodeId) {
+		QLectureRegistration lectureRegistration = QLectureRegistration.lectureRegistration;
+		QLecture lecture = QLecture.lecture;
+		
+		LectureRegistration content = queryFactory
+				.select(lectureRegistration)
+				.from(lectureRegistration)
+				.join(lectureRegistration.lecture, lecture)
+				.where(lecture.lectureCode.id.eq(lectureCodeId))
+				.fetchOne();
 		
 		return content;
 	}

@@ -41,7 +41,7 @@
 	<div class="d-flex">
 		<aside class="sidebar d-flex flex-column align-items-center">
 			<div class="sidebar_subject">
-				<h3>내 정보</h3>
+				<h3>수강 신청</h3>
 			</div>
 			<div class="sidebar_list">
 				<ul>
@@ -58,12 +58,13 @@
 			</div>
 			<div class="main_content">
 
-				<div class="lecture_list">
+				<div>
 					<table class="table table-bordered border-secondary-subtle">
 						<thead>
 							<tr>
 								<th scope="col">개설학과</th>
 								<th scope="col">강의번호</th>
+								<th scope="col">구분코드</th>
 								<th scope="col">강의구분</th>
 								<th scope="col">강의명</th>
 								<th scope="col">담당교수</th>
@@ -78,6 +79,7 @@
 							<tr th:each="lectureSchedule : ${lectureSchedules.getContent()}">
 								<td scope="row" th:text="${lectureSchedule.departmentName}"></td>
 								<td th:text="${lectureSchedule.lectureId}"></td>
+								<td th:text="${lectureSchedule.lectureCodeDetail}"></td>
 								<td th:text="${lectureSchedule.type}"></td>
 								<td th:text="${lectureSchedule.lectureName}"></td>
 								<td th:text="${lectureSchedule.professorName}"></td>

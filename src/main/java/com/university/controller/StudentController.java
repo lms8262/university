@@ -112,9 +112,6 @@ public class StudentController {
 	@PostMapping(value = "/students/lecture/registration/{lectureId}")
 	public @ResponseBody ResponseEntity lectureRegistration(@PathVariable Long lectureId, Principal principal) {
 		Long studentId = Long.parseLong(principal.getName());
-		if(!lectureRegistrationService.checkLectureRegistration(lectureId, studentId)) {
-			return new ResponseEntity<String>("이미 수강신청한 과목입니다.", HttpStatus.FORBIDDEN);
-		}
 		
 		try {
 			lectureRegistrationService.lectureRegistration(lectureId, studentId);			

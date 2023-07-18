@@ -22,10 +22,13 @@ public class LectureService {
 	private final LectureRepository lectureRepository;
 	private final StudentRepository studentRepository;
 	
+	// 강의 시간표 출력
 	public Page<LectureScheduleDto> getLectureScheduleList(LectureSearchDto lectureSearchDto, Pageable pageable) {
+		
 		return lectureRepository.getLectureScheduleList(lectureSearchDto, pageable);
 	}
 	
+	// 수강 신청 가능 강의 출력
 	public Page<LectureScheduleDto> getRegistrationAbleLectureList(Long userId, Pageable pageable) {
 		Student student = studentRepository.findById(userId).orElseThrow(EntityNotFoundException::new);
 		Long departmentId = student.getDepartment().getId();
