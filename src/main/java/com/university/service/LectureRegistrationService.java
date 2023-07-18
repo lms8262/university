@@ -1,11 +1,13 @@
 package com.university.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.thymeleaf.util.StringUtils;
 
+import com.university.dto.LectureScheduleDto;
 import com.university.entity.Lecture;
 import com.university.entity.LectureRegistration;
 import com.university.entity.LectureRegistrationId;
@@ -23,6 +25,7 @@ import lombok.RequiredArgsConstructor;
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class LectureRegistrationService {
+	
 	private final LectureRegistrationRepository lectureRegistrationRepository;
 	private final LectureRepository lectureRepository;
 	private final StudentRepository studentRepository;
@@ -72,5 +75,22 @@ public class LectureRegistrationService {
 		LectureRegistration lectureRegistration = LectureRegistration.createLectureRegistration(student, lecture);
 
 		lectureRegistrationRepository.save(lectureRegistration);
+	}
+	
+	// 수강신청 내역 목록
+	public List<LectureScheduleDto> getLectureRegistrationHistory(Long studentId) {
+		return lectureRegistrationRepository.getLectureRegistrationHistory(studentId);
+	}
+	
+	// 수강신청 취소
+	@Transactional
+	public void cancelLectureRegistration(Long lectureId, Long studentId) {
+		LectureRegistrationId lectureRegistrationId = new LectureRegistrationId();
+		lectureRegistrationId.setLecture(lectureId);
+		lectureRegistrationId.setStudent(studentId);
+		LectureRegistration lectureRegistration = lectureRegistrationRepository.findById(lectureRegistrationId).orElseThrow(EntityNotFoundException::new);
+		
+		lectureRegistration.getLecture().removeNumOfStudent();
+		lectureRegistrationRepository.delete(lectureRegistration);
 	}
 }

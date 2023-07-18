@@ -18,6 +18,7 @@ import lombok.RequiredArgsConstructor;
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class LectureService {
+	
 	private final LectureRepository lectureRepository;
 	private final StudentRepository studentRepository;
 	

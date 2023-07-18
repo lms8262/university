@@ -73,11 +73,17 @@ public class Lecture {
 	@JoinColumn(name = "professor_id", nullable = false)
 	private Professor professor;
 	
+	// 수강신청시 수강인원 추가
 	public void addNumOfStudent() {
 		if(numOfStudent >= capacity) {
 			throw new OutOfCapacityException("강의 정원 초과입니다.");
 		}
 		
 		numOfStudent++;
+	}
+	
+	// 수강신청 취소시 수강인원 제거 
+	public void removeNumOfStudent() {
+		numOfStudent--;
 	}
 }

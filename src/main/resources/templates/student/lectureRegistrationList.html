@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{layouts/layout1}">
+
+<head>
+	<meta name="_csrf" th:content="${_csrf.token}" />
+	<meta name="_csrf_header" th:content="${_csrf.headerName}" />
+</head>
+
+<!-- 각 페이지의 CSS가 작성될 위치 -->
+<th:block layout:fragment="css">
+	<style>
+		h3 {
+			font-size: 28px;
+		}
+		
+		h2 {
+			font-size: 32px;
+		}
+		
+		tbody {
+			vertical-align: middle !important;
+		}
+		
+		.registration_btn {
+			text-align: center;
+			font-weight: bold;
+		}
+		
+		.registration_btn button {
+			background-color: #cadfe3;
+			padding: 3px;
+			border: 1px solid cadetblue;
+			border-radius: 10px;
+		}
+	</style>
+</th:block>
+
+<div layout:fragment="content">
+	<div class="d-flex">
+		<aside class="sidebar d-flex flex-column align-items-center">
+			<div class="sidebar_subject">
+				<h3>내 정보</h3>
+			</div>
+			<div class="sidebar_list">
+				<ul>
+					<li><a href="/students/lecture/list">강의 시간표 조회</a></li>
+					<li><a href="/students/lecture/registration/list">수강 신청</a></li>
+					<li><a href="/students/lecture/registration/history" class="active_tab">수강 신청 내역 조회</a></li>
+				</ul>
+			</div>
+		</aside>
+
+		<main>
+			<div class="main_subject">
+				<h2>수강 신청 내역 조회</h2>
+			</div>
+			<div class="main_content">
+
+				<div class="lecture_list">
+					<table class="table table-bordered border-secondary-subtle" th:if="${not #lists.isEmpty(lectureRegistrationHistory)}">
+						<thead>
+							<tr>
+								<th scope="col">개설학과</th>
+								<th scope="col">강의번호</th>
+								<th scope="col">강의구분</th>
+								<th scope="col">강의명</th>
+								<th scope="col">담당교수</th>
+								<th scope="col">학점</th>
+								<th scope="col">요일 시간 (강의실)</th>
+								<th scope="col">현재인원</th>
+								<th scope="col">정원</th>
+								<th scope="col">수강신청취소</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr th:each="lectureRegistration : ${lectureRegistrationHistory}">
+								<td scope="row" th:text="${lectureRegistration.departmentName}"></td>
+								<td th:text="${lectureRegistration.lectureId}"></td>
+								<td th:text="${lectureRegistration.type}"></td>
+								<td th:text="${lectureRegistration.lectureName}"></td>
+								<td th:text="${lectureRegistration.professorName}"></td>
+								<td th:text="${lectureRegistration.credit}"></td>
+								<td th:if="${lectureRegistration.startTime} < 10" th:text="|${lectureRegistration.day} 0${lectureRegistration.startTime}:00-${lectureRegistration.endTime}:00 (${lectureRegistration.lectureRoomId})|"></td>
+								<td th:unless="${lectureRegistration.startTime} < 10" th:text="|${lectureRegistration.day} ${lectureRegistration.startTime}:00-${lectureRegistration.endTime}:00 (${lectureRegistration.lectureRoomId})|"></td>
+								<td th:text="${lectureRegistration.numOfStudent}"></td>
+								<td th:text="${lectureRegistration.capacity}"></td>
+								<td class="registration_btn">
+									<button type="button" th:value="${lectureRegistration.lectureId}" onclick="cancelRegist(this.value)">신청취소</button>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+					
+					<p th:unless="${not #lists.isEmpty(lectureRegistrationHistory)}" style="font-size: 25px;">수강 신청 내역이 없습니다.</p>
+					
+				</div>
+
+			</div>
+		</main>
+	</div>
+</div>
+
+<!-- 각 페이지의 자바스크립트가 작성될 위치 -->
+<th:block layout:fragment="script">
+	<script th:inline="javascript">
+		$(document).ready(function() {
+			$(".registration").addClass("active_tab");
+		});
+		
+		function cancelRegist(lectureId) {
+			const cancelConf = confirm("수강 신청을 취소하시겠습니까?");
+			
+			if(!cancelConf) return; // 취소 버튼 누를시
+			
+			var token = $("meta[name='_csrf']").attr("content");
+			var header = $("meta[name='_csrf_header']").attr("content");
+			
+			var url = "/students/lecture/registration/" + lectureId + "/cancel";
+			
+			$.ajax({
+				url : url,
+				type : "DELETE",
+				contentType : "application/json",
+				beforeSend : function(xhr) {
+					// 데이터를 전송하기 전에 헤더에 csrf 값을 설정
+					xhr.setRequestHeader(header, token);
+				},
+				dataType : "json",
+				cache : false,
+				success : function(result, status) {
+					
+					alert("수강 신청을 취소했습니다.");
+					
+					location.href = '/students/lecture/registration/history';
+				},
+				error : function(jqXHR, status, error) {
+					if(jqXHR.status == '401') {
+						alter('로그인 후 이용해주세요.');
+						location.href = '/users/login';
+					} else {
+						alert(jqXHR.responseText);
+					}
+				}
+			});
+		}
+	</script>
+</th:block>
+
+</html>

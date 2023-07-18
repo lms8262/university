@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -27,6 +28,7 @@ import com.university.service.LectureRegistrationService;
 import com.university.service.LectureService;
 import com.university.service.UserService;
 
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
@@ -94,7 +96,7 @@ public class StudentController {
 	
 	// 수강신청 화면
 	@GetMapping(value = {"/students/lecture/registration/list", "/students/lecture/registration/list/{page}"})
-	public String lectureRegistrationPage(Principal principal, @PathVariable("page") Optional<Integer> page, Model model) {
+	public String lectureRegistrationPage(Principal principal, @PathVariable Optional<Integer> page, Model model) {
 		Pageable pageable = PageRequest.of(page.isPresent() ? page.get() : 0, 10);
 		Long userId = Long.parseLong(principal.getName());
 		Page<LectureScheduleDto> lectureSchedules = lectureService.getRegistrationAbleLectureList(userId, pageable);
@@ -108,7 +110,7 @@ public class StudentController {
 	
 	// 수강신청
 	@PostMapping(value = "/students/lecture/registration/{lectureId}")
-	public @ResponseBody ResponseEntity lectureRegistration(@PathVariable("lectureId") Long lectureId, Principal principal) {
+	public @ResponseBody ResponseEntity lectureRegistration(@PathVariable Long lectureId, Principal principal) {
 		Long studentId = Long.parseLong(principal.getName());
 		if(!lectureRegistrationService.checkLectureRegistration(lectureId, studentId)) {
 			return new ResponseEntity<String>("이미 수강신청한 과목입니다.", HttpStatus.FORBIDDEN);
@@ -121,7 +123,32 @@ public class StudentController {
 			return new ResponseEntity<String>(e.getMessage(), HttpStatus.FORBIDDEN);
 		}
 		
-		return new ResponseEntity<String>("수강신청을 완료했습니다." ,HttpStatus.OK);
+		return new ResponseEntity<Long>(lectureId, HttpStatus.OK);
+	}
+	
+	// 수강신청 이력 페이지
+	@GetMapping(value = "/students/lecture/registration/history")
+	public String lectureRegistrationHistory(Principal principal, Model model) {
+		Long studentId = Long.parseLong(principal.getName());
+		List<LectureScheduleDto> lectureRegistrationHistory = lectureRegistrationService.getLectureRegistrationHistory(studentId);
+		
+		model.addAttribute("lectureRegistrationHistory", lectureRegistrationHistory);
+		return "student/lectureRegistrationList";
+	}
+	
+	// 수강신청 취소
+	@DeleteMapping("/students/lecture/registration/{lectureId}/cancel")
+	public @ResponseBody ResponseEntity cancelLectureRegistration(@PathVariable Long lectureId, Principal principal) {
+		Long studentId = Long.parseLong(principal.getName());
+		
+		try {
+			lectureRegistrationService.cancelLectureRegistration(lectureId, studentId);
+		} catch (EntityNotFoundException e) {
+			e.printStackTrace();
+			return new ResponseEntity<String>(e.getMessage(), HttpStatus.FORBIDDEN);
+		}
+		
+		return new ResponseEntity<Long>(lectureId, HttpStatus.OK);
 	}
 	
 	@GetMapping(value = "/totalgrade")

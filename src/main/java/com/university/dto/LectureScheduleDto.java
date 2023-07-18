@@ -49,4 +49,5 @@ public class LectureScheduleDto {
 		this.numOfStudent = numOfStudent;
 		this.capacity = capacity;
 	}
+	
 }
