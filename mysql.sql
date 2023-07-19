@@ -127,6 +127,14 @@ select * from lecture;
 delete from lecture where id = 10002;
 update lecture set num_of_student = 0 where num_of_student = 1;
 
+select year, semester from lecture
+where professor_id = 230001
+group by year, semester;
+
+select * from student where department_id = 102;
+select * from lecture where professor_id = 230001;
+select lr.student_id, lr.lecture_id from lecture_registration lr join lecture l on lr.lecture_id = l.id;
+
 use university;
 
 SELECT AUTO_INCREMENT

@@ -45,8 +45,8 @@ public class LectureRegistrationService {
 	}
 	
 	// 같은 강의코드의 강의를 신청 중인지 검사
-	private boolean checkEqualCodeLectureRegistration(Long lectureCodeId) {
-		LectureRegistration lectureRegistration = lectureRegistrationRepository.findbyLectureCodeId(lectureCodeId);
+	private boolean checkEqualCodeLectureRegistration(Long lectureCodeId, Long studentId) {
+		LectureRegistration lectureRegistration = lectureRegistrationRepository.findbyLectureCodeIdAndStudentId(lectureCodeId, studentId);
 		
 		// 같은 강의코드의 강의를 신청한 경우
 		if(lectureRegistration != null) {
@@ -69,7 +69,7 @@ public class LectureRegistrationService {
 		
 		// 같은 강의코드의 강의를 신청 중인지 검사
 		Long lectureCodeId = lecture.getLectureCode().getId();
-		if(!checkEqualCodeLectureRegistration(lectureCodeId)) {
+		if(!checkEqualCodeLectureRegistration(lectureCodeId, studentId)) {
 			throw new OverlapException("동일한 코드의 강의를 신청 중입니다.");
 		}
 		

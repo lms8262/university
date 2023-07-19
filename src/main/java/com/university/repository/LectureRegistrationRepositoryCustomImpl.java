@@ -94,7 +94,7 @@ public class LectureRegistrationRepositoryCustomImpl implements LectureRegistrat
 	}
 
 	@Override
-	public LectureRegistration findbyLectureCodeId(Long lectureCodeId) {
+	public LectureRegistration findbyLectureCodeIdAndStudentId(Long lectureCodeId, Long studentId) {
 		QLectureRegistration lectureRegistration = QLectureRegistration.lectureRegistration;
 		QLecture lecture = QLecture.lecture;
 		
@@ -102,6 +102,7 @@ public class LectureRegistrationRepositoryCustomImpl implements LectureRegistrat
 				.select(lectureRegistration)
 				.from(lectureRegistration)
 				.join(lectureRegistration.lecture, lecture)
+				.where(lectureRegistration.student.id.eq(studentId))
 				.where(lecture.lectureCode.id.eq(lectureCodeId))
 				.fetchOne();
 		

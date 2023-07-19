@@ -166,6 +166,7 @@ public class LectureRepositoryCustomImpl implements LectureRepositoryCustom {
 		return new PageImpl<>(content, pageable, total);
 	}
 	
+	// 현재 학기 강의 목록 출력(교수)
 	@Override
 	public List<ProfessorLectureDto> getProfessorLectureListOfCurrentSemester(Long professorId, int year,
 			int semester) {
@@ -199,7 +200,29 @@ public class LectureRepositoryCustomImpl implements LectureRepositoryCustom {
 				
 		return content;
 	}
-
+	
+	// 강의가 존재하는 년도와 학기 출력(교수)
+	@Override
+	public List<ProfessorLectureSearchDto> getProfessorLectureGroupByYearAndSemester(Long professorId) {
+		QLecture lecture = QLecture.lecture;
+		
+		List<ProfessorLectureSearchDto> content = queryFactory
+				.select(
+						new QProfessorLectureSearchDto(
+								lecture.year,
+								lecture.semester
+								)
+						)
+				.from(lecture)
+				.where(lecture.professor.id.eq(professorId))
+				.groupBy(lecture.year, lecture.semester)
+				.orderBy(lecture.year.asc())
+				.fetch();
+				
+		return content;
+	}
+	
+	// 선택한 학기 강의 목록 조회(교수)
 	@Override
 	public List<ProfessorLectureDto> getProfessorLectureList(Long professorId,
 			ProfessorLectureSearchDto professorLectureSearchDto) {
@@ -231,26 +254,6 @@ public class LectureRepositoryCustomImpl implements LectureRepositoryCustom {
 				.where(lectureSemesterEq(professorLectureSearchDto.getSemester()))
 				.fetch();
 		
-		return content;
-	}
-
-	@Override
-	public List<ProfessorLectureSearchDto> getProfessorLectureGroupByYearAndSemester(Long professorId) {
-		QLecture lecture = QLecture.lecture;
-		
-		List<ProfessorLectureSearchDto> content = queryFactory
-				.select(
-						new QProfessorLectureSearchDto(
-								lecture.year,
-								lecture.semester
-								)
-						)
-				.from(lecture)
-				.where(lecture.professor.id.eq(professorId))
-				.groupBy(lecture.year, lecture.semester)
-				.orderBy(lecture.year.asc())
-				.fetch();
-				
 		return content;
 	}
 	

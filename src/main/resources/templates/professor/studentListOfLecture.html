@@ -18,12 +18,12 @@
 			vertical-align: middle !important;
 		}
 		
-		.student_list_btn {
+		.score_input_btn {
 			text-align: center;
 			font-weight: bold;
 		}
 		
-		.student_list_btn button {
+		.score_input_btn button {
 			background-color: #cadfe3;
 			padding: 3px;
 			border: 1px solid cadetblue;
@@ -48,37 +48,51 @@
 
 		<main>
 			<div class="main_subject">
-				<h2>이번 학기 내 강의 목록</h2>
+				<h2>(강의이름) 학생 목록</h2>
 			</div>
 			<div class="main_content">
 				<div>
+					<h4>점수 미입력 학생</h4>
 					<table class="table table-bordered border-secondary-subtle">
 						<thead>
 							<tr>
-								<th scope="col">강의번호</th>
-								<th scope="col">강의코드</th>
-								<th scope="col">강의구분</th>
-								<th scope="col">강의명</th>
-								<th scope="col">학점</th>
-								<th scope="col">요일 시간 (강의실)</th>
-								<th scope="col">현재인원</th>
-								<th scope="col">정원</th>
-								<th scope="col">학생목록</th>
+								<th scope="col">학번</th>
+								<th scope="col">이름</th>
+								<th scope="col">학과</th>
+								<th scope="col">점수입력</th>
 							</tr>
 						</thead>
 						<tbody>
-							<tr th:each="professorLecture : ${professorLectures}">
-								<td th:text="${professorLecture.lectureId}"></td>
-								<td th:text="${professorLecture.lectureCodeDetail}"></td>
-								<td th:text="${professorLecture.type}"></td>
-								<td th:text="${professorLecture.lectureName}"></td>
-								<td th:text="${professorLecture.credit}"></td>
-								<td th:if="${professorLecture.startTime} < 10" th:text="|${professorLecture.day} 0${professorLecture.startTime}:00-${professorLecture.endTime}:00 (${professorLecture.lectureRoomId})|"></td>
-								<td th:unless="${professorLecture.startTime} < 10" th:text="|${professorLecture.day} ${professorLecture.startTime}:00-${professorLecture.endTime}:00 (${professorLecture.lectureRoomId})|"></td>
-								<td th:text="${professorLecture.numOfStudent}"></td>
-								<td th:text="${professorLecture.capacity}"></td>
-								<td class="student_list_btn">
-									<button type="button">학생목록</button>
+							<tr>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td class="score_input_btn">
+									<button type="button">점수입력</button>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+					
+					<h4>점수 입력 학생</h4>
+					<table class="table table-bordered border-secondary-subtle">
+						<thead>
+							<tr>
+								<th scope="col">학번</th>
+								<th scope="col">이름</th>
+								<th scope="col">학과</th>
+								<th scope="col">등급</th>								
+								<th scope="col">점수입력</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td class="score_input_btn">
+									<button type="button">점수입력</button>
 								</td>
 							</tr>
 						</tbody>

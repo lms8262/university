@@ -6,14 +6,14 @@
 <!-- 각 페이지의 CSS가 작성될 위치 -->
 <th:block layout:fragment="css">
 	<style>
-h3 {
-	font-size: 28px;
-}
-
-h2 {
-	font-size: 32px;
-}
-</style>
+		h3 {
+			font-size: 28px;
+		}
+		
+		h2 {
+			font-size: 32px;
+		}
+	</style>
 </th:block>
 
 <div layout:fragment="content">
@@ -24,19 +24,28 @@ h2 {
 			</div>
 			<div class="sidebar_list">
 				<ul>				
-					<li><a href="/professors/lecture/all" class="active_tab">전체 학기 강의 조회</a></li>
-					<li><a href="/professors/lecture/current">이번 학기 강의 조회</a></li>
-					<li><a>학생 성적 입력</a></li>
+					<li><a href="/professors/lecture/list" class="active_tab">학기별 강의 조회</a></li>
+					<li><a href="/professors/lecture/score">학생 성적입력</a></li>
 				</ul>
 			</div>
 		</aside>
 
 		<main>
 			<div class="main_subject">
-				<h2>전체 학기 강의 조회</h2>
+				<h2>학기별 강의 조회</h2>
 			</div>
 			<div class="main_content">
-				<div>
+				<form th:action="@{/professors/lecture/list}" method="post">
+					
+					<div class="search_form">
+						<label for="yearSemester">년도 및 학기</label>
+						<select name="yearSemester" id="yearSemester">
+							<option th:each="professorLectureSearchDto : ${professorLectureSearchDtoList}" th:value="${professorLectureSearchDto.year} + ',' + ${professorLectureSearchDto.semester}">[[${professorLectureSearchDto.year}]]년도 [[${professorLectureSearchDto.semester}]]학기</option>
+						</select>
+						
+						<button type="submit">&nbsp;<span>조회</span>&nbsp;<i class="fa-solid fa-magnifying-glass"></i>&nbsp;</button>
+					</div>
+				
 					<table class="table table-bordered border-secondary-subtle">
 						<thead>
 							<tr>
@@ -48,11 +57,10 @@ h2 {
 								<th scope="col">요일 시간 (강의실)</th>
 								<th scope="col">현재인원</th>
 								<th scope="col">정원</th>
-								
 							</tr>
 						</thead>
 						<tbody>
-							<tr th:each="professorLecture : ${professorLectures}">
+							<tr th:each="professorLecture : ${professorLectureDtoList}">
 								<td th:text="${professorLecture.lectureId}"></td>
 								<td th:text="${professorLecture.lectureCodeDetail}"></td>
 								<td th:text="${professorLecture.type}"></td>
@@ -65,7 +73,8 @@ h2 {
 							</tr>
 						</tbody>
 					</table>
-				</div>
+					
+				</form>
 			</div>
 		</main>
 	</div>

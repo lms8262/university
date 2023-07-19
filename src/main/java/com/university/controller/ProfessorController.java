@@ -1,13 +1,13 @@
 package com.university.controller;
 
 import java.security.Principal;
-import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import com.university.dto.ProfessorInfoDto;
@@ -65,20 +65,12 @@ public class ProfessorController {
 		return "redirect:/professors/info";
 	}
 	
-	// 이번학기 강의중인 강의 목록 페이지
-	@GetMapping(value = "/professors/lecture/current")
-	public String myCurrentLectureList(Principal principal, Model model) {
-		Long professorId = Long.parseLong(principal.getName());
-		List<ProfessorLectureDto> professorLectures = lectureService.getProfessorLectureListOfCurrentSemester(professorId);
-		model.addAttribute("professorLectures", professorLectures);
-		return "professor/myCurrentLectureList";
-	}
-	
-	@GetMapping(value = "/professors/lecture/all")
-	public String myLectureList(ProfessorLectureSearchDto professorLectureSearchDto, Principal principal, Model model) {
+	// 내 강의 목록 조회 페이지(기본값 : 이번 학기)
+	@GetMapping(value = "/professors/lecture/list")
+	public String myLectureList(Principal principal, Model model) {
 		Long professorId = Long.parseLong(principal.getName());
 		List<ProfessorLectureSearchDto> professorLectureSearchDtoList = lectureService.getProfessorLectureGroupByYearAndSemester(professorId);
-		List<ProfessorLectureDto> professorLectureDtoList = lectureService.getProfessorLectureList(professorId, professorLectureSearchDto);
+		List<ProfessorLectureDto> professorLectureDtoList = lectureService.getProfessorLectureList(professorId, new ProfessorLectureSearchDto());
 		
 		model.addAttribute("professorLectureSearchDtoList", professorLectureSearchDtoList);
 		model.addAttribute("professorLectureDtoList", professorLectureDtoList);
@@ -86,4 +78,40 @@ public class ProfessorController {
 		return "professor/myLectureList";
 	}
 	
+	// 내 강의 목록 조회 페이지(검색)
+	@PostMapping(value = "/professors/lecture/list")
+	public String myLectureListSearch(String yearSemester, Principal principal, Model model) {
+		Long professorId = Long.parseLong(principal.getName());
+		List<ProfessorLectureSearchDto> professorLectureSearchDtoList = lectureService.getProfessorLectureGroupByYearAndSemester(professorId);
+		
+		String[] strs = yearSemester.split(",");
+		Integer year = Integer.parseInt(strs[0]);
+		Integer semester = Integer.parseInt(strs[1]);
+		ProfessorLectureSearchDto professorLectureSearchDto = new ProfessorLectureSearchDto();
+		professorLectureSearchDto.setYear(year);
+		professorLectureSearchDto.setSemester(semester);
+		
+		List<ProfessorLectureDto> professorLectureDtoList = lectureService.getProfessorLectureList(professorId, professorLectureSearchDto);
+		model.addAttribute("professorLectureSearchDtoList", professorLectureSearchDtoList);
+		model.addAttribute("professorLectureDtoList", professorLectureDtoList);
+		
+		return "professor/myLectureList";
+	}
+	
+	// 성적 입력 페이지 강의 리스트
+	@GetMapping(value = "/professors/lecture/score")
+	public String myCurrentLectureList(Principal principal, Model model) {
+		Long professorId = Long.parseLong(principal.getName());
+		List<ProfessorLectureDto> professorLectures = lectureService.getProfessorLectureListOfCurrentSemester(professorId);
+		model.addAttribute("professorLectures", professorLectures);
+		return "professor/myCurrentLectureList";
+	}
+	
+	 /*
+	 @GetMapping(value = "/professors/lecture/score/{lectureId}")
+	 public String studentListOfLecture(Model model, @PathVariable Long lectureId) {
+		 
+	 }
+	 */
+	 
 }

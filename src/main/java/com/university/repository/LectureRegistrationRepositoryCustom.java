@@ -13,5 +13,5 @@ public interface LectureRegistrationRepositoryCustom {
 	
 	List<LectureScheduleDto> getLectureRegistrationHistory(Long studentId);
 	
-	LectureRegistration findbyLectureCodeId(Long lectureCodeId);
+	LectureRegistration findbyLectureCodeIdAndStudentId(Long lectureCodeId, Long studentId);
 }
