@@ -13,7 +13,10 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.university.dto.LectureScheduleDto;
 import com.university.dto.LectureSearchDto;
 import com.university.dto.ProfessorLectureDto;
+import com.university.dto.ProfessorLectureSearchDto;
 import com.university.dto.QLectureScheduleDto;
+import com.university.dto.QProfessorLectureDto;
+import com.university.dto.QProfessorLectureSearchDto;
 import com.university.entity.Lecture;
 import com.university.entity.QDepartment;
 import com.university.entity.QLecture;
@@ -44,6 +47,16 @@ public class LectureRepositoryCustomImpl implements LectureRepositoryCustom {
 	// 검색어(강의명)가 빈문자열 일때 처리
 	private BooleanExpression lectureNameLike(String lectureName) {
 		return StringUtils.isEmpty(lectureName) ? null : QLecture.lecture.name.like("%" + lectureName + "%");
+	}
+	
+	// 전체 강의 조회시 년도 null 처리
+	private BooleanExpression lectureYearEq(Integer year) {
+		return year == null ? null : QLecture.lecture.year.eq(year);
+	}
+	
+	// 전체 강의 조회시 학기 null 처리
+	private BooleanExpression lectureSemesterEq(Integer semester) {
+		return semester == null ? null : QLecture.lecture.semester.eq(semester);
 	}
 	
 	// 강의 시간표 리스트 가져오기 + 페이징
@@ -156,8 +169,89 @@ public class LectureRepositoryCustomImpl implements LectureRepositoryCustom {
 	@Override
 	public List<ProfessorLectureDto> getProfessorLectureListOfCurrentSemester(Long professorId, int year,
 			int semester) {
+		QLecture lecture = QLecture.lecture;
+		QLectureRoom lectureRoom = QLectureRoom.lectureRoom;
+		QLectureCode lectureCode = QLectureCode.lectureCode;
 		
-		return null;
+		List<ProfessorLectureDto> content = queryFactory
+				.select(
+						new QProfessorLectureDto(
+								lecture.id,
+								lectureCode.detail,
+								lecture.type,
+								lecture.name,
+								lecture.credit,
+								lecture.day,
+								lecture.startTime,
+								lecture.endTime,
+								lectureRoom.id,
+								lecture.numOfStudent,
+								lecture.capacity
+								)
+						)
+				.from(lecture)
+				.join(lecture.lectureRoom, lectureRoom)
+				.join(lecture.lectureCode, lectureCode)
+				.where(lecture.professor.id.eq(professorId))
+				.where(lecture.year.eq(year))
+				.where(lecture.semester.eq(semester))
+				.fetch();
+				
+		return content;
 	}
 
+	@Override
+	public List<ProfessorLectureDto> getProfessorLectureList(Long professorId,
+			ProfessorLectureSearchDto professorLectureSearchDto) {
+		QLecture lecture = QLecture.lecture;
+		QLectureRoom lectureRoom = QLectureRoom.lectureRoom;
+		QLectureCode lectureCode = QLectureCode.lectureCode;
+		
+		List<ProfessorLectureDto> content = queryFactory
+				.select(
+						new QProfessorLectureDto(
+								lecture.id,
+								lectureCode.detail,
+								lecture.type,
+								lecture.name,
+								lecture.credit,
+								lecture.day,
+								lecture.startTime,
+								lecture.endTime,
+								lectureRoom.id,
+								lecture.numOfStudent,
+								lecture.capacity
+								)
+						)
+				.from(lecture)
+				.join(lecture.lectureRoom, lectureRoom)
+				.join(lecture.lectureCode, lectureCode)
+				.where(lecture.professor.id.eq(professorId))
+				.where(lectureYearEq(professorLectureSearchDto.getYear()))
+				.where(lectureSemesterEq(professorLectureSearchDto.getSemester()))
+				.fetch();
+		
+		return content;
+	}
+
+	@Override
+	public List<ProfessorLectureSearchDto> getProfessorLectureGroupByYearAndSemester(Long professorId) {
+		QLecture lecture = QLecture.lecture;
+		
+		List<ProfessorLectureSearchDto> content = queryFactory
+				.select(
+						new QProfessorLectureSearchDto(
+								lecture.year,
+								lecture.semester
+								)
+						)
+				.from(lecture)
+				.where(lecture.professor.id.eq(professorId))
+				.groupBy(lecture.year, lecture.semester)
+				.orderBy(lecture.year.asc())
+				.fetch();
+				
+		return content;
+	}
+	
 }

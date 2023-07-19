@@ -6,14 +6,30 @@
 <!-- 각 페이지의 CSS가 작성될 위치 -->
 <th:block layout:fragment="css">
 	<style>
-h3 {
-	font-size: 28px;
-}
-
-h2 {
-	font-size: 32px;
-}
-</style>
+		h3 {
+			font-size: 28px;
+		}
+		
+		h2 {
+			font-size: 32px;
+		}
+		
+		tbody {
+			vertical-align: middle !important;
+		}
+		
+		.score_input_btn {
+			text-align: center;
+			font-weight: bold;
+		}
+		
+		.score_input_btn button {
+			background-color: #cadfe3;
+			padding: 3px;
+			border: 1px solid cadetblue;
+			border-radius: 10px;
+		}
+	</style>
 </th:block>
 
 <div layout:fragment="content">
@@ -23,9 +39,9 @@ h2 {
 				<h3>강의</h3>
 			</div>
 			<div class="sidebar_list">
-				<ul>				
-					<li><a href="/professors/lecture/all" class="active_tab">전체 학기 강의 조회</a></li>
-					<li><a href="/professors/lecture/current">이번 학기 강의 조회</a></li>
+				<ul>
+					<li><a href="/professors/lecture/all">전체 학기 강의 조회</a></li>
+					<li><a href="/professors/lecture/current" class="active_tab">이번 학기 강의 조회</a></li>
 					<li><a>학생 성적 입력</a></li>
 				</ul>
 			</div>
@@ -33,7 +49,7 @@ h2 {
 
 		<main>
 			<div class="main_subject">
-				<h2>전체 학기 강의 조회</h2>
+				<h2>이번 학기 강의 조회</h2>
 			</div>
 			<div class="main_content">
 				<div>
@@ -48,7 +64,7 @@ h2 {
 								<th scope="col">요일 시간 (강의실)</th>
 								<th scope="col">현재인원</th>
 								<th scope="col">정원</th>
-								
+								<th scope="col">점수 입력</th>
 							</tr>
 						</thead>
 						<tbody>
@@ -62,6 +78,9 @@ h2 {
 								<td th:unless="${professorLecture.startTime} < 10" th:text="|${professorLecture.day} ${professorLecture.startTime}:00-${professorLecture.endTime}:00 (${professorLecture.lectureRoomId})|"></td>
 								<td th:text="${professorLecture.numOfStudent}"></td>
 								<td th:text="${professorLecture.capacity}"></td>
+								<td class="score_input_btn">
+									<button type="button">입력</button>
+								</td>
 							</tr>
 						</tbody>
 					</table>

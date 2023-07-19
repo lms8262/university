@@ -9,7 +9,9 @@ import lombok.Setter;
 @Setter
 public class ProfessorLectureDto {
 	private Long lectureId;
-
+	
+	private String lectureCodeDetail;
+	
 	private String type;
 
 	private String lectureName;
@@ -29,8 +31,9 @@ public class ProfessorLectureDto {
 	private Integer capacity;
 	
 	@QueryProjection
-	public ProfessorLectureDto(Long lectureId, String type, String lectureName, Integer credit, String day, Integer startTime, Integer endTime, String lectureRoomId, Integer numOfStudent, Integer capacity) {
+	public ProfessorLectureDto(Long lectureId, String lectureCodeDetail, String type, String lectureName, Integer credit, String day, Integer startTime, Integer endTime, String lectureRoomId, Integer numOfStudent, Integer capacity) {
 		this.lectureId = lectureId;
+		this.lectureCodeDetail = lectureCodeDetail;
 		this.type = type;
 		this.lectureName = lectureName;
 		this.credit = credit;

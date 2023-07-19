@@ -1,5 +1,8 @@
 package com.university.service;
 
+import java.time.LocalDate;
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -7,6 +10,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.university.dto.LectureScheduleDto;
 import com.university.dto.LectureSearchDto;
+import com.university.dto.ProfessorLectureDto;
+import com.university.dto.ProfessorLectureSearchDto;
 import com.university.entity.Student;
 import com.university.repository.LectureRepository;
 import com.university.repository.StudentRepository;
@@ -24,14 +29,41 @@ public class LectureService {
 	
 	// 강의 시간표 출력
 	public Page<LectureScheduleDto> getLectureScheduleList(LectureSearchDto lectureSearchDto, Pageable pageable) {
-		
 		return lectureRepository.getLectureScheduleList(lectureSearchDto, pageable);
 	}
 	
-	// 수강 신청 가능 강의 출력
+	// 수강 신청 가능 강의 목록 출력
 	public Page<LectureScheduleDto> getRegistrationAbleLectureList(Long userId, Pageable pageable) {
 		Student student = studentRepository.findById(userId).orElseThrow(EntityNotFoundException::new);
 		Long departmentId = student.getDepartment().getId();
 		return lectureRepository.getRegistrationAbleLectureList(departmentId, pageable);
+	}
+	
+	// 이번 학기 강의중인 강의 목록 출력(교수) 
+	public List<ProfessorLectureDto> getProfessorLectureListOfCurrentSemester(Long professorId) {
+		LocalDate date = LocalDate.now();
+		int year = date.getYear();
+		int month = date.getMonthValue();
+		int semester = 1;
+		
+		// 년도, 학기 설정(검색 조건)
+		if(month <= 2) {
+			year--;
+			semester = 2;
+		} else if(month >= 9) {
+			semester = 2;
+		}
+		
+		return lectureRepository.getProfessorLectureListOfCurrentSemester(professorId, year, semester);
+	}
+	
+	// 강의가 존재하는 년도 및 학기 출력(교수)
+	public List<ProfessorLectureSearchDto> getProfessorLectureGroupByYearAndSemester(Long professorId) {
+		return lectureRepository.getProfessorLectureGroupByYearAndSemester(professorId);
+	}
+	
+	// 학기별 강의 목록 출력(교수)
+	public List<ProfessorLectureDto> getProfessorLectureList(Long professorId ,ProfessorLectureSearchDto professorLectureSearchDto) {
+		return lectureRepository.getProfessorLectureList(professorId, professorLectureSearchDto);
 	}
 }
