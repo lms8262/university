@@ -15,6 +15,7 @@ import com.university.dto.ProfessorLectureDto;
 import com.university.dto.ProfessorLectureSearchDto;
 import com.university.dto.UserInfoUpdateDto;
 import com.university.service.LectureService;
+import com.university.service.ProfessorService;
 import com.university.service.UserService;
 
 import jakarta.validation.Valid;
@@ -26,6 +27,7 @@ public class ProfessorController {
 	
 	private final UserService userService;
 	private final LectureService lectureService;
+	private final ProfessorService professorService;
 	
 	// 교수 정보 화면
 	@GetMapping(value="/professors/info")
@@ -107,11 +109,17 @@ public class ProfessorController {
 		return "professor/myCurrentLectureList";
 	}
 	
-	 /*
+	 
+	 // 강의 학생 목록
 	 @GetMapping(value = "/professors/lecture/score/{lectureId}")
-	 public String studentListOfLecture(Model model, @PathVariable Long lectureId) {
+	 public String studentListOfLecture(Principal principal, Model model, @PathVariable Long lectureId) {
+		 Long professorId = Long.parseLong(principal.getName());
 		 
+		 if(!professorService.validateInputScore(professorId, lectureId)) {
+			 model.addAttribute("errorMessage", "본인이 강의 중인 강의가 아닙니다.");
+		 }
+		 
+		 return "professor/studentListOfLecture";
 	 }
-	 */
 	 
 }

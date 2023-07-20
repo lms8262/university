@@ -78,7 +78,7 @@
 								<td th:text="${professorLecture.numOfStudent}"></td>
 								<td th:text="${professorLecture.capacity}"></td>
 								<td class="student_list_btn">
-									<button type="button">학생목록</button>
+									<button type="button" th:onclick="|location.href='@{/professors/lecture/score/}${professorLecture.lectureId}'|">학생목록</button>
 								</td>
 							</tr>
 						</tbody>
@@ -93,7 +93,13 @@
 <th:block layout:fragment="script">
 	<script th:inline="javascript">
 		$(document).ready(function() {
+			var errorMessage = [[${errorMessage}]];
+        	if(errorMessage != null){
+            	alert(errorMessage);
+        	}
+			
 			$(".lecture").addClass("active_tab");
+			
 		});
 	</script>
 </th:block>

@@ -5,6 +5,8 @@ import java.util.List;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.university.dto.LectureScheduleDto;
 import com.university.dto.QLectureScheduleDto;
+import com.university.dto.QStudentInfoOfLectureDto;
+import com.university.dto.StudentInfoOfLectureDto;
 import com.university.entity.Lecture;
 import com.university.entity.LectureRegistration;
 import com.university.entity.QDepartment;
@@ -12,6 +14,7 @@ import com.university.entity.QLecture;
 import com.university.entity.QLectureCode;
 import com.university.entity.QLectureRegistration;
 import com.university.entity.QLectureRoom;
+import com.university.entity.QStudent;
 import com.university.entity.QUser;
 
 import jakarta.persistence.EntityManager;
@@ -108,5 +111,33 @@ public class LectureRegistrationRepositoryCustomImpl implements LectureRegistrat
 		
 		return content;
 	}
+
+	@Override
+	public List<StudentInfoOfLectureDto> getStudentInfoList(Long professorId, Long lectureId) {
+		QLectureRegistration lectureRegistration = QLectureRegistration.lectureRegistration;
+		QStudent student = QStudent.student;
+		QDepartment department = QDepartment.department;
+		QUser user = QUser.user;
+		
+		List<StudentInfoOfLectureDto> content = queryFactory
+				.select(
+						new QStudentInfoOfLectureDto(
+								student.id, 
+								user.name, 
+								department.name
+								)
+						)
+				.from(lectureRegistration)
+				.join(lectureRegistration.student, student)
+				.join(student.department, department)
+				.join(user).on(lectureRegistration.student.id.eq(user.id))
+				.where(lectureRegistration.lecture.id.eq(lectureId))
+				.where(lectureRegistration.lecture.professor.id.eq(professorId))
+				.fetch();
+		
+		return content;
+	}
+	
+	
 	
 }

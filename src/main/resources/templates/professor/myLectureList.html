@@ -38,7 +38,7 @@
 				<form th:action="@{/professors/lecture/list}" method="post">
 					
 					<div class="search_form">
-						<label for="yearSemester">년도 및 학기</label>
+						<label for="yearSemester">조회 학기</label>
 						<select name="yearSemester" id="yearSemester">
 							<option th:each="professorLectureSearchDto : ${professorLectureSearchDtoList}" th:value="${professorLectureSearchDto.year} + ',' + ${professorLectureSearchDto.semester}">[[${professorLectureSearchDto.year}]]년도 [[${professorLectureSearchDto.semester}]]학기</option>
 						</select>
