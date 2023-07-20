@@ -57,63 +57,37 @@
 
 		<main>
 			<div class="main_subject">
-				<h2>[[${lectureName}]] 학생 목록</h2>
+				<h2>성적 입력</h2>
 			</div>
 			<div class="main_content">
 				<div>
-					<div class="mb-5">
 					
-					<h4>성적 미입력 학생</h4>
 					<table class="table table-bordered border-secondary-subtle" th:if="${not #lists.isEmpty(studentInfoList)}">
 						<thead>
 							<tr class="table-secondary">
 								<th scope="col">학번</th>
 								<th scope="col">이름</th>
 								<th scope="col">학과</th>
-								<th scope="col">성적입력</th>
 							</tr>
 						</thead>
 						<tbody>
-							<tr th:each="studentInfo : ${studentInfoList}">
-								<td th:text="${studentInfo.studentId}"></td>
-								<td th:text="${studentInfo.studentName}"></td>
-								<td th:text="${studentInfo.departmentName}"></td>
-								<td class="score_input_btn">
-									<button type="button">성적입력</button>
-								</td>
+							<tr>
+								<td th:text="${}"></td>
+								<td th:text="${}"></td>
+								<td th:text="${}"></td>
 							</tr>
 						</tbody>
 					</table>
-					<p th:unless="${not #lists.isEmpty(studentInfoList)}">성적 미입력 학생이 없습니다.</p>
+					
+					<div class="search_form">
+						<label for="grade">성적 등급</label>
+						<select name="grade" id="grade">
+							<option th:each="${ : }" th:value="${}">[[${}]]</option>
+						</select>
+						
+						<button type="button">&nbsp;<span>입력</span>&nbsp;<i class="fa-solid fa-magnifying-glass"></i>&nbsp;</button>
 					</div>
 					
-					<div>
-					
-					<h4>성적 입력 학생</h4>
-					<table class="table table-bordered border-secondary-subtle" th:if="${not #lists.isEmpty(studentInfoAndGradeList)}">
-						<thead>
-							<tr class="table-secondary">
-								<th scope="col">학번</th>
-								<th scope="col">이름</th>
-								<th scope="col">학과</th>
-								<th scope="col">등급</th>								
-								<th scope="col">성적수정</th>
-							</tr>
-						</thead>
-						<tbody>
-							<tr th:each="studentInfoAndGrade : ${studentInfoAndGradeList}">
-								<td th:text="${studentInfoAndGrade.studentId}"></td>
-								<td th:text="${studentInfoAndGrade.studentName}"></td>
-								<td th:text="${studentInfoAndGrade.departmentName}"></td>
-								<td th:text="${studentInfoAndGrade.grade}"></td>
-								<td class="score_input_btn">
-									<button type="button">성적수정</button>
-								</td>
-							</tr>
-						</tbody>
-					</table>
-					<p th:unless="${not #lists.isEmpty(studentInfoAndGradeList)}">성적 입력 학생이 없습니다.</p>
-					</div>
 				</div>
 			</div>
 		</main>
@@ -126,6 +100,10 @@
 		$(document).ready(function() {
 			$(".lecture").addClass("active_tab");
 		});
+		
+		function inputGrade() {
+			
+		}
 	</script>
 </th:block>
 

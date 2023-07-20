@@ -29,6 +29,10 @@
 			border: 1px solid cadetblue;
 			border-radius: 10px;
 		}
+		
+		.table {
+			width: inherit;
+		}
 	</style>
 </th:block>
 
@@ -54,7 +58,7 @@
 				<div>
 					<table class="table table-bordered border-secondary-subtle">
 						<thead>
-							<tr>
+							<tr class="table-secondary">
 								<th scope="col">강의번호</th>
 								<th scope="col">강의코드</th>
 								<th scope="col">강의구분</th>
@@ -99,7 +103,6 @@
         	}
 			
 			$(".lecture").addClass("active_tab");
-			
 		});
 	</script>
 </th:block>

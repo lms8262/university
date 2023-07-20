@@ -13,6 +13,10 @@
 		h2 {
 			font-size: 32px;
 		}
+		
+		.table {
+			width: inherit;
+		}
 	</style>
 </th:block>
 
@@ -25,7 +29,7 @@
 			<div class="sidebar_list">
 				<ul>				
 					<li><a href="/professors/lecture/list" class="active_tab">학기별 강의 조회</a></li>
-					<li><a href="/professors/lecture/score">학생 성적입력</a></li>
+					<li><a href="/professors/lecture/score">학생 성적 입력</a></li>
 				</ul>
 			</div>
 		</aside>
@@ -48,7 +52,7 @@
 				
 					<table class="table table-bordered border-secondary-subtle">
 						<thead>
-							<tr>
+							<tr class="table-secondary">
 								<th scope="col">강의번호</th>
 								<th scope="col">강의코드</th>
 								<th scope="col">강의구분</th>

@@ -9,10 +9,12 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.university.dto.ProfessorInfoDto;
 import com.university.dto.ProfessorLectureDto;
 import com.university.dto.ProfessorLectureSearchDto;
+import com.university.dto.StudentInfoOfLectureDto;
 import com.university.dto.UserInfoUpdateDto;
 import com.university.service.LectureService;
 import com.university.service.ProfessorService;
@@ -112,14 +114,30 @@ public class ProfessorController {
 	 
 	 // 강의 학생 목록
 	 @GetMapping(value = "/professors/lecture/score/{lectureId}")
-	 public String studentListOfLecture(Principal principal, Model model, @PathVariable Long lectureId) {
+	 public String studentListOfLecture(Principal principal, Model model, @PathVariable Long lectureId, RedirectAttributes redirectAttributes) {
 		 Long professorId = Long.parseLong(principal.getName());
+		 String lectureName = professorService.validateInputScore(professorId, lectureId);
 		 
-		 if(!professorService.validateInputScore(professorId, lectureId)) {
-			 model.addAttribute("errorMessage", "본인이 강의 중인 강의가 아닙니다.");
+		 // Get방식이므로 url 직접변경해서 접속할 경우 본인 강의만 확인가능하도록 설정
+		 if(lectureName == null) {
+			 redirectAttributes.addFlashAttribute("errorMessage", "본인이 강의중인 강의가 아닙니다.");
+			 return "redirect:/professors/lecture/score";
 		 }
 		 
+		 List<StudentInfoOfLectureDto> studentInfoList = professorService.getStudentInfoList(professorId, lectureId);
+		 List<StudentInfoOfLectureDto> studentInfoAndGradeList = professorService.getStudentInfoAndGradeList(professorId, lectureId);
+		 model.addAttribute("lectureId", lectureId);
+		 model.addAttribute("lectureName", lectureName);
+		 model.addAttribute("studentInfoList", studentInfoList);
+		 model.addAttribute("studentInfoAndGradeList", studentInfoAndGradeList);
+		 
 		 return "professor/studentListOfLecture";
+	 }
+	 
+	 @GetMapping(value = "/professors/lecture/score/{lectureId}/{studentId}")
+	 public String inputGradeForm(Model model, @PathVariable Long lectureId, @PathVariable Long studentId) {
+		 
+		 return "professor/inputGradeForm";
 	 }
 	 
 }
