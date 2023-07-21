@@ -1,10 +1,158 @@
 <!DOCTYPE html>
-<html>
-<head>
-<meta charset="UTF-8">
-<title>Insert title here</title>
-</head>
-<body>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{layouts/layout1}">
 
-</body>
+<head>
+	<meta name="_csrf" th:content="${_csrf.token}" />
+	<meta name="_csrf_header" th:content="${_csrf.headerName}" />
+</head>
+
+<!-- 각 페이지의 CSS가 작성될 위치 -->
+<th:block layout:fragment="css">
+	<style>
+		h3 {
+			font-size: 28px;
+		}
+		
+		h2 {
+			font-size: 32px;
+		}
+		
+		tbody {
+			vertical-align: middle !important;
+		}
+		
+		.score_input_btn {
+			text-align: center;
+			font-weight: bold;
+		}
+		
+		.score_input_btn button {
+			background-color: #cadfe3;
+			padding: 3px;
+			border: 1px solid cadetblue;
+			border-radius: 10px;
+		}
+		
+		.table {
+			width: inherit;
+		}
+	</style>
+</th:block>
+
+<div layout:fragment="content">
+	<div class="d-flex">
+		<aside class="sidebar d-flex flex-column align-items-center">
+			<div class="sidebar_subject">
+				<h3>강의</h3>
+			</div>
+			<div class="sidebar_list">
+				<ul>
+					<li><a href="/professors/lecture/list">학기별 강의 조회</a></li>
+					<li><a href="/professors/lecture/score" class="active_tab">학생 성적 입력</a></li>
+				</ul>
+			</div>
+		</aside>
+
+		<main>
+			<div class="main_subject">
+				<h2 th:text="'[' + ${lectureName} + '] 성적 수정'"></h2>
+			</div>
+			<div class="main_content">
+				<div>
+					
+					<table class="table table-bordered border-secondary-subtle">
+						<thead>
+							<tr class="table-secondary">
+								<th scope="col">학번</th>
+								<th scope="col">이름</th>
+								<th scope="col">학과</th>
+								<th scope="col">성적</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td th:text="${studentInfo.studentId}"></td>
+								<td th:text="${studentInfo.studentName}"></td>
+								<td th:text="${studentInfo.departmentName}"></td>
+								<td th:text="${studentInfo.grade}"></td>
+							</tr>
+						</tbody>
+					</table>
+					
+					<div class="search_form">
+						<label for="grade">성적 등급</label>
+						<select name="grade" id="grade">
+							<option th:each="grade : ${gradeList}" th:value="${grade}">[[${grade}]]</option>
+						</select>
+						
+						<button type="button" onclick="modifyGrade()">&nbsp;&nbsp;수정&nbsp;&nbsp;</button>
+					</div>
+					
+				</div>
+			</div>
+		</main>
+	</div>
+</div>
+
+<!-- 각 페이지의 자바스크립트가 작성될 위치 -->
+<th:block layout:fragment="script">
+	<script th:inline="javascript">
+		$(document).ready(function() {
+			$(".lecture").addClass("active_tab");
+		});
+		
+		function modifyGrade() {
+			const modifyConf = confirm("성적을 수정하시겠습니까?");
+			
+			if(!modifyConf) return; // 취소버튼 누를시
+			
+			var token = $("meta[name='_csrf']").attr("content");
+	        var header = $("meta[name='_csrf_header']").attr("content");
+	        
+	        var lectureId = [[${lectureId}]];
+	        var studentId = [[${studentInfo.studentId}]];
+	        
+	        var url = "/professors/lecture/score/update";
+	        
+	        // 컨트롤러에 전달할 데이터
+			var paramData = {
+				lectureId : lectureId,
+				studentId : studentId,
+				grade : $("#grade option:selected").val()
+			}
+			
+	        // json -> 문자열 변환
+			var param = JSON.stringify(paramData);
+			
+			$.ajax({
+	            url : url,
+	            type : "POST",
+	            contentType : "application/json",
+	            data : param,
+	            beforeSend : function(xhr){
+	                // 데이터를 전송하기 전에 헤더에 csrf값을 설정
+	                xhr.setRequestHeader(header, token);
+	            },
+	            dataType : "json",
+	            cache   : false,
+	            success  : function(result, status){
+	            	alert("성적을 수정했습니다.");
+	            	
+		            location.href = '/professors/lecture/score/' + lectureId;
+	            },
+	            error : function(jqXHR, status, error){
+	                if(jqXHR.status == '401'){
+	                    alert('로그인 후 이용해주세요');
+	                    location.href='/users/login';
+	                } else{
+	                    alert(jqXHR.responseText);
+	                }
+	            }
+	        });
+		}
+	</script>
+</th:block>
+
 </html>

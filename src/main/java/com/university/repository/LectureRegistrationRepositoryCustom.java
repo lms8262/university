@@ -17,4 +17,6 @@ public interface LectureRegistrationRepositoryCustom {
 	LectureRegistration findbyLectureCodeIdAndStudentId(Long lectureCodeId, Long studentId);
 	
 	List<StudentInfoOfLectureDto> getStudentInfoList(Long professorId, Long lectureId);
+	
+	StudentInfoOfLectureDto getStudentInfoForInputGrade(Long lectureId, Long studentId);
 }

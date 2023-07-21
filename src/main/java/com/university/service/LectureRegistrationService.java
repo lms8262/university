@@ -11,10 +11,12 @@ import com.university.entity.Lecture;
 import com.university.entity.LectureRegistration;
 import com.university.entity.LectureRegistrationId;
 import com.university.entity.Student;
+import com.university.entity.StudentLecture;
 import com.university.exception.OutOfCreditException;
 import com.university.exception.OverlapException;
 import com.university.repository.LectureRegistrationRepository;
 import com.university.repository.LectureRepository;
+import com.university.repository.StudentLectureRepository;
 import com.university.repository.StudentRepository;
 
 import jakarta.persistence.EntityNotFoundException;
@@ -28,6 +30,7 @@ public class LectureRegistrationService {
 	private final LectureRegistrationRepository lectureRegistrationRepository;
 	private final LectureRepository lectureRepository;
 	private final StudentRepository studentRepository;
+	private final StudentLectureRepository studentLectureRepository;
 	
 	// 이미 수강신청 했던 강의인지 검사
 	private boolean checkLectureRegistration(Long lectureId, Long studentId) {
@@ -36,8 +39,14 @@ public class LectureRegistrationService {
 		lectureRegistrationId.setStudent(studentId);
 		LectureRegistration lectureRegistration = lectureRegistrationRepository.findById(lectureRegistrationId).orElse(null);
 		
+		StudentLecture studentLecture = studentLectureRepository.findByStudentIdAndLectureId(studentId, lectureId);
+		
 		// 이미 신청한 강의인 경우
 		if(lectureRegistration != null) {
+			return false;
+		}
+		
+		if(studentLecture != null) {
 			return false;
 		}
 		
@@ -48,8 +57,14 @@ public class LectureRegistrationService {
 	private boolean checkEqualCodeLectureRegistration(Long lectureCodeId, Long studentId) {
 		LectureRegistration lectureRegistration = lectureRegistrationRepository.findbyLectureCodeIdAndStudentId(lectureCodeId, studentId);
 		
+		StudentLecture studentLecture = studentLectureRepository.findbyLectureCodeIdAndStudentId(lectureCodeId, studentId);
+		
 		// 같은 강의코드의 강의를 신청한 경우
 		if(lectureRegistration != null) {
+			return false;
+		}
+		
+		if(studentLecture != null) {
 			return false;
 		}
 		
@@ -74,7 +89,8 @@ public class LectureRegistrationService {
 		}
 		
 		// 학생id로 수강신청 목록에서 총 신청 학점 뽑아서, 기존 학점 + 신청과목 학점 = 18점 초과하는지 확인
-		Integer totalCredit = lectureRegistrationRepository.getTotalCreaditByStudentId(studentId);
+		Integer totalCredit = lectureRegistrationRepository.getTotalCreaditByStudentId(studentId)
+							+ studentLectureRepository.getTotalCreditByStudentIdAndYearAndSemester(studentId, lecture.getYear(), lecture.getSemester());
 		if(totalCredit + lecture.getCredit() > 18) {
 			throw new OutOfCreditException("최대 신청 학점 초과입니다. 현재 총 신청 학점은" + totalCredit + " 점 입니다.");
 		}
@@ -94,6 +110,17 @@ public class LectureRegistrationService {
 			}
 		}
 		
+		List<Lecture> currentRegistrationLectureListOfStudent = studentLectureRepository.getCurrentRegistrationLectureListOfStudent(studentId, lecture.getYear(), lecture.getSemester());
+		for(Lecture lec : currentRegistrationLectureListOfStudent) {
+			if(StringUtils.equals(lec.getDay(), day)) {
+				if((startTime <= lec.getStartTime() && lec.getStartTime() < endTime)
+						||(startTime < lec.getEndTime() && lec.getEndTime() < endTime)) {
+					throw new OverlapException("이전에 신청한 강의와 시간이 중복됩니다.");
+				}
+			}
+		}
+		
+		// entity 객체 생성 후 저장
 		LectureRegistration lectureRegistration = LectureRegistration.createLectureRegistration(student, lecture);
 
 		lectureRegistrationRepository.save(lectureRegistration);

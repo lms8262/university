@@ -3,11 +3,6 @@
 	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 	layout:decorate="~{layouts/layout1}">
 
-<head>
-	<meta name="_csrf" th:content="${_csrf.token}" />
-	<meta name="_csrf_header" th:content="${_csrf.headerName}" />
-</head>
-
 <!-- 각 페이지의 CSS가 작성될 위치 -->
 <th:block layout:fragment="css">
 	<style>
@@ -57,7 +52,7 @@
 
 		<main>
 			<div class="main_subject">
-				<h2>[[${lectureName}]] 학생 목록</h2>
+				<h2 th:text="'[' + ${lectureName} + '] 학생 목록'"></h2>
 			</div>
 			<div class="main_content">
 				<div>
@@ -79,7 +74,7 @@
 								<td th:text="${studentInfo.studentName}"></td>
 								<td th:text="${studentInfo.departmentName}"></td>
 								<td class="score_input_btn">
-									<button type="button">성적입력</button>
+									<button type="button" th:onclick="|location.href='@{/professors/lecture/score/input/}@{${lectureId}}/@{${studentInfo.studentId}}'|">성적입력</button>
 								</td>
 							</tr>
 						</tbody>
@@ -96,8 +91,9 @@
 								<th scope="col">학번</th>
 								<th scope="col">이름</th>
 								<th scope="col">학과</th>
-								<th scope="col">등급</th>								
+								<th scope="col">성적</th>								
 								<th scope="col">성적수정</th>
+								<th scope="col">성적입력취소</th>
 							</tr>
 						</thead>
 						<tbody>
@@ -107,7 +103,10 @@
 								<td th:text="${studentInfoAndGrade.departmentName}"></td>
 								<td th:text="${studentInfoAndGrade.grade}"></td>
 								<td class="score_input_btn">
-									<button type="button">성적수정</button>
+									<button type="button" th:onclick="|location.href='@{/professors/lecture/score/modify/}@{${lectureId}}/@{${studentInfoAndGrade.studentId}}'|">수정</button>
+								</td>
+								<td class="score_input_btn">
+									<button type="button">취소</button>
 								</td>
 							</tr>
 						</tbody>

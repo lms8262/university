@@ -57,12 +57,12 @@
 
 		<main>
 			<div class="main_subject">
-				<h2>성적 입력</h2>
+				<h2 th:text="'[' + ${lectureName} + '] 성적 입력'"></h2>
 			</div>
 			<div class="main_content">
 				<div>
 					
-					<table class="table table-bordered border-secondary-subtle" th:if="${not #lists.isEmpty(studentInfoList)}">
+					<table class="table table-bordered border-secondary-subtle">
 						<thead>
 							<tr class="table-secondary">
 								<th scope="col">학번</th>
@@ -72,9 +72,9 @@
 						</thead>
 						<tbody>
 							<tr>
-								<td th:text="${}"></td>
-								<td th:text="${}"></td>
-								<td th:text="${}"></td>
+								<td th:text="${studentInfo.studentId}"></td>
+								<td th:text="${studentInfo.studentName}"></td>
+								<td th:text="${studentInfo.departmentName}"></td>
 							</tr>
 						</tbody>
 					</table>
@@ -82,10 +82,10 @@
 					<div class="search_form">
 						<label for="grade">성적 등급</label>
 						<select name="grade" id="grade">
-							<option th:each="${ : }" th:value="${}">[[${}]]</option>
+							<option th:each="grade : ${gradeList}" th:value="${grade}">[[${grade}]]</option>
 						</select>
 						
-						<button type="button">&nbsp;<span>입력</span>&nbsp;<i class="fa-solid fa-magnifying-glass"></i>&nbsp;</button>
+						<button type="button" onclick="inputGrade()">&nbsp;&nbsp;입력&nbsp;&nbsp;</button>
 					</div>
 					
 				</div>
@@ -101,8 +101,55 @@
 			$(".lecture").addClass("active_tab");
 		});
 		
+		
 		function inputGrade() {
+			const inputConf = confirm("성적을 입력하시겠습니까?");
 			
+			if(!inputConf) return; // 취소버튼 누를시
+			
+			var token = $("meta[name='_csrf']").attr("content");
+	        var header = $("meta[name='_csrf_header']").attr("content");
+	        
+	        var lectureId = [[${lectureId}]];
+	        var studentId = [[${studentInfo.studentId}]];
+	        
+	        var url = "/professors/lecture/score/new";
+	        
+	        // 컨트롤러에 전달할 데이터
+			var paramData = {
+				lectureId : lectureId,
+				studentId : studentId,
+				grade : $("#grade option:selected").val()
+			}
+			
+	        // json -> 문자열 변환
+			var param = JSON.stringify(paramData);
+			
+			$.ajax({
+	            url : url,
+	            type : "POST",
+	            contentType : "application/json",
+	            data : param,
+	            beforeSend : function(xhr){
+	                // 데이터를 전송하기 전에 헤더에 csrf값을 설정
+	                xhr.setRequestHeader(header, token);
+	            },
+	            dataType : "json",
+	            cache   : false,
+	            success  : function(result, status){
+	            	alert("성적을 입력했습니다.");
+	            	
+		            location.href = '/professors/lecture/score/' + lectureId;
+	            },
+	            error : function(jqXHR, status, error){
+	                if(jqXHR.status == '401'){
+	                    alert('로그인 후 이용해주세요');
+	                    location.href='/users/login';
+	                } else{
+	                    alert(jqXHR.responseText);
+	                }
+	            }
+	        });
 		}
 	</script>
 </th:block>

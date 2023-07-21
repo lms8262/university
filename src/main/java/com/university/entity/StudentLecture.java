@@ -32,7 +32,19 @@ public class StudentLecture {
 	@JoinColumn(name = "lecture_id", nullable = false)
 	private Lecture lecture;
 	
-	@OneToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "grade", nullable = false)
 	private GradeScore gradeScore;
+	
+	public static StudentLecture createStudentLecture(Student student, Lecture lecture, GradeScore gradeScore) {
+		StudentLecture studentLecture = new StudentLecture();
+		studentLecture.setStudent(student);
+		studentLecture.setLecture(lecture);
+		studentLecture.setGradeScore(gradeScore);
+		return studentLecture;
+	}
+	
+	public void updateGrade(GradeScore gradeScore) {
+		this.gradeScore = gradeScore;
+	}
 }

@@ -138,6 +138,32 @@ public class LectureRegistrationRepositoryCustomImpl implements LectureRegistrat
 		
 		return content;
 	}
+
+	@Override
+	public StudentInfoOfLectureDto getStudentInfoForInputGrade(Long lectureId, Long studentId) {
+		QLectureRegistration lectureRegistration = QLectureRegistration.lectureRegistration;
+		QStudent student = QStudent.student;
+		QDepartment department = QDepartment.department;
+		QUser user = QUser.user;
+		
+		StudentInfoOfLectureDto content = queryFactory
+				.select(
+						new QStudentInfoOfLectureDto(
+								student.id, 
+								user.name, 
+								department.name
+								)
+						)
+				.from(lectureRegistration)
+				.join(lectureRegistration.student, student)
+				.join(student.department, department)
+				.join(user).on(lectureRegistration.student.id.eq(user.id))
+				.where(lectureRegistration.lecture.id.eq(lectureId))
+				.where(lectureRegistration.student.id.eq(studentId))
+				.fetchOne();
+		
+		return content;
+	}
 	
 	
 	

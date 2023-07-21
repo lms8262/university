@@ -3,14 +3,19 @@ package com.university.controller;
 import java.security.Principal;
 import java.util.List;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.university.dto.InputGradeDto;
 import com.university.dto.ProfessorInfoDto;
 import com.university.dto.ProfessorLectureDto;
 import com.university.dto.ProfessorLectureSearchDto;
@@ -134,10 +139,92 @@ public class ProfessorController {
 		 return "professor/studentListOfLecture";
 	 }
 	 
-	 @GetMapping(value = "/professors/lecture/score/{lectureId}/{studentId}")
-	 public String inputGradeForm(Model model, @PathVariable Long lectureId, @PathVariable Long studentId) {
+	 // 강의 학생 성적입력 페이지
+	 @GetMapping(value = "/professors/lecture/score/input/{lectureId}/{studentId}")
+	 public String inputGradeForm(Principal principal, Model model, @PathVariable Long lectureId, @PathVariable Long studentId, RedirectAttributes redirectAttributes) {
+		 Long professorId = Long.parseLong(principal.getName());
+		 String lectureName = professorService.validateInputScore(professorId, lectureId);
+		 
+		 if(lectureName == null) {
+			 redirectAttributes.addFlashAttribute("errorMessage", "본인이 강의중인 강의가 아닙니다.");
+			 return "redirect:/professors/lecture/score";
+		 }
+		 
+		 if(!professorService.validateRegistration(lectureId, studentId)) {
+			 redirectAttributes.addFlashAttribute("errorMessage", "강의를 수강 중인 학생이 아닙니다.");
+			 return "redirect:/professors/lecture/score";
+		 }
+		 
+		 List<String> gradeList = professorService.getGradeList();
+		 StudentInfoOfLectureDto studentInfo = professorService.getStudentInfoForInputGrade(lectureId, studentId);
+		 
+		 model.addAttribute("lectureId", lectureId);
+		 model.addAttribute("lectureName", lectureName);
+		 model.addAttribute("gradeList", gradeList);
+		 model.addAttribute("studentInfo", studentInfo);
 		 
 		 return "professor/inputGradeForm";
+	 }
+	 
+	 // 강의 학생 성적 입력
+	 @PostMapping(value = "/professors/lecture/score/new")
+	 public @ResponseBody ResponseEntity inputGrade(@RequestBody InputGradeDto inputGradeDto) {
+		 Long lectureId = inputGradeDto.getLectureId();
+		 Long studentId = inputGradeDto.getStudentId();
+		 String grade = inputGradeDto.getGrade();
+		 
+		 try {
+		 professorService.inputScore(lectureId, studentId, grade);
+		 } catch (Exception e) {
+			 e.printStackTrace();
+			 return new ResponseEntity<String>("성적 입력 중 문제가 발생했습니다.", HttpStatus.FORBIDDEN);
+		 }
+		
+		 return new ResponseEntity<Long>(lectureId, HttpStatus.OK);
+	 }
+	 
+	 // 강의 학생 성적 수정 페이지
+	 @GetMapping(value = "/professors/lecture/score/modify/{lectureId}/{studentId}")
+	 public String modifyGradeForm(Principal principal, Model model, @PathVariable Long lectureId, @PathVariable Long studentId, RedirectAttributes redirectAttributes) {
+		 Long professorId = Long.parseLong(principal.getName());
+		 String lectureName = professorService.validateInputScore(professorId, lectureId);
+		 
+		 if(lectureName == null) {
+			 redirectAttributes.addFlashAttribute("errorMessage", "본인이 강의중인 강의가 아닙니다.");
+			 return "redirect:/professors/lecture/score";
+		 }
+		 
+		 if(!professorService.validateRegistration(lectureId, studentId)) {
+			 redirectAttributes.addFlashAttribute("errorMessage", "강의를 수강 중인 학생이 아닙니다.");
+			 return "redirect:/professors/lecture/score";
+		 }
+		 
+		 List<String> gradeList = professorService.getGradeList();
+		 StudentInfoOfLectureDto studentInfo = professorService.getStudentInfoForModifyGrade(lectureId, studentId);
+		 
+		 model.addAttribute("lectureId", lectureId);
+		 model.addAttribute("lectureName", lectureName);
+		 model.addAttribute("gradeList", gradeList);
+		 model.addAttribute("studentInfo", studentInfo);
+		 
+		 return "professor/modifyGradeForm";
+	 }
+	 
+	 // 강의 학생 성적 수정
+	 @PostMapping(value = "/professors/lecture/score/update")
+	 public @ResponseBody ResponseEntity updateGrade(@RequestBody InputGradeDto inputGradeDto) {
+		 Long lectureId = inputGradeDto.getLectureId();
+		 Long studentId = inputGradeDto.getStudentId();
+		 String grade = inputGradeDto.getGrade();
+		 
+		 try {
+			 professorService.updateScore(lectureId, studentId, grade);
+		 } catch (Exception e) {
+			 e.printStackTrace();
+			 return new ResponseEntity<String>("성적 수정 중 문제가 발생했습니다.", HttpStatus.FORBIDDEN);
+		 }
+		 
+		 return new ResponseEntity<Long>(lectureId, HttpStatus.OK);
 	 }
 	 
 }

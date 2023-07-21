@@ -9,6 +9,7 @@ import com.university.dto.LectureScheduleDto;
 import com.university.dto.LectureSearchDto;
 import com.university.dto.ProfessorLectureDto;
 import com.university.dto.ProfessorLectureSearchDto;
+import com.university.dto.StudentInfoOfLectureDto;
 import com.university.entity.Lecture;
 
 

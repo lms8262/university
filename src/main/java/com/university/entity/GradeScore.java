@@ -1,5 +1,7 @@
 package com.university.entity;
 
+import java.math.BigDecimal;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -19,6 +21,6 @@ public class GradeScore {
 	@Column(columnDefinition = "char(2)")
 	private String grade;
 	
-	@Column(nullable = false)
-	private Float score;
+	@Column(columnDefinition = "decimal(2,1)", nullable = false)
+	private BigDecimal score;
 }

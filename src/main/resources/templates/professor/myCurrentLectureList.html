@@ -82,7 +82,7 @@
 								<td th:text="${professorLecture.numOfStudent}"></td>
 								<td th:text="${professorLecture.capacity}"></td>
 								<td class="student_list_btn">
-									<button type="button" th:onclick="|location.href='@{/professors/lecture/score/}${professorLecture.lectureId}'|">학생목록</button>
+									<button type="button" th:onclick="|location.href='@{/professors/lecture/score/}@{${professorLecture.lectureId}}'|">학생목록</button>
 								</td>
 							</tr>
 						</tbody>

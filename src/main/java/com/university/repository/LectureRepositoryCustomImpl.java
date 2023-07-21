@@ -17,10 +17,12 @@ import com.university.dto.ProfessorLectureSearchDto;
 import com.university.dto.QLectureScheduleDto;
 import com.university.dto.QProfessorLectureDto;
 import com.university.dto.QProfessorLectureSearchDto;
+import com.university.dto.StudentInfoOfLectureDto;
 import com.university.entity.Lecture;
 import com.university.entity.QDepartment;
 import com.university.entity.QLecture;
 import com.university.entity.QLectureCode;
+import com.university.entity.QLectureRegistration;
 import com.university.entity.QLectureRoom;
 import com.university.entity.QUser;
 
