@@ -17,7 +17,11 @@ public class ProfessorLectureDto {
 	private String lectureName;
 
 	private Integer credit;
-
+	
+	private Integer year;
+	
+	private Integer semester;
+	
 	private String day;
 
 	private Integer startTime;
@@ -37,6 +41,23 @@ public class ProfessorLectureDto {
 		this.type = type;
 		this.lectureName = lectureName;
 		this.credit = credit;
+		this.day = day;
+		this.startTime = startTime;
+		this.endTime = endTime;
+		this.lectureRoomId = lectureRoomId;
+		this.numOfStudent = numOfStudent;
+		this.capacity = capacity;
+	}
+	
+	@QueryProjection
+	public ProfessorLectureDto(Long lectureId, String lectureCodeDetail, String type, String lectureName, Integer credit, Integer year, Integer semester, String day, Integer startTime, Integer endTime, String lectureRoomId, Integer numOfStudent, Integer capacity) {
+		this.lectureId = lectureId;
+		this.lectureCodeDetail = lectureCodeDetail;
+		this.type = type;
+		this.lectureName = lectureName;
+		this.credit = credit;
+		this.year = year;
+		this.semester = semester;
 		this.day = day;
 		this.startTime = startTime;
 		this.endTime = endTime;

@@ -7,9 +7,9 @@ import lombok.Setter;
 @Setter
 public class LectureSearchDto {
 	
-	private String type;
+	private String type = "";
 	
-	private Long departmentId;
+	private Long departmentId = 0L;
 	
 	private String lectureName = "";
 	

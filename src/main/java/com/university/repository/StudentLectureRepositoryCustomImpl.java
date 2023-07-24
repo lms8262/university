@@ -5,6 +5,7 @@ import java.util.List;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.university.dto.QStudentInfoOfLectureDto;
 import com.university.dto.StudentInfoOfLectureDto;
+import com.university.dto.StudentLectureScoreInfoDto;
 import com.university.entity.Lecture;
 import com.university.entity.QDepartment;
 import com.university.entity.QLecture;
@@ -45,7 +46,7 @@ public class StudentLectureRepositoryCustomImpl implements StudentLectureReposit
 				.join(user).on(studentLecture.student.id.eq(user.id))
 				.where(studentLecture.lecture.id.eq(lectureId))
 				.where(studentLecture.lecture.professor.id.eq(professorId))
-				.orderBy()
+				.orderBy(student.id.asc())
 				.fetch();
 
 		return content;
@@ -125,6 +126,15 @@ public class StudentLectureRepositoryCustomImpl implements StudentLectureReposit
 				.where(studentLecture.student.id.eq(studentId))
 				.fetchOne();
 		return content;
+	}
+
+	@Override
+	public List<StudentLectureScoreInfoDto> getStudentLectureScoreInfoList(Long studentId, Integer year,
+			Integer semester, String type) {
+		QStudentLecture studentLecture = QStudentLecture.studentLecture;
+		QUser user = QUser.user;
+		QLecture lecture = QLecture.lecture;
+		return null;
 	}
 	
 }

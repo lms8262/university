@@ -39,18 +39,19 @@
 				<h2>학기별 강의 조회</h2>
 			</div>
 			<div class="main_content">
-				<form th:action="@{/professors/lecture/list}" method="post">
+				<form th:action="@{/professors/lecture/list}" method="get">
 					
 					<div class="search_form">
 						<label for="yearSemester">조회 학기</label>
 						<select name="yearSemester" id="yearSemester">
+							<option value=",">전체</option>
 							<option th:each="professorLectureSearchDto : ${professorLectureSearchDtoList}" th:value="${professorLectureSearchDto.year} + ',' + ${professorLectureSearchDto.semester}">[[${professorLectureSearchDto.year}]]년도 [[${professorLectureSearchDto.semester}]]학기</option>
 						</select>
 						
 						<button type="submit">&nbsp;<span>조회</span>&nbsp;<i class="fa-solid fa-magnifying-glass"></i>&nbsp;</button>
 					</div>
 				
-					<table class="table table-bordered border-secondary-subtle">
+					<table class="table table-bordered border-secondary-subtle" th:if="${!#lists.isEmpty(professorLectureDtoList)}">
 						<thead>
 							<tr class="table-secondary">
 								<th scope="col">강의번호</th>
@@ -58,6 +59,8 @@
 								<th scope="col">강의구분</th>
 								<th scope="col">강의명</th>
 								<th scope="col">학점</th>
+								<th scope="col">년도</th>
+								<th scope="col">학기</th>
 								<th scope="col">요일 시간 (강의실)</th>
 								<th scope="col">현재인원</th>
 								<th scope="col">정원</th>
@@ -70,6 +73,8 @@
 								<td th:text="${professorLecture.type}"></td>
 								<td th:text="${professorLecture.lectureName}"></td>
 								<td th:text="${professorLecture.credit}"></td>
+								<td th:text="${professorLecture.year}"></td>
+								<td th:text="${professorLecture.semester}"></td>
 								<td th:if="${professorLecture.startTime} < 10" th:text="|${professorLecture.day} 0${professorLecture.startTime}:00-${professorLecture.endTime}:00 (${professorLecture.lectureRoomId})|"></td>
 								<td th:unless="${professorLecture.startTime} < 10" th:text="|${professorLecture.day} ${professorLecture.startTime}:00-${professorLecture.endTime}:00 (${professorLecture.lectureRoomId})|"></td>
 								<td th:text="${professorLecture.numOfStudent}"></td>
@@ -77,6 +82,7 @@
 							</tr>
 						</tbody>
 					</table>
+					<p th:unless="${!#lists.isEmpty(professorLectureDtoList)}" style="font-weight: bold">이번 학기에 강의 중인 강의가 없습니다.</p>
 					
 				</form>
 			</div>
@@ -89,6 +95,12 @@
 	<script th:inline="javascript">
 		$(document).ready(function() {
 			$(".lecture").addClass("active_tab");
+			
+			if([[${yearSemester}]] == null) {
+				$("#yearSemester").val(",").prop("selected", true);
+			} else {				
+				$("#yearSemester").val([[${yearSemester}]]).prop("selected", true);
+			}
 		});
 	</script>
 </th:block>

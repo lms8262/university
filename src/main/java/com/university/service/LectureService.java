@@ -1,6 +1,5 @@
 package com.university.service;
 
-import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.data.domain.Page;
@@ -27,7 +26,7 @@ public class LectureService {
 	private final LectureRepository lectureRepository;
 	private final StudentRepository studentRepository;
 	
-	// 강의 시간표 출력
+	// 강의 시간표 출력(이번 학기)
 	public Page<LectureScheduleDto> getLectureScheduleList(LectureSearchDto lectureSearchDto, Pageable pageable) {
 		return lectureRepository.getLectureScheduleList(lectureSearchDto, pageable);
 	}
@@ -41,20 +40,7 @@ public class LectureService {
 	
 	// 이번 학기 강의중인 강의 목록 출력(교수) 
 	public List<ProfessorLectureDto> getProfessorLectureListOfCurrentSemester(Long professorId) {
-		LocalDate date = LocalDate.now();
-		int year = date.getYear();
-		int month = date.getMonthValue();
-		int semester = 1;
-		
-		// 년도, 학기 설정(검색 조건)
-		if(month <= 2) {
-			year--;
-			semester = 2;
-		} else if(month >= 9) {
-			semester = 2;
-		}
-		
-		return lectureRepository.getProfessorLectureListOfCurrentSemester(professorId, year, semester);
+		return lectureRepository.getProfessorLectureListOfCurrentSemester(professorId);
 	}
 	
 	// 강의가 존재하는 년도 및 학기 출력(교수)

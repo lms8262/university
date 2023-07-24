@@ -37,7 +37,7 @@
 			</div>
 			<div class="main_content">
 			
-				<form th:action="@{'/students/lecture/list/' + ${lectureSchedules.number}}" method="get" th:object="${lectureSchedules}">
+				<form th:action="@{/students/lecture/list/0}" method="get" th:object="${lectureSchedules}">
 					<div class="search_form" th:objcet="${lectureSearchDto}">
 						<label th:for="type">강의구분</label>
 						<select th:name="type" th:id="type">
@@ -48,7 +48,7 @@
 						
 						<label th:for="departmentId">개설학과</label>
 						<select th:name="departmentId" th:id="departmentId">
-							<option value="">전체</option>
+							<option value="0">전체</option>
 							<option th:each="department : ${departments}" th:value="${department.id}" th:text="${department.name}"></option>
 						</select>
 						
@@ -102,15 +102,24 @@
 						start + (maxPage -1) : lectureSchedules.totalPages)}">
 							<ul class="pagination">
 							    <li class="page-item" th:classappend="${lectureSchedules.first} ? 'disabled'">
-							    	<a class="page-link" th:href="@{'/students/lecture/list/' + ${lectureSchedules.number -1}}">이전</a>
+							    	<a class="page-link" th:href="@{'/students/lecture/list/' + ${lectureSchedules.number -1}
+							    	 + '?type=' + ${lectureSearchDto.type}
+							    	 + '&departmentId=' + ${lectureSearchDto.departmentId}
+							    	 + '&lectureName=' + ${lectureSearchDto.lectureName}}">이전</a>
 							    </li>
 							    <li class="page-item" 
 							    	th:each="page : ${#numbers.sequence(start, end)}"
 				    	th:classappend="${lectureSchedules.number eq page -1} ? 'active_page'">
-							    	<a class="page-link" th:href="@{'/students/lecture/list/' + ${page -1}}">[[${page}]]</a>
+							    	<a class="page-link" th:href="@{'/students/lecture/list/' + ${page -1}
+							    	 + '?type=' + ${lectureSearchDto.type}
+							    	 + '&departmentId=' + ${lectureSearchDto.departmentId}
+							    	 + '&lectureName=' + ${lectureSearchDto.lectureName}}">[[${page}]]</a>
 										    </li>
 							    <li class="page-item" th:classappend="${lectureSchedules.last} ? 'disabled'">
-							    	<a class="page-link" th:href="@{'/students/lecture/list/' + ${lectureSchedules.number +1}}">다음</a>
+							    	<a class="page-link" th:href="@{'/students/lecture/list/' + ${lectureSchedules.number +1}
+							    	 + '?type=' + ${lectureSearchDto.type}
+							    	 + '&departmentId=' + ${lectureSearchDto.departmentId}
+							    	 + '&lectureName=' + ${lectureSearchDto.lectureName}}">다음</a>
 							    </li>
 							</ul>
 						</nav>
@@ -127,6 +136,20 @@
 	<script th:inline="javascript">
 		$(document).ready(function() {
 			$(".registration").addClass("active_tab");
+			
+			if([[${lectureSearchDto.type}]] == "") {
+				$("#type").val("").prop("selected", true);
+			} else {
+				$("#type").val([[${lectureSearchDto.type}]]).prop("selected", true);
+			}
+			
+			if([[${lectureSearchDto.departmentId}]] == 0) {
+				$("#departmentId").val(0).prop("selected", true);
+			} else {
+				$("#departmentId").val([[${lectureSearchDto.departmentId}]]).prop("selected", true);
+			}
+			
+			$("#lectureName").val([[${lectureSearchDto.lectureName}]]);
 		});
 	</script>
 </th:block>

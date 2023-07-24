@@ -17,14 +17,12 @@ import com.university.dto.ProfessorLectureSearchDto;
 import com.university.dto.QLectureScheduleDto;
 import com.university.dto.QProfessorLectureDto;
 import com.university.dto.QProfessorLectureSearchDto;
-import com.university.dto.StudentInfoOfLectureDto;
-import com.university.entity.Lecture;
 import com.university.entity.QDepartment;
 import com.university.entity.QLecture;
 import com.university.entity.QLectureCode;
-import com.university.entity.QLectureRegistration;
 import com.university.entity.QLectureRoom;
 import com.university.entity.QUser;
+import com.university.util.SemesterUtil;
 
 import jakarta.persistence.EntityManager;
 
@@ -38,12 +36,12 @@ public class LectureRepositoryCustomImpl implements LectureRepositoryCustom {
 	
 	// 전공 교양 여부 전체일때 null 처리
 	private BooleanExpression typeEq(String type) {
-		return StringUtils.isEmpty(type) ? null : QLecture.lecture.type.eq(type); 
+		return type.equals("") ? null : QLecture.lecture.type.eq(type); 
 	}
 	
 	// 학과 전체일때 null 처리
 	private BooleanExpression departmentIdEq(Long departmentId) {
-		return departmentId == null ? null : QLecture.lecture.department.id.eq(departmentId);
+		return departmentId == 0 ? null : QLecture.lecture.department.id.eq(departmentId);
 	}
 	
 	// 검색어(강의명)가 빈문자열 일때 처리
@@ -61,7 +59,7 @@ public class LectureRepositoryCustomImpl implements LectureRepositoryCustom {
 		return semester == null ? null : QLecture.lecture.semester.eq(semester);
 	}
 	
-	// 강의 시간표 리스트 가져오기 + 페이징
+	// 강의 시간표 리스트(이번학기) 가져오기 + 페이징
 	@Override
 	public Page<LectureScheduleDto> getLectureScheduleList(LectureSearchDto lectureSearchDto, Pageable pageable) {
 		QLecture lecture = QLecture.lecture;
@@ -96,6 +94,8 @@ public class LectureRepositoryCustomImpl implements LectureRepositoryCustom {
 				.where(typeEq(lectureSearchDto.getType()))
 				.where(departmentIdEq(lectureSearchDto.getDepartmentId()))
 				.where(lectureNameLike(lectureSearchDto.getLectureName()))
+				.where(lectureYearEq(SemesterUtil.CURRENT_YEAR))
+				.where(lectureSemesterEq(SemesterUtil.CURRENT_SEMESTER))
 				.orderBy(lecture.id.asc())
 				.offset(pageable.getOffset())
 				.limit(pageable.getPageSize())
@@ -110,6 +110,8 @@ public class LectureRepositoryCustomImpl implements LectureRepositoryCustom {
 				.where(typeEq(lectureSearchDto.getType()))
 				.where(departmentIdEq(lectureSearchDto.getDepartmentId()))
 				.where(lectureNameLike(lectureSearchDto.getLectureName()))
+				.where(lectureYearEq(SemesterUtil.CURRENT_YEAR))
+				.where(lectureSemesterEq(SemesterUtil.CURRENT_SEMESTER))
 				.fetchOne();
 				
 		return new PageImpl<>(content, pageable, total);
@@ -149,6 +151,8 @@ public class LectureRepositoryCustomImpl implements LectureRepositoryCustom {
 				.join(user).on(lecture.professor.id.eq(user.id))
 				.where(lecture.department.id.eq(departmentId)
 						.or(lecture.type.eq("교양")))
+				.where(lectureYearEq(SemesterUtil.CURRENT_YEAR))
+				.where(lectureSemesterEq(SemesterUtil.CURRENT_SEMESTER))
 				.orderBy(lecture.type.desc())
 				.offset(pageable.getOffset())
 				.limit(pageable.getPageSize())
@@ -162,6 +166,8 @@ public class LectureRepositoryCustomImpl implements LectureRepositoryCustom {
 				.join(user).on(lecture.professor.id.eq(user.id))
 				.where(lecture.department.id.eq(departmentId)
 						.or(lecture.type.eq("교양")))
+				.where(lectureYearEq(SemesterUtil.CURRENT_YEAR))
+				.where(lectureSemesterEq(SemesterUtil.CURRENT_SEMESTER))
 				.fetchOne();
 		
 		
@@ -170,8 +176,7 @@ public class LectureRepositoryCustomImpl implements LectureRepositoryCustom {
 	
 	// 현재 학기 강의 목록 출력(교수)
 	@Override
-	public List<ProfessorLectureDto> getProfessorLectureListOfCurrentSemester(Long professorId, int year,
-			int semester) {
+	public List<ProfessorLectureDto> getProfessorLectureListOfCurrentSemester(Long professorId) {
 		QLecture lecture = QLecture.lecture;
 		QLectureRoom lectureRoom = QLectureRoom.lectureRoom;
 		QLectureCode lectureCode = QLectureCode.lectureCode;
@@ -196,8 +201,8 @@ public class LectureRepositoryCustomImpl implements LectureRepositoryCustom {
 				.join(lecture.lectureRoom, lectureRoom)
 				.join(lecture.lectureCode, lectureCode)
 				.where(lecture.professor.id.eq(professorId))
-				.where(lecture.year.eq(year))
-				.where(lecture.semester.eq(semester))
+				.where(lectureYearEq(SemesterUtil.CURRENT_YEAR))
+				.where(lectureSemesterEq(SemesterUtil.CURRENT_SEMESTER))
 				.fetch();
 				
 		return content;
@@ -240,6 +245,8 @@ public class LectureRepositoryCustomImpl implements LectureRepositoryCustom {
 								lecture.type,
 								lecture.name,
 								lecture.credit,
+								lecture.year,
+								lecture.semester,
 								lecture.day,
 								lecture.startTime,
 								lecture.endTime,

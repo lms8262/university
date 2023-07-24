@@ -3,6 +3,11 @@
 	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 	layout:decorate="~{layouts/layout1}">
 
+<head>
+	<meta name="_csrf" th:content="${_csrf.token}" />
+	<meta name="_csrf_header" th:content="${_csrf.headerName}" />
+</head>
+
 <!-- 각 페이지의 CSS가 작성될 위치 -->
 <th:block layout:fragment="css">
 	<style>
@@ -106,7 +111,7 @@
 									<button type="button" th:onclick="|location.href='@{/professors/lecture/score/modify/}@{${lectureId}}/@{${studentInfoAndGrade.studentId}}'|">수정</button>
 								</td>
 								<td class="score_input_btn">
-									<button type="button">취소</button>
+									<button type="button" th:onclick="deleteGrade([[${lectureId}]], [[${studentInfoAndGrade.studentId}]])">취소</button>
 								</td>
 							</tr>
 						</tbody>
@@ -125,6 +130,42 @@
 		$(document).ready(function() {
 			$(".lecture").addClass("active_tab");
 		});
+		
+		function deleteGrade(lectureId, studentId) {
+			const deleteConf = confirm("성적입력을 취소하시겠습니까?");
+			
+			if(!deleteConf) return; // 취소버튼 누를시
+			
+			var token = $("meta[name='_csrf']").attr("content");
+	        var header = $("meta[name='_csrf_header']").attr("content");
+	        
+	        var url = "/professors/lecture/score/delete/" + lectureId + "/" + studentId;
+			
+			$.ajax({
+	            url : url,
+	            type : "DELETE",
+	            contentType : "application/json",
+	            beforeSend : function(xhr){
+	                // 데이터를 전송하기 전에 헤더에 csrf값을 설정
+	                xhr.setRequestHeader(header, token);
+	            },
+	            dataType : "json",
+	            cache   : false,
+	            success  : function(result, status){
+	            	alert("성적입력을 취소했습니다.");
+	            	
+		            location.href = '/professors/lecture/score/' + lectureId;
+	            },
+	            error : function(jqXHR, status, error){
+	                if(jqXHR.status == '401'){
+	                    alert('로그인 후 이용해주세요');
+	                    location.href='/users/login';
+	                } else{
+	                    alert(jqXHR.responseText);
+	                }
+	            }
+	        });
+		}
 	</script>
 </th:block>
 

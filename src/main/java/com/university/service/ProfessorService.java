@@ -16,6 +16,7 @@ import com.university.repository.GradeScoreRepository;
 import com.university.repository.LectureRegistrationRepository;
 import com.university.repository.LectureRepository;
 import com.university.repository.StudentLectureRepository;
+import com.university.repository.StudentRepository;
 
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -29,6 +30,7 @@ public class ProfessorService {
 	private final LectureRegistrationRepository lectureRegistrationRepository;
 	private final StudentLectureRepository studentLectureRepository;
 	private final GradeScoreRepository gradeScoreRepository; 
+	private final StudentRepository studentRepository;
 	
 	// 교수 본인이 강의하는 강의가 맞는지 확인 -> 맞으면 강의명 리턴
 	public String validateInputScore(Long professorId, Long lectureId) {
@@ -113,5 +115,23 @@ public class ProfessorService {
 		
 		// 성적 수정
 		studentLecture.updateGrade(gradeScore);
+	}
+	
+	// 강의 내역 성적 입력취소
+	@Transactional
+	public void deleteScore(Long lectureId, Long studentId) {
+		// 수강 내역 테이블에서 삭제
+		StudentLecture studentLecture = studentLectureRepository.findByStudentIdAndLectureId(studentId, lectureId);
+		studentLectureRepository.delete(studentLecture);
+		
+		// 수강 신청 테이블에 다시 생성
+		Lecture lecture = lectureRepository.findById(lectureId).orElseThrow(EntityNotFoundException::new);
+		Student student = studentRepository.findById(studentId).orElseThrow(EntityNotFoundException::new);
+	
+		LectureRegistration lectureRegistration = new LectureRegistration();
+		lectureRegistration.setLecture(lecture);
+		lectureRegistration.setStudent(student);
+		
+		lectureRegistrationRepository.save(lectureRegistration);
 	}
 }

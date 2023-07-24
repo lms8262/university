@@ -91,6 +91,7 @@ public class LectureRegistrationRepositoryCustomImpl implements LectureRegistrat
 				.join(lecture.lectureCode, lectureCode)
 				.join(user).on(lecture.professor.id.eq(user.id))
 				.where(lectureRegistration.student.id.eq(studentId))
+				.orderBy(lecture.id.asc())
 				.fetch();			
 		
 		return content;

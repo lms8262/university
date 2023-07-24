@@ -8,12 +8,15 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.thymeleaf.util.StringUtils;
 
 import com.university.dto.InputGradeDto;
 import com.university.dto.ProfessorInfoDto;
@@ -24,6 +27,7 @@ import com.university.dto.UserInfoUpdateDto;
 import com.university.service.LectureService;
 import com.university.service.ProfessorService;
 import com.university.service.UserService;
+import com.university.util.SemesterUtil;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -76,33 +80,40 @@ public class ProfessorController {
 	
 	// 내 강의 목록 조회 페이지(기본값 : 이번 학기)
 	@GetMapping(value = "/professors/lecture/list")
-	public String myLectureList(Principal principal, Model model) {
-		Long professorId = Long.parseLong(principal.getName());
-		List<ProfessorLectureSearchDto> professorLectureSearchDtoList = lectureService.getProfessorLectureGroupByYearAndSemester(professorId);
-		List<ProfessorLectureDto> professorLectureDtoList = lectureService.getProfessorLectureList(professorId, new ProfessorLectureSearchDto());
-		
-		model.addAttribute("professorLectureSearchDtoList", professorLectureSearchDtoList);
-		model.addAttribute("professorLectureDtoList", professorLectureDtoList);
-		
-		return "professor/myLectureList";
-	}
-	
-	// 내 강의 목록 조회 페이지(검색)
-	@PostMapping(value = "/professors/lecture/list")
-	public String myLectureListSearch(String yearSemester, Principal principal, Model model) {
+	public String myLectureList(@RequestParam(required = false) String yearSemester, Principal principal, Model model) {
 		Long professorId = Long.parseLong(principal.getName());
 		List<ProfessorLectureSearchDto> professorLectureSearchDtoList = lectureService.getProfessorLectureGroupByYearAndSemester(professorId);
 		
-		String[] strs = yearSemester.split(",");
-		Integer year = Integer.parseInt(strs[0]);
-		Integer semester = Integer.parseInt(strs[1]);
-		ProfessorLectureSearchDto professorLectureSearchDto = new ProfessorLectureSearchDto();
-		professorLectureSearchDto.setYear(year);
-		professorLectureSearchDto.setSemester(semester);
+		Integer year;
+		Integer semester;
 		
-		List<ProfessorLectureDto> professorLectureDtoList = lectureService.getProfessorLectureList(professorId, professorLectureSearchDto);
+		// 처음 페이지 들어왔을때(이번 학기 강의)
+		if(yearSemester == null) {
+			year = SemesterUtil.CURRENT_YEAR;
+			semester = SemesterUtil.CURRENT_SEMESTER;
+			yearSemester = year + "," + semester; 
+			
+		} else { //조회 버튼 눌렀을때
+			if(StringUtils.equals(yearSemester, ",")) { // 전체 학기 강의 조회
+				year = null;
+				semester = null;
+			} else { // 그 외 특정 학기 강의 조회
+				String[] strs = yearSemester.split(",");
+				year = Integer.parseInt(strs[0]);
+				semester = Integer.parseInt(strs[1]);
+			}
+			
+		}
+		
+		List<ProfessorLectureDto> professorLectureDtoList = lectureService.getProfessorLectureList(professorId, new ProfessorLectureSearchDto(year, semester));
+		
+		if(professorLectureDtoList.size() == 0) { // 이번 학기 강의가 없을때
+			yearSemester = ",";
+		}
+		
 		model.addAttribute("professorLectureSearchDtoList", professorLectureSearchDtoList);
 		model.addAttribute("professorLectureDtoList", professorLectureDtoList);
+		model.addAttribute("yearSemester", yearSemester);
 		
 		return "professor/myLectureList";
 	}
@@ -227,4 +238,21 @@ public class ProfessorController {
 		 return new ResponseEntity<Long>(lectureId, HttpStatus.OK);
 	 }
 	 
+	 // 강의 학생 성적 입력취소
+	 @DeleteMapping(value = "/professors/lecture/score/delete/{lectureId}/{studentId}")
+	 public @ResponseBody ResponseEntity deleteGrade(Principal principal, @PathVariable Long lectureId, @PathVariable Long studentId) {
+		 Long professorId = Long.parseLong(principal.getName());
+		 
+		 if(professorService.validateInputScore(professorId, lectureId) == null) {
+			 return new ResponseEntity<String>("본인이 강의중인 강의가 아닙니다.", HttpStatus.FORBIDDEN);
+		 }
+		 
+		 if(!professorService.validateRegistration(lectureId, studentId)) {
+			 return new ResponseEntity<String>("강의를 수강 중인 학생이 아닙니다.", HttpStatus.FORBIDDEN);
+		 }
+		 
+		 professorService.deleteScore(lectureId, studentId);
+		 
+		 return new ResponseEntity<Long>(lectureId, HttpStatus.OK);
+	 }
 }

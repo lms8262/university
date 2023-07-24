@@ -62,8 +62,6 @@ select * from lecture_registration;
 select * from student_lecture;
 select * from lecture_code;
 
-select * from lecture_room;
-
 use university;
 
 -- 교수 테이블에 있는 학과번호로 학과명 가져오기
@@ -142,3 +140,6 @@ FROM information_schema.tables
 WHERE table_name = 'lecture'
 AND table_schema = DATABASE();
 
+insert into lecture(name, department_id, professor_id, lecture_room_id, credit, capacity, type, year, semester, day, start_time, end_time ,lecture_code_id) values('회계원리', 102, 230001, 'B201', 3, 30, '전공', 2023, 2, '월', 9, 12, 6);
+insert into lecture(name, department_id, professor_id, lecture_room_id, credit, capacity, type, year, semester, day, start_time, end_time ,lecture_code_id) values('사회복지개론', 104, 230018, 'D401', 3, 30, '전공', 2023, 2, '월', 9, 12, 16);
+commit;

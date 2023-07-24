@@ -12,7 +12,7 @@ insert into grade_score (grade, score) values('B+', 3.5);
 insert into grade_score (grade, score) values('B0', 3.0);
 insert into grade_score (grade, score) values('C+', 2.5);
 insert into grade_score (grade, score) values('C0', 2.0);
-insert into grade_score (grade, score) values('F', 1.5);
+insert into grade_score (grade, score) values('F', 0);
 
 -- 단과대 등록
 insert into college (name, college_code) values('인문대학', 'A');
@@ -718,4 +718,6 @@ insert into lecture(name, department_id, professor_id, lecture_room_id, credit, 
 insert into lecture(name, department_id, professor_id, lecture_room_id, credit, capacity, type, year, semester, day, start_time, end_time ,lecture_code_id) values('복지국가론', 104, 230017, 'D404', 3, 30, '전공', 2023, 1, '금', 9, 12, 20);
 insert into lecture(name, department_id, professor_id, lecture_room_id, credit, capacity, type, year, semester, day, start_time, end_time ,lecture_code_id) values('복지국가론', 104, 230017, 'D405', 3, 30, '전공', 2023, 1, '금', 15, 18, 20);
 
-
+-- 경영학과(102) 강의 추가 등록
+insert into lecture(name, department_id, professor_id, lecture_room_id, credit, capacity, type, year, semester, day, start_time, end_time ,lecture_code_id) values('회계원리', 102, 230001, 'B201', 3, 30, '전공', 2023, 2, '월', 9, 12, 6);
+insert into lecture(name, department_id, professor_id, lecture_room_id, credit, capacity, type, year, semester, day, start_time, end_time ,lecture_code_id) values('사회복지개론', 104, 230018, 'D401', 3, 30, '전공', 2023, 2, '월', 9, 12, 16);

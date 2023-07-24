@@ -148,8 +148,19 @@ public class StudentController {
 		return new ResponseEntity<Long>(lectureId, HttpStatus.OK);
 	}
 	
-	@GetMapping(value = "/totalgrade")
-	public String totalGrade() {
-		return "student/totalgrade";
+	@GetMapping(value = "/students/score/current")
+	public String currentScore(Principal principal, Model model) {
+		Long studentId = Long.parseLong(principal.getName());
+		return "student/currentScore";
+	}
+	
+	@GetMapping(value = "/students/score/semester")
+	public String semesterScore() {
+		return "student/semesterScore";
+	}
+	
+	@GetMapping(value = "/students/score/total")
+	public String totalScore() {
+		return "student/totalScore";
 	}
 }
