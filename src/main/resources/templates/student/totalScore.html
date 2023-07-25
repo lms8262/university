@@ -9,9 +9,14 @@
 		h3 {
 			font-size: 28px;
 		}
-		
 		h2 {
 			font-size: 32px;
+		}
+		tbody {
+			vertical-align: middle !important;
+		}
+		.table {
+			width: inherit;
 		}
 	</style>
 </th:block>
@@ -20,60 +25,65 @@
 	<div class="d-flex">
 		<aside class="sidebar d-flex flex-column align-items-center">
 			<div class="sidebar_subject">
-				<h3>성적</h3>
+				<h3>성적 조회</h3>
 			</div>
 			<div class="sidebar_list">
 				<ul>
-					<li><a>메뉴1</a></li>
-					<li><a>메뉴2</a></li>
-					<li><a>메뉴3</a></li>
-					<li><a>메뉴4</a></li>
-					<li><a>메뉴5</a></li>
+					<li><a href="/students/score/current">이번 학기 성적 조회</a></li>
+					<li><a href="/students/score/semester">학기별 성적 조회</a></li>
+					<li><a href="/students/score/total" class="active_tab">누계 성적</a></li>
 				</ul>
 			</div>
 		</aside>
 
 		<main>
 			<div class="main_subject">
-				<h2>메뉴1</h2>
+				<h2>누계 성적</h2>
 			</div>
 			<div class="main_content">
-				<table class="table table-bordered">
-					<thead class="table-light">
-						<tr>
-							<th scope="col">1열</th>
-							<th scope="col">2열</th>
-							<th scope="col">3열</th>
-							<th scope="col">4열</th>
-						</tr>
-					</thead>
-					<tbody>
-						<tr>
-							<td>1열</td>
-							<td>2열</td>
-							<td>3열</td>
-							<td>4열</td>
-						</tr>
-						<tr>
-							<td>1열</td>
-							<td>2열</td>
-							<td>3열</td>
-							<td>4열</td>
-						</tr>
-						<tr>
-							<td>1열</td>
-							<td>2열</td>
-							<td>3열</td>
-							<td>4열</td>
-						</tr>
-					</tbody>
-				</table>
+				
+				<div th:if="${!#lists.isEmpty(studentLectureScoreList)}">
+					<table class="table table-bordered border-secondary-subtle">
+						<thead>
+							<tr class="table-secondary">
+								<th scope="col">년도</th>
+								<th scope="col">학기</th>
+								<th scope="col">신청학점</th>
+								<th scope="col">취득학점</th>
+								<th scope="col">평균평점</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr th:each="studentLectureScore : ${studentLectureScoreList}">
+								<td scope="row" th:text="${studentLectureScore.year} + '년'"></td>
+								<td th:text="${studentLectureScore.semester} + '학기'"></td>
+								<td th:text="${studentLectureScore.totalCredit} + '점'"></td>
+								<td th:text="${studentLectureScore.totalGetCredit} + '점'"></td>
+								<td th:text="${studentLectureScore.averageScore}"></td>
+							</tr>
+							<tr>
+								<td scope="row" colspan="2" style="font-weight: bold">전체 학기</td>
+								<td th:text="${totalStudentScore.totalCredit} + '점'"></td>
+								<td th:text="${totalStudentScore.totalGetCredit} + '점'"></td>
+								<td th:text="${totalStudentScore.averageScore}"></td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+				<p style="font-size: 25px;" th:unless="${!#lists.isEmpty(studentLectureScoreList)}">아직 점수가 입력된 강의가 없습니다.</p>
+
 			</div>
 		</main>
 	</div>
 </div>
 
 <!-- 각 페이지의 자바스크립트가 작성될 위치 -->
-<th:block layout:fragment="script"></th:block>
+<th:block layout:fragment="script">
+	<script th:inline="javascript">
+		$(document).ready(function() {
+			$(".score").addClass("active_tab");
+		});
+	</script>
+</th:block>
 
 </html>

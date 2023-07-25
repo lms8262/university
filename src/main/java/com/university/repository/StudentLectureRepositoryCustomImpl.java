@@ -6,8 +6,10 @@ import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.university.dto.QStudentInfoOfLectureDto;
 import com.university.dto.QStudentLectureScoreInfoDto;
+import com.university.dto.QYearSemesterDto;
 import com.university.dto.StudentInfoOfLectureDto;
 import com.university.dto.StudentLectureScoreInfoDto;
+import com.university.dto.YearSemesterDto;
 import com.university.entity.Lecture;
 import com.university.entity.QDepartment;
 import com.university.entity.QGradeScore;
@@ -27,7 +29,15 @@ public class StudentLectureRepositoryCustomImpl implements StudentLectureReposit
 	public StudentLectureRepositoryCustomImpl(EntityManager em) {
 		this.queryFactory = new JPAQueryFactory(em);
 	}
-
+	
+	private BooleanExpression yearEq(Integer year) {
+		return year == 0 ? null : QLecture.lecture.year.eq(year);
+	}
+	
+	private BooleanExpression semesterEq(Integer semester) {
+		return semester == 0 ? null : QLecture.lecture.semester.eq(semester);
+	}
+	
 	private BooleanExpression lectureTypeEq(String type) {
 		return type.equals("") ? null : QLecture.lecture.type.eq(type); 
 	}
@@ -78,23 +88,6 @@ public class StudentLectureRepositoryCustomImpl implements StudentLectureReposit
 				.fetchOne();
 		
 		return content;
-	}
-
-	@Override
-	public Integer getTotalCreditByStudentIdAndYearAndSemester(Long studentId, Integer year, Integer semester) {
-		QStudentLecture studentLecture = QStudentLecture.studentLecture;
-		QLecture lecture = QLecture.lecture;
-		
-		Integer totalCredit = queryFactory
-				.select(lecture.credit.sum().coalesce(0).as("totalCredit"))
-				.from(studentLecture)
-				.join(studentLecture.lecture, lecture)
-				.where(studentLecture.student.id.eq(studentId))
-				.where(lecture.year.eq(year))
-				.where(lecture.semester.eq(semester))
-				.fetchOne();
-		
-		return totalCredit;
 	}
 
 	@Override
@@ -167,9 +160,10 @@ public class StudentLectureRepositoryCustomImpl implements StudentLectureReposit
 				.join(lecture.lectureCode, lectureCode)
 				.join(user).on(lecture.professor.id.eq(user.id))
 				.where(studentLecture.student.id.eq(studentId))
-				.where(lecture.year.eq(year))
-				.where(lecture.semester.eq(semester))
+				.where(yearEq(year))
+				.where(semesterEq(semester))
 				.where(lectureTypeEq(type))
+				.orderBy(lecture.year.asc())
 				.fetch();
 		return content;
 	}
@@ -184,8 +178,8 @@ public class StudentLectureRepositoryCustomImpl implements StudentLectureReposit
 				.from(studentLecture)
 				.join(studentLecture.lecture, lecture)
 				.where(studentLecture.student.id.eq(studentId))
-				.where(lecture.year.eq(year))
-				.where(lecture.semester.eq(semester))
+				.where(yearEq(year))
+				.where(semesterEq(semester))
 				.where(lectureTypeEq(type))
 				.where(gradeNe(grade))
 				.fetchOne();
@@ -204,10 +198,47 @@ public class StudentLectureRepositoryCustomImpl implements StudentLectureReposit
 				.join(studentLecture.lecture, lecture)
 				.join(studentLecture.gradeScore, gradeScore)
 				.where(studentLecture.student.id.eq(studentId))
-				.where(lecture.year.eq(year))
-				.where(lecture.semester.eq(semester))
+				.where(yearEq(year))
+				.where(semesterEq(semester))
 				.where(lectureTypeEq(type))
 				.fetchOne();
+		return content;
+	}
+
+	@Override
+	public List<Integer> getAllYearsOfStudentLecture(Long studentId) {
+		QStudentLecture studentLecture = QStudentLecture.studentLecture;
+		QLecture lecture = QLecture.lecture;
+		
+		List<Integer> content = queryFactory
+				.select(lecture.year)
+				.from(studentLecture)
+				.join(studentLecture.lecture, lecture)
+				.where(studentLecture.student.id.eq(studentId))
+				.groupBy(lecture.year)
+				.orderBy(lecture.year.asc())
+				.fetch();
+		return content;
+	}
+
+	@Override
+	public List<YearSemesterDto> getAllYearSemester(Long studentId) {
+		QStudentLecture studentLecture = QStudentLecture.studentLecture;
+		QLecture lecture = QLecture.lecture;
+		
+		List<YearSemesterDto> content = queryFactory
+				.select(
+						new QYearSemesterDto(
+								lecture.year, 
+								lecture.semester
+								)
+						)
+				.from(studentLecture)
+				.join(studentLecture.lecture, lecture)
+				.where(studentLecture.student.id.eq(studentId))
+				.groupBy(lecture.year, lecture.semester)
+				.orderBy(lecture.year.asc())
+				.fetch();
 		return content;
 	}
 	

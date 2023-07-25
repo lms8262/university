@@ -37,7 +37,7 @@
 			</div>
 			<div class="main_content">
 			
-				<form th:action="@{/students/lecture/list/0}" method="get" th:object="${lectureSchedules}">
+				<form action="/students/lecture/list/0" method="get">
 					<div class="search_form" th:objcet="${lectureSearchDto}">
 						<label th:for="type">강의구분</label>
 						<select th:name="type" th:id="type">
@@ -57,75 +57,73 @@
 						
 						<button type="submit">&nbsp;<span>조회</span>&nbsp;<i class="fa-solid fa-magnifying-glass"></i>&nbsp;</button>
 					</div>
-			
-				
-				
-					<div>
-						<table class="table table-bordered border-secondary-subtle">
-							<thead>
-							    <tr class="table-secondary">
-							      <th scope="col">개설학과</th>
-							      <th scope="col">강의번호</th>
-							      <th scope="col">구분코드</th>
-							      <th scope="col">강의구분</th>
-							      <th scope="col">강의명</th>
-							      <th scope="col">담당교수</th>
-							      <th scope="col">학점</th>
-							      <th scope="col">요일 시간 (강의실)</th>
-							      <th scope="col">현재인원</th>
-							      <th scope="col">정원</th>
-							    </tr>
-						  	</thead>
-						  	<tbody>	  		
-								<tr th:each="lectureSchedule : ${lectureSchedules.getContent()}">
-									<td scope="row" th:text="${lectureSchedule.departmentName}"></td>
-									<td th:text="${lectureSchedule.lectureId}"></td>
-									<td th:text="${lectureSchedule.lectureCodeDetail}"></td>
-									<td th:text="${lectureSchedule.type}"></td>
-									<td th:text="${lectureSchedule.lectureName}"></td>
-									<td th:text="${lectureSchedule.professorName}"></td>
-									<td th:text="${lectureSchedule.credit}"></td>
-									<td th:if="${lectureSchedule.startTime} < 10" th:text="|${lectureSchedule.day} 0${lectureSchedule.startTime}:00-${lectureSchedule.endTime}:00 (${lectureSchedule.lectureRoomId})|"></td>
-									<td th:unless="${lectureSchedule.startTime} < 10" th:text="|${lectureSchedule.day} ${lectureSchedule.startTime}:00-${lectureSchedule.endTime}:00 (${lectureSchedule.lectureRoomId})|"></td>
-									<td th:text="${lectureSchedule.numOfStudent}"></td>
-									<td th:text="${lectureSchedule.capacity}"></td>
-								</tr>
-						  	</tbody>
-						</table>
-					</div>
-					
-					<div class="d-flex justify-content-center">
-						<nav aria-label="Page navigation"
-						th:with="start=${(lectureSchedules.number / maxPage) * maxPage +1},
-						end=${(lectureSchedules.totalPages == 0)? 1:
-						(start + (maxPage -1) < lectureSchedules.totalPages ?
-						start + (maxPage -1) : lectureSchedules.totalPages)}">
-							<ul class="pagination">
-							    <li class="page-item" th:classappend="${lectureSchedules.first} ? 'disabled'">
-							    	<a class="page-link" th:href="@{'/students/lecture/list/' + ${lectureSchedules.number -1}
-							    	 + '?type=' + ${lectureSearchDto.type}
-							    	 + '&departmentId=' + ${lectureSearchDto.departmentId}
-							    	 + '&lectureName=' + ${lectureSearchDto.lectureName}}">이전</a>
-							    </li>
-							    <li class="page-item" 
-							    	th:each="page : ${#numbers.sequence(start, end)}"
-				    	th:classappend="${lectureSchedules.number eq page -1} ? 'active_page'">
-							    	<a class="page-link" th:href="@{'/students/lecture/list/' + ${page -1}
-							    	 + '?type=' + ${lectureSearchDto.type}
-							    	 + '&departmentId=' + ${lectureSearchDto.departmentId}
-							    	 + '&lectureName=' + ${lectureSearchDto.lectureName}}">[[${page}]]</a>
-										    </li>
-							    <li class="page-item" th:classappend="${lectureSchedules.last} ? 'disabled'">
-							    	<a class="page-link" th:href="@{'/students/lecture/list/' + ${lectureSchedules.number +1}
-							    	 + '?type=' + ${lectureSearchDto.type}
-							    	 + '&departmentId=' + ${lectureSearchDto.departmentId}
-							    	 + '&lectureName=' + ${lectureSearchDto.lectureName}}">다음</a>
-							    </li>
-							</ul>
-						</nav>
-					</div>
-				
 				</form>
+				
+				<div>
+					<table class="table table-bordered border-secondary-subtle">
+						<thead>
+						    <tr class="table-secondary">
+						      <th scope="col">개설학과</th>
+						      <th scope="col">강의번호</th>
+						      <th scope="col">구분코드</th>
+						      <th scope="col">강의구분</th>
+						      <th scope="col">강의명</th>
+						      <th scope="col">담당교수</th>
+						      <th scope="col">학점</th>
+						      <th scope="col">요일 시간 (강의실)</th>
+						      <th scope="col">현재인원</th>
+						      <th scope="col">정원</th>
+						    </tr>
+					  	</thead>
+					  	<tbody>	  		
+							<tr th:each="lectureSchedule : ${lectureSchedules.getContent()}">
+								<td scope="row" th:text="${lectureSchedule.departmentName}"></td>
+								<td th:text="${lectureSchedule.lectureId}"></td>
+								<td th:text="${lectureSchedule.lectureCodeDetail}"></td>
+								<td th:text="${lectureSchedule.type}"></td>
+								<td th:text="${lectureSchedule.lectureName}"></td>
+								<td th:text="${lectureSchedule.professorName}"></td>
+								<td th:text="${lectureSchedule.credit}"></td>
+								<td th:if="${lectureSchedule.startTime} < 10" th:text="|${lectureSchedule.day} 0${lectureSchedule.startTime}:00-${lectureSchedule.endTime}:00 (${lectureSchedule.lectureRoomId})|"></td>
+								<td th:unless="${lectureSchedule.startTime} < 10" th:text="|${lectureSchedule.day} ${lectureSchedule.startTime}:00-${lectureSchedule.endTime}:00 (${lectureSchedule.lectureRoomId})|"></td>
+								<td th:text="${lectureSchedule.numOfStudent}"></td>
+								<td th:text="${lectureSchedule.capacity}"></td>
+							</tr>
+					  	</tbody>
+					</table>
+				</div>
+					
+				<div class="d-flex justify-content-center">
+					<nav aria-label="Page navigation"
+					th:with="start=${(lectureSchedules.number / maxPage) * maxPage +1},
+					end=${(lectureSchedules.totalPages == 0)? 1:
+					(start + (maxPage -1) < lectureSchedules.totalPages ?
+					start + (maxPage -1) : lectureSchedules.totalPages)}">
+						<ul class="pagination">
+						    <li class="page-item" th:classappend="${lectureSchedules.first} ? 'disabled'">
+						    	<a class="page-link" th:href="@{'/students/lecture/list/' + ${lectureSchedules.number -1}
+						    	 + '?type=' + ${lectureSearchDto.type}
+						    	 + '&departmentId=' + ${lectureSearchDto.departmentId}
+						    	 + '&lectureName=' + ${lectureSearchDto.lectureName}}">이전</a>
+						    </li>
+						    <li class="page-item" 
+						    	th:each="page : ${#numbers.sequence(start, end)}"
+			    	th:classappend="${lectureSchedules.number eq page -1} ? 'active_page'">
+						    	<a class="page-link" th:href="@{'/students/lecture/list/' + ${page -1}
+						    	 + '?type=' + ${lectureSearchDto.type}
+						    	 + '&departmentId=' + ${lectureSearchDto.departmentId}
+						    	 + '&lectureName=' + ${lectureSearchDto.lectureName}}">[[${page}]]</a>
+									    </li>
+						    <li class="page-item" th:classappend="${lectureSchedules.last} ? 'disabled'">
+						    	<a class="page-link" th:href="@{'/students/lecture/list/' + ${lectureSchedules.number +1}
+						    	 + '?type=' + ${lectureSearchDto.type}
+						    	 + '&departmentId=' + ${lectureSearchDto.departmentId}
+						    	 + '&lectureName=' + ${lectureSearchDto.lectureName}}">다음</a>
+						    </li>
+						</ul>
+					</nav>
+				</div>
+				
 			</div>
 		</main>
 	</div>

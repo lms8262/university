@@ -24,6 +24,7 @@ import com.university.dto.LectureSearchDto;
 import com.university.dto.StudentInfoDto;
 import com.university.dto.StudentLectureScoreDto;
 import com.university.dto.StudentLectureScoreInfoDto;
+import com.university.dto.StudentLectureSearchDto;
 import com.university.dto.UserInfoUpdateDto;
 import com.university.service.DepartmentService;
 import com.university.service.LectureRegistrationService;
@@ -152,6 +153,7 @@ public class StudentController {
 		return new ResponseEntity<Long>(lectureId, HttpStatus.OK);
 	}
 	
+	// 현재 학기 성적 조회
 	@GetMapping(value = "/students/score/current")
 	public String currentScore(Principal principal, Model model) {
 		Long studentId = Long.parseLong(principal.getName());
@@ -163,13 +165,27 @@ public class StudentController {
 		return "student/currentScore";
 	}
 	
+	// 학기별 성적 조회(검색)
 	@GetMapping(value = "/students/score/semester")
-	public String semesterScore() {
+	public String semesterScore(StudentLectureSearchDto studentLectureSearchDto, Principal principal, Model model) {
+		Long studentId = Long.parseLong(principal.getName());
+		List<Integer> years = studentService.getAllYearsOfStudentLecture(studentId);
+		List<StudentLectureScoreInfoDto> studentLectureList = studentService.getSemesterStudentLectureList(studentLectureSearchDto, studentId);
+		
+		model.addAttribute("years", years);
+		model.addAttribute("studentLectureList", studentLectureList);
 		return "student/semesterScore";
 	}
 	
+	// 성적 누계
 	@GetMapping(value = "/students/score/total")
-	public String totalScore() {
+	public String totalScore(Principal principal, Model model) {
+		Long studentId = Long.parseLong(principal.getName());
+		List<StudentLectureScoreDto> studentLectureScoreList = studentService.getAllSemesterStudentScore(studentId);
+		StudentLectureScoreDto totalStudentScore = studentService.getTotalStudentScore(studentId);
+		
+		model.addAttribute("studentLectureScoreList", studentLectureScoreList);
+		model.addAttribute("totalStudentScore", totalStudentScore);
 		return "student/totalScore";
 	}
 }

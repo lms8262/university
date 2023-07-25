@@ -40,8 +40,8 @@
 			<div class="sidebar_list">
 				<ul>
 					<li><a href="/students/score/current" class="active_tab">이번 학기 성적 조회</a></li>
-					<li><a>학기별 성적 조회</a></li>
-					<li><a>누계 성적</a></li>
+					<li><a href="/students/score/semester">학기별 성적 조회</a></li>
+					<li><a href="/students/score/total">누계 성적</a></li>
 				</ul>
 			</div>
 		</aside>
@@ -70,8 +70,8 @@
 						</thead>
 						<tbody>
 							<tr th:each="studentLecture : ${studentLectureList}">
-								<td scope="row" th:text="${studentLecture.year}"></td>
-								<td th:text="${studentLecture.semester}"></td>
+								<td scope="row" th:text="${studentLecture.year} + '년'"></td>
+								<td th:text="${studentLecture.semester} + '학기'"></td>
 								<td th:text="${studentLecture.lectureCodeDetail}"></td>
 								<td th:text="${studentLecture.lectureId}"></td>
 								<td th:text="${studentLecture.lectureName}"></td>
@@ -86,7 +86,7 @@
 				<p style="font-size: 25px;" th:unless="${!#lists.isEmpty(studentLectureList)}">아직 이번 학기에 점수가 입력된 강의가 없습니다.</p>
 				
 				<div th:if="${studentLectureScore != null}">
-					<h4>평점</h4>
+					<h4>학점 및 평점</h4>
 					<table class="table table-bordered border-secondary-subtle">
 						<thead>
 							<tr class="table-secondary">

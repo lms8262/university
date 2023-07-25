@@ -1,10 +1,142 @@
 <!DOCTYPE html>
-<html>
-<head>
-<meta charset="UTF-8">
-<title>Insert title here</title>
-</head>
-<body>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{layouts/layout1}">
 
-</body>
+<!-- 각 페이지의 CSS가 작성될 위치 -->
+<th:block layout:fragment="css">
+	<style>
+		h3 {
+			font-size: 28px;
+		}
+		h2 {
+			font-size: 32px;
+		}
+		tbody {
+			vertical-align: middle !important;
+		}
+		.main_content > div {
+			padding-top: 20px;
+		}
+		.table {
+			width: inherit;
+		}
+		
+	</style>
+</th:block>
+
+<div layout:fragment="content">
+	<div class="d-flex">
+		<aside class="sidebar d-flex flex-column align-items-center">
+			<div class="sidebar_subject">
+				<h3>성적 조회</h3>
+			</div>
+			<div class="sidebar_list">
+				<ul>
+					<li><a href="/students/score/current">이번 학기 성적 조회</a></li>
+					<li><a href="/students/score/semester" class="active_tab">학기별 성적 조회</a></li>
+					<li><a href="/students/score/total">누계 성적</a></li>
+				</ul>
+			</div>
+		</aside>
+
+		<main>
+			<div class="main_subject">
+				<h2>학기별 성적 조회</h2>
+			</div>
+			<div class="main_content">
+				
+				<form action="/students/score/semester" method="get">
+					<div class="search_form" th:objcet="${studentLectureSearchDto}">
+					
+						<label th:for="year">년도</label>
+						<select th:name="year" th:id="year">
+							<option value="0">전체</option>
+							<option th:each="year : ${years}" th:value="${year}" th:text="${year} + '년'"></option>
+						</select>
+						
+						<label th:for="semester">학기</label>
+						<select th:name="semester" th:id="semester">
+							<option value="0">전체</option>
+							<option value="1">1학기</option>
+							<option value="2">2학기</option>
+						</select>
+						
+						<label th:for="type">강의구분</label>
+						<select th:name="type" th:id="type">
+							<option value="">전체</option>
+							<option value="전공">전공</option>
+							<option value="교양">교양</option>
+						</select>
+						
+						
+						<button type="submit">&nbsp;<span>조회</span>&nbsp;<i class="fa-solid fa-magnifying-glass"></i>&nbsp;</button>
+					</div>
+				</form>
+				
+				
+				<div th:if="${!#lists.isEmpty(studentLectureList)}">
+					<table class="table table-bordered border-secondary-subtle" th:if="${!#lists.isEmpty(studentLectureList)}">
+						<thead>
+							<tr class="table-secondary">
+								<th scope="col">년도</th>
+								<th scope="col">학기</th>
+								<th scope="col">강의코드</th>
+								<th scope="col">강의번호</th>
+								<th scope="col">강의명</th>
+								<th scope="col">강의구분</th>
+								<th scope="col">담당교수</th>
+								<th scope="col">이수학점</th>
+								<th scope="col">성적</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr th:each="studentLecture : ${studentLectureList}">
+								<td scope="row" th:text="${studentLecture.year} + '년'"></td>
+								<td th:text="${studentLecture.semester} + '학기'"></td>
+								<td th:text="${studentLecture.lectureCodeDetail}"></td>
+								<td th:text="${studentLecture.lectureId}"></td>
+								<td th:text="${studentLecture.lectureName}"></td>
+								<td th:text="${studentLecture.type}"></td>
+								<td th:text="${studentLecture.professorName}"></td>
+								<td th:text="${studentLecture.credit}"></td>
+								<td th:text="${studentLecture.grade}"></td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+				<p style="font-size: 25px;" th:unless="${!#lists.isEmpty(studentLectureList)}">해당 학기에 점수가 입력된 강의가 없습니다.</p>
+
+			</div>
+		</main>
+	</div>
+</div>
+
+<!-- 각 페이지의 자바스크립트가 작성될 위치 -->
+<th:block layout:fragment="script">
+	<script th:inline="javascript">
+		$(document).ready(function() {
+			$(".score").addClass("active_tab");
+			
+			if([[${studentLectureSearchDto.year}]] == 0) {
+				$("#year").val(0).prop("selected", true);
+			} else {
+				$("#year").val([[${studentLectureSearchDto.year}]]).prop("selected", true);
+			}
+			
+			if([[${studentLectureSearchDto.semester}]] == 0) {
+				$("#semester").val(0).prop("selected", true);
+			} else {
+				$("#semester").val([[${studentLectureSearchDto.semester}]]).prop("selected", true);
+			}
+			
+			if([[${studentLectureSearchDto.type}]] == "") {
+				$("#type").val("").prop("selected", true);
+			} else {
+				$("#type").val([[${studentLectureSearchDto.type}]]).prop("selected", true);
+			}
+		});
+	</script>
+</th:block>
+
 </html>

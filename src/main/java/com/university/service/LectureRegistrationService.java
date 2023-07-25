@@ -90,7 +90,7 @@ public class LectureRegistrationService {
 		
 		// 학생id로 수강신청 목록에서 총 신청 학점 뽑아서, 기존 학점 + 신청과목 학점 = 18점 초과하는지 확인
 		Integer totalCredit = lectureRegistrationRepository.getTotalCreaditByStudentId(studentId)
-							+ studentLectureRepository.getTotalCreditByStudentIdAndYearAndSemester(studentId, lecture.getYear(), lecture.getSemester());
+							+ studentLectureRepository.getTotalCreditOfStudentLecture(studentId, lecture.getYear(), lecture.getSemester(), "", "");
 		if(totalCredit + lecture.getCredit() > 18) {
 			throw new OutOfCreditException("최대 신청 학점 초과입니다. 현재 총 신청 학점은" + totalCredit + " 점 입니다.");
 		}
