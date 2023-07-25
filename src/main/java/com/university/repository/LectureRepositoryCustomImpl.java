@@ -35,7 +35,7 @@ public class LectureRepositoryCustomImpl implements LectureRepositoryCustom {
 	}
 	
 	// 전공 교양 여부 전체일때 null 처리
-	private BooleanExpression typeEq(String type) {
+	private BooleanExpression lectureTypeEq(String type) {
 		return type.equals("") ? null : QLecture.lecture.type.eq(type); 
 	}
 	
@@ -91,7 +91,7 @@ public class LectureRepositoryCustomImpl implements LectureRepositoryCustom {
 				.join(lecture.lectureRoom, lectureRoom)
 				.join(lecture.lectureCode, lectureCode)
 				.join(user).on(lecture.professor.id.eq(user.id))
-				.where(typeEq(lectureSearchDto.getType()))
+				.where(lectureTypeEq(lectureSearchDto.getType()))
 				.where(departmentIdEq(lectureSearchDto.getDepartmentId()))
 				.where(lectureNameLike(lectureSearchDto.getLectureName()))
 				.where(lectureYearEq(SemesterUtil.CURRENT_YEAR))
@@ -107,7 +107,7 @@ public class LectureRepositoryCustomImpl implements LectureRepositoryCustom {
 				.join(lecture.department, department)
 				.join(lecture.lectureRoom, lectureRoom)
 				.join(user).on(lecture.professor.id.eq(user.id))
-				.where(typeEq(lectureSearchDto.getType()))
+				.where(lectureTypeEq(lectureSearchDto.getType()))
 				.where(departmentIdEq(lectureSearchDto.getDepartmentId()))
 				.where(lectureNameLike(lectureSearchDto.getLectureName()))
 				.where(lectureYearEq(SemesterUtil.CURRENT_YEAR))

@@ -9,13 +9,24 @@
 		h3 {
 			font-size: 28px;
 		}
-		
 		h2 {
 			font-size: 32px;
 		}
-		
 		tbody {
 			vertical-align: middle !important;
+		}
+		.main_content > div:nth-child(1) {
+			padding-bottom: 20px;
+			border-bottom: 1px solid silver;
+		}
+		.main_content > div:nth-child(2) {
+			padding-top: 20px;
+		}
+		.table {
+			width: inherit;
+		}
+		h4 {
+			font-weight: bold;
 		}
 	</style>
 </th:block>
@@ -40,9 +51,10 @@
 				<h2>이번 학기 성적 조회</h2>
 			</div>
 			<div class="main_content">
-
-				<div>
-					<table class="table table-bordered border-secondary-subtle">
+				
+				<div th:if="${!#lists.isEmpty(studentLectureList)}">
+					<h4>강의별 성적</h4>
+					<table class="table table-bordered border-secondary-subtle" th:if="${!#lists.isEmpty(studentLectureList)}">
 						<thead>
 							<tr class="table-secondary">
 								<th scope="col">년도</th>
@@ -57,23 +69,24 @@
 							</tr>
 						</thead>
 						<tbody>
-							<tr>
-								<td scope="row"></td>
-								<td></td>
-								<td></td>
-								<td></td>
-								<td></td>
-								<td></td>
-								<td></td>
-								<td></td>
-								<td></td>
+							<tr th:each="studentLecture : ${studentLectureList}">
+								<td scope="row" th:text="${studentLecture.year}"></td>
+								<td th:text="${studentLecture.semester}"></td>
+								<td th:text="${studentLecture.lectureCodeDetail}"></td>
+								<td th:text="${studentLecture.lectureId}"></td>
+								<td th:text="${studentLecture.lectureName}"></td>
+								<td th:text="${studentLecture.type}"></td>
+								<td th:text="${studentLecture.professorName}"></td>
+								<td th:text="${studentLecture.credit}"></td>
+								<td th:text="${studentLecture.grade}"></td>
 							</tr>
 						</tbody>
 					</table>
-					<p style="font-size: 25px;">아직 이번 학기에 점수가 입력된 강의가 없습니다.</p>
 				</div>
+				<p style="font-size: 25px;" th:unless="${!#lists.isEmpty(studentLectureList)}">아직 이번 학기에 점수가 입력된 강의가 없습니다.</p>
 				
-				<div>
+				<div th:if="${studentLectureScore != null}">
+					<h4>평점</h4>
 					<table class="table table-bordered border-secondary-subtle">
 						<thead>
 							<tr class="table-secondary">
@@ -86,11 +99,11 @@
 						</thead>
 						<tbody>
 							<tr>
-								<td scope="row"></td>
-								<td></td>
-								<td></td>
-								<td></td>
-								<td></td>
+								<td scope="row" th:text="${studentLectureScore.year} + '년'"></td>
+								<td th:text="${studentLectureScore.semester} + '학기'"></td>
+								<td th:text="${studentLectureScore.totalCredit} + '점'"></td>
+								<td th:text="${studentLectureScore.totalGetCredit} + '점'"></td>
+								<td th:text="${studentLectureScore.averageScore}"></td>
 							</tr>
 						</tbody>
 					</table>

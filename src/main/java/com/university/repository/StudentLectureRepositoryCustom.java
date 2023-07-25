@@ -3,6 +3,7 @@ package com.university.repository;
 import java.util.List;
 
 import com.university.dto.StudentInfoOfLectureDto;
+import com.university.dto.StudentLectureScoreDto;
 import com.university.dto.StudentLectureScoreInfoDto;
 import com.university.entity.Lecture;
 import com.university.entity.StudentLecture;
@@ -19,4 +20,8 @@ public interface StudentLectureRepositoryCustom {
 	StudentInfoOfLectureDto getStudentInfoForModifyGrade(Long lectureId, Long studentId);
 	
 	List<StudentLectureScoreInfoDto> getStudentLectureScoreInfoList(Long studentId, Integer year, Integer semester, String type);
+	
+	Integer getTotalCreditOfStudentLecture(Long studentId, Integer year, Integer semester, String type, String grade);
+	
+	Double getTotalScoreOfStudentLecture(Long studentId, Integer year, Integer semester, String type);
 }

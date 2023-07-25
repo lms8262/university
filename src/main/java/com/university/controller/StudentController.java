@@ -22,10 +22,13 @@ import com.university.dto.DepartmentDto;
 import com.university.dto.LectureScheduleDto;
 import com.university.dto.LectureSearchDto;
 import com.university.dto.StudentInfoDto;
+import com.university.dto.StudentLectureScoreDto;
+import com.university.dto.StudentLectureScoreInfoDto;
 import com.university.dto.UserInfoUpdateDto;
 import com.university.service.DepartmentService;
 import com.university.service.LectureRegistrationService;
 import com.university.service.LectureService;
+import com.university.service.StudentService;
 import com.university.service.UserService;
 
 import jakarta.persistence.EntityNotFoundException;
@@ -40,6 +43,7 @@ public class StudentController {
 	private final DepartmentService departmentService;
 	private final LectureService lectureService;
 	private final LectureRegistrationService lectureRegistrationService;
+	private final StudentService studentService; 
 	
 	// 학생 정보 화면
 	@GetMapping(value = "/students/info")
@@ -151,6 +155,11 @@ public class StudentController {
 	@GetMapping(value = "/students/score/current")
 	public String currentScore(Principal principal, Model model) {
 		Long studentId = Long.parseLong(principal.getName());
+		List<StudentLectureScoreInfoDto> studentLectureList = studentService.getCurrentStudentLectureList(studentId);
+		StudentLectureScoreDto studentLectureScore = studentService.getCurrentStudentScore(studentId);
+		
+		model.addAttribute("studentLectureList", studentLectureList);
+		model.addAttribute("studentLectureScore", studentLectureScore);
 		return "student/currentScore";
 	}
 	
