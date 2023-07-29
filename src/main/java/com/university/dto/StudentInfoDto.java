@@ -2,6 +2,7 @@ package com.university.dto;
 
 import java.time.LocalDate;
 
+import com.querydsl.core.annotations.QueryProjection;
 import com.university.entity.Student;
 import com.university.entity.User;
 
@@ -50,4 +51,21 @@ public class StudentInfoDto {
 	private Integer grade;
 	
 	private Integer semester;
+	
+	@QueryProjection
+	public StudentInfoDto(Long id, LocalDate entranceDate, String name, LocalDate birthDate, String gender, String tel,
+			String email, String address, String departmentName, Integer grade, Integer semester) {
+		this.id = id;
+		this.entranceDate = entranceDate;
+		this.name = name;
+		this.birthDate = birthDate;
+		this.gender = gender;
+		this.tel = tel;
+		this.email = email;
+		this.address = address;
+		this.departmentName = departmentName;
+		this.grade = grade;
+		this.semester = semester;
+	}
+	
 }

@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{layouts/layout1}">
+
+<!-- 각 페이지의 CSS가 작성될 위치 -->
+<th:block layout:fragment="css">
+	<style>
+		h3 {
+			font-size: 28px;
+		}
+		
+		h2 {
+			font-size: 32px;
+		}
+		
+		.mgmt_btn {
+			text-align: center;
+			font-weight: bold;
+		}
+		
+		.mgmt_btn button {
+			background-color: #cadfe3;
+			padding: 3px;
+			border: 1px solid cadetblue;
+			border-radius: 10px;
+		}
+	</style>
+</th:block>
+
+<div layout:fragment="content">
+	<div class="d-flex">
+		<aside class="sidebar d-flex flex-column align-items-center">
+			<div class="sidebar_subject">
+				<h3>학사관리</h3>
+			</div>
+			<div class="sidebar_list">
+				<ul>
+					<li><a href="/staffs/management/list/student">학생 명단 조회</a></li>
+					<li><a href="/staffs/management/list/professor">교수 명단 조회</a></li>
+					<li><a class="active_tab">단과대 관리</a></li>
+					<li><a>학과 관리</a></li>
+					<li><a>강의실 관리</a></li>
+					<li><a>강의 관리</a></li>
+				</ul>
+			</div>
+		</aside>
+
+		<main>
+			<div class="main_subject">
+				<h2>단과대 관리</h2>
+			</div>
+			<div class="main_content">
+			
+				<div>
+					<table class="table table-bordered border-secondary-subtle">
+						<thead>
+						    <tr class="table-secondary">
+						      <th scope="col">단과대 번호</th>
+						      <th scope="col">이름</th>
+						      <th scope="col">수정</th>
+						      <th scope="col">삭제</th>
+						    </tr>
+					  	</thead>
+					  	<tbody>	  		
+							<tr>
+								<td scope="row"></td>
+								<td></td>
+								<td class="mgmt_btn">
+									<button type="button" th:value="" onclick="(this.value)">수정</button>
+								</td>
+								<td class="mgmt_btn">
+									<button type="button" th:value="" onclick="(this.value)">삭제</button>
+								</td>
+							</tr>
+					  	</tbody>
+					</table>
+				</div>
+				
+			</div>
+		</main>
+	</div>
+</div>
+
+<!-- 각 페이지의 자바스크립트가 작성될 위치 -->
+<th:block layout:fragment="script">
+	<script th:inline="javascript">
+		$(document).ready(function() {
+			$(".uni_mgmt").addClass("active_tab");
+		});
+	</script>
+</th:block>
+
+</html>

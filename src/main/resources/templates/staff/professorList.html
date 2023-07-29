@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{layouts/layout1}">
+
+<!-- 각 페이지의 CSS가 작성될 위치 -->
+<th:block layout:fragment="css">
+	<style>
+		h3 {
+			font-size: 28px;
+		}
+		
+		h2 {
+			font-size: 32px;
+		}
+	</style>
+</th:block>
+
+<div layout:fragment="content">
+	<div class="d-flex">
+		<aside class="sidebar d-flex flex-column align-items-center">
+			<div class="sidebar_subject">
+				<h3>학사관리</h3>
+			</div>
+			<div class="sidebar_list">
+				<ul>
+					<li><a href="/staffs/management/list/student">학생 명단 조회</a></li>
+					<li><a href="/staffs/management/list/professor" class="active_tab">교수 명단 조회</a></li>
+					<li><a>단과대 관리</a></li>
+					<li><a>학과 관리</a></li>
+					<li><a>강의실 관리</a></li>
+					<li><a>강의 관리</a></li>
+				</ul>
+			</div>
+		</aside>
+
+		<main>
+			<div class="main_subject">
+				<h2>교수 명단 조회</h2>
+			</div>
+			<div class="main_content">
+			
+				<form action="/staffs/management/list/professor/0" method="get">
+					<div class="search_form" th:objcet="${userSearchDto}">
+						<label th:for="departmentId">학과</label>
+						<select th:name="departmentId" th:id="departmentId">
+							<option value="0">전체</option>
+							<option th:each="department : ${departments}" th:value="${department.id}" th:text="${department.name}"></option>
+						</select>
+						
+						<label th:for="userId">교번</label>
+						<input type="text" th:name="userId" th:id="userId" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');">
+						
+						<button type="submit">&nbsp;<span>조회</span>&nbsp;<i class="fa-solid fa-magnifying-glass"></i>&nbsp;</button>
+					</div>
+				</form>
+				
+				<div>
+					<table class="table table-bordered border-secondary-subtle">
+						<thead>
+						    <tr class="table-secondary">
+						      <th scope="col">교번</th>
+						      <th scope="col">이름</th>
+						      <th scope="col">성별</th>
+						      <th scope="col">생년월일</th>
+						      <th scope="col">전화번호</th>
+						      <th scope="col">이메일</th>
+						      <th scope="col">주소</th>
+						      <th scope="col">학과</th>
+						      <th scope="col">고용일</th>
+						    </tr>
+					  	</thead>
+					  	<tbody>	  		
+							<tr th:each="professorInfo : ${professorInfos.getContent()}">
+								<td scope="row" th:text="${professorInfo.id}"></td>
+								<td th:text="${professorInfo.name}"></td>
+								<td th:text="${professorInfo.gender}"></td>
+								<td th:text="${professorInfo.birthDate}"></td>
+								<td th:text="${professorInfo.tel}"></td>
+								<td th:text="${professorInfo.email}"></td>
+								<td th:text="${professorInfo.address}"></td>
+								<td th:text="${professorInfo.departmentName}"></td>
+								<td th:text="${professorInfo.hireDate}"></td>
+							</tr>
+					  	</tbody>
+					</table>
+				</div>
+				
+				<div class="d-flex justify-content-center">
+					<nav aria-label="Page navigation"
+					th:with="start=${(professorInfos.number / maxPage) * maxPage +1},
+					end=${(professorInfos.totalPages == 0)? 1:
+					(start + (maxPage -1) < professorInfos.totalPages ?
+					start + (maxPage -1) : professorInfos.totalPages)}">
+						<ul class="pagination">
+						    <li class="page-item" th:classappend="${professorInfos.first} ? 'disabled'">
+						    	<a class="page-link" th:href="@{'/staffs/management/list/professor/' + ${professorInfos.number -1}
+						    	 + '?departmentId=' + ${userSearchDto.departmentId}
+						    	 + '&userId=' + ${userSearchDto.userId}}">이전</a>
+						    </li>
+						    <li class="page-item" 
+						    	th:each="page : ${#numbers.sequence(start, end)}"
+			    				th:classappend="${professorInfos.number eq page -1} ? 'active_page'">
+						    	<a class="page-link" th:href="@{'/staffs/management/list/professor/' + ${page -1}
+						    	 + '?departmentId=' + ${userSearchDto.departmentId}
+						    	 + '&userId=' + ${userSearchDto.userId}}">[[${page}]]</a>
+									    </li>
+						    <li class="page-item" th:classappend="${professorInfos.last} ? 'disabled'">
+						    	<a class="page-link" th:href="@{'/staffs/management/list/professor/' + ${professorInfos.number +1}
+						    	 + '?departmentId=' + ${userSearchDto.departmentId}
+						    	 + '&userId=' + ${userSearchDto.userId}}">다음</a>
+						    </li>
+						</ul>
+					</nav>
+				</div>
+				
+			</div>
+		</main>
+	</div>
+</div>
+
+<!-- 각 페이지의 자바스크립트가 작성될 위치 -->
+<th:block layout:fragment="script">
+	<script th:inline="javascript">
+		$(document).ready(function() {
+			$(".uni_mgmt").addClass("active_tab");
+			
+			if([[${userSearchDto.departmentId}]] == 0) {
+				$("#departmentId").val(0).prop("selected", true);
+			} else {
+				$("#departmentId").val([[${userSearchDto.departmentId}]]).prop("selected", true);
+			}
+			
+			$("#userId").val([[${userSearchDto.userId}]]);
+		});
+	</script>
+</th:block>
+
+</html>
