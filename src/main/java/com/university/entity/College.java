@@ -24,6 +24,14 @@ public class College {
 	@Column(nullable = false, length = 15)
 	private String name;
 	
-	@Column(columnDefinition = "char(1) unique" , nullable = false)
-	private Character collegeCode;
+	@Column(columnDefinition = "char(1) unique", nullable = false)
+	private String collegeCode;
+	
+	public static College createCollege(String name, String collegeCode) {
+		College college = new College();
+		college.setName(name);
+		college.setCollegeCode(collegeCode);
+		
+		return college;
+	}
 }

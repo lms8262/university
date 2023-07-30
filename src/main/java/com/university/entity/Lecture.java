@@ -62,19 +62,19 @@ public class Lecture {
 	private Integer endTime;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "department_id", nullable = false)
+	@JoinColumn(name = "department_id")
 	private Department department;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "lecture_room_id", nullable = false)
+	@JoinColumn(name = "lecture_room_id")
 	private LectureRoom lectureRoom;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "professor_id", nullable = false)
+	@JoinColumn(name = "professor_id")
 	private Professor professor;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "lecture_code_id", nullable = false)
+	@JoinColumn(name = "lecture_code_id")
 	private LectureCode lectureCode;
 	
 	// 수강신청시 수강인원 추가

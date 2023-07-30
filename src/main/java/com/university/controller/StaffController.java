@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
+import com.university.dto.CollegeFormDto;
 import com.university.dto.DepartmentDto;
 import com.university.dto.ProfessorInfoDto;
 import com.university.dto.StaffInfoDto;
@@ -73,6 +74,7 @@ public class StaffController {
 		return "redirect:/staffs/info";
 	}
 	
+	// 학생 목록
 	@GetMapping(value = {"/staffs/management/list/student", "/staffs/management/list/student/{page}"})
 	public String studentList(UserSearchDto userSearchDto, @PathVariable("page") Optional<Integer> page, Model model) {
 		List<DepartmentDto> departments = departmentService.findAllDepartmentList();
@@ -87,6 +89,7 @@ public class StaffController {
 		return "staff/studentList";
 	}
 	
+	// 교수 목록
 	@GetMapping(value = {"/staffs/management/list/professor", "/staffs/management/list/professor/{page}"})
 	public String professorList(UserSearchDto userSearchDto, @PathVariable("page") Optional<Integer> page, Model model) {
 		List<DepartmentDto> departments = departmentService.findAllDepartmentList();
@@ -99,5 +102,45 @@ public class StaffController {
 		model.addAttribute("maxPage", 5);
 		
 		return "staff/professorList";
+	}
+	
+	// 단과대 목록
+	@GetMapping(value = "/staffs/management/list/college")
+	public String collegeList(Model model) {
+		List<CollegeFormDto> collegeList = staffService.getCollegeList();
+		
+		model.addAttribute("collegeList", collegeList);
+		return "staff/collegeMgmt";
+	}
+	
+	// 단과대 신규 등록 페이지
+	@GetMapping(value = "/staffs/management/register/college")
+	public String collegeRegisterForm(Model model) {
+		model.addAttribute("collegeFormDto", new CollegeFormDto());
+		return "staff/collegeRegister";
+	}
+	
+	// 단과대 신규 등록
+	@PostMapping(value = "/staffs/management/register/college")
+	public String collegeRegister(@Valid CollegeFormDto collegeFormDto, BindingResult bindingResult, Model model) {
+		if(bindingResult.hasErrors()) {
+			return "staff/collegeRegister";
+		}
+		
+		try {
+			staffService.createCollege(collegeFormDto);
+		} catch (Exception e) {
+			e.printStackTrace();
+			model.addAttribute("errorMessage", e.getMessage());
+			return "staff/collegeRegister";
+		}
+		
+		return "redirect:/staffs/management/list/college";
+	}
+	
+	// 단과대 정보 수정 페이지
+	@GetMapping(value = "/staffs/management/modify/college/{collegeId}")
+	public String collegeModifyForm(Model model, @PathVariable Long collegeId) {
+		return "staff/collegeModify";
 	}
 }

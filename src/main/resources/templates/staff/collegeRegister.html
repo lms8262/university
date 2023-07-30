@@ -29,6 +29,14 @@
 		.table {
 			width: inherit;
 		}
+		
+		form > div {
+			margin-bottom: 10px;
+		}
+		
+		.fieldError {
+			color: #bd2130;
+		}
 	</style>
 </th:block>
 
@@ -52,41 +60,32 @@
 
 		<main>
 			<div class="main_subject">
-				<h2>단과대 관리</h2>
+				<h2>신규 단과대 등록</h2>
 			</div>
 			<div class="main_content">
 			
 				<div>
-					<button class="insert_btn" onclick="location.href='/staffs/management/register/college'">단과대 등록</button>
+					<form action="/staffs/management/register/college" method="post" th:object="${collegeFormDto}">
+						<div>						
+							<label th:for="collegeName">단과대명</label>
+							<input type="text" maxlength="15" th:field="*{collegeName}">
+							<p th:if="${#fields.hasErrors('collegeName')}" th:errors="*{collegeName}" class="fieldError"></p>
+						</div>
+						
+						<div>						
+							<label th:for="collegeCode">단과대 코드</label>
+							<input type="text" maxlength="1" th:field="*{collegeCode}">
+							<p th:if="${#fields.hasErrors('collegeCode')}" th:errors="*{collegeCode}" class="fieldError"></p>
+						</div>
+						
+						<div>						
+							<button type="submit" class="insert_btn">등록</button>
+						</div>
+						
+						<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+					</form>
 				</div>
 			
-				<div>
-					<table class="table table-bordered border-secondary-subtle">
-						<thead>
-						    <tr class="table-secondary">
-						      <th scope="col">단과대 번호</th>
-						      <th scope="col">이름</th>
-						      <th scope="col">단과대 코드</th>
-						      <th scope="col">수정</th>
-						      <th scope="col">삭제</th>
-						    </tr>
-					  	</thead>
-					  	<tbody>	  		
-							<tr th:each="college : ${collegeList}">
-								<td scope="row" th:text="${college.collegeId}"></td>
-								<td th:text="${college.collegeName}"></td>
-								<td th:text="${college.collegeCode}"></td>
-								<td class="mgmt_btn">
-									<button type="button" th:value="${college.collegeId}">수정</button>
-								</td>
-								<td class="mgmt_btn">
-									<button type="button" th:value="${college.collegeId}">삭제</button>
-								</td>
-							</tr>
-					  	</tbody>
-					</table>
-				</div>
-				
 			</div>
 		</main>
 	</div>
@@ -96,6 +95,11 @@
 <th:block layout:fragment="script">
 	<script th:inline="javascript">
 		$(document).ready(function() {
+			var errorMessage = [[${errorMessage}]];
+	    	if(errorMessage != null){
+	        	alert(errorMessage);
+	    	}
+			
 			$(".uni_mgmt").addClass("active_tab");
 		});
 	</script>

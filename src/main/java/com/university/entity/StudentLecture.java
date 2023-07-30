@@ -1,5 +1,8 @@
 package com.university.entity;
 
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -25,14 +28,16 @@ public class StudentLecture {
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "student_id", nullable = false)
+	@OnDelete(action = OnDeleteAction.CASCADE)
 	private Student student;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "lecture_id", nullable = false)
+	@OnDelete(action = OnDeleteAction.CASCADE)
 	private Lecture lecture;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "grade", nullable = false)
+	@JoinColumn(name = "grade")
 	private GradeScore gradeScore;
 	
 	public static StudentLecture createStudentLecture(Student student, Lecture lecture, GradeScore gradeScore) {
