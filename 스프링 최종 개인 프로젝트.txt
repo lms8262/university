@@ -1,0 +1,159 @@
+사용자(학생, 교수, 교직원)
+
+학생
+학번(id)
+이름
+성별
+생년월일
+주소
+이메일
+휴대폰번호
+학과
+입학일
+학년
+학기
+
+교수
+
+교직원
+
+단과대
+
+학과
+
+강의
+
+강의실
+
+수강신청
+
+공지사항
+
+학사일정
+
+시퀀스 필요한 테이블
+department	학과(3자리 101~)
+student	학생(8자리 23000001~)
+professor	교수(6자리 230001~)
+staff	교직원(4자리 2301~)
+lecture	강의(5자리 10001~)
+
+LectureRegistration
+
+html 페이지
+학생
+내 정보(공통, 내 정보 조회, 권한에 따라 살짝씩 다름)	user/
+수강신청(강의시간표 조회, 수강신청, 수강신청 내역조회, 수강신청 취소)	student/
+성적(전체 성적 확인 학점표시, 성적 총합 학점 및 평점)	student/
+학사정보(공통, 공지사항 조회, 학사일정 조회)	user/
+
+
+교수
+내 정보(공통, 내 정보 조회, 권한에 따라 살짝씩 다름)	user/
+강의(내 강의 조회(강의목록 띄우기, 클릭시 강의 듣는 학생 목록 조회 점수입력버튼있음))	professor/
+학사정보(공통, 공지사항 조회, 학사일정 조회)	user/
+
+교직원
+홈
+내 정보(공통, 내 정보 조회, 권한에 따라 살짝씩 다름)	user/
+학사관리(학생, 교수, 교직원 명단 조회, 학생, 교수, 교직원 등록)
+(단과대학, 학과, 강의실, 강의 등록) staff/
+학사정보(공통, 공지사항 조회, 학사일정 조회, 교직원만 공지사항, 학사일정 등록) user/
+
+정보 조회 출력할 정보
+공통
+학번, 교번 , 직번(수정불가)
+이름(수정불가)
+성별(수정불가)
+생년월일(수정불가)
+주소
+이메일
+전화번호
+
+학생
+입학일(수정불가)
+학년(수정불가)
+학기(수정불가)
+학과(수정불가)
+
+교수
+고용일(수정불가)
+학과(수정불가)
+
+교직원
+고용일(수정불가)
+
+
+강의 시간표 조회
+개설학과, 강의번호, 강의구분, 강의명, 담당교수, 학점, 요일 및 시간(강의실), 현재인원, 정원
+
+
+
+교수 번호(로그인한 교수 id)
+
+강의번호		lecture
+강의구분코드	lecture_code
+전공여부		lecture
+강의명		lecture
+학점		lecture
+요일 시간 (강의실)	lecture lecture lecture lecture_room
+현재인원		lecture
+정원		lecture
+
+
+점수 입력시 수강신청 -> 수강내역 테이블로 이동
+
+
+점수 입력시 가져올 정보
+강의명
+
+점수 미입력 학생(수강신청 테이블)
+학생 학번		lecture_registration.student.id
+학생 이름		user테이블하고 join	연관관계X
+학생 학과명	lecture_registration.student.department.name
+
+점수 입력 학생(수강내역 테이블) student_lecture 테이블, 
+학생 학번		student_lecture.student.id
+학생 이름		user테이블하고 join	연관관계X
+학생 학과명 	student_lecture.student.department.name
+등급		student_lecture.grade	A+ ~ F
+
+/*<![CDATA[*/	
+	[[${userId}]]
+/*]]>*/
+
+currentScore
+semesterScore
+totalScore
+
+년도	lecture.year
+학기	lecture.semester
+강의코드	lecture_code.detail
+강의번호	lecture.id
+강의명	lecture.name
+강의구분	lecture.type
+담당교수 user.name
+이수학점	lecture.credit
+성적(등급)	student_lectrue.grade
+
+년도	lecture.year
+학기	lecture.semester
+신청학점	sum(lecture.credit)
+취득학점(F제외)	sum(lecture.credit) f제외
+평균 평점	sum(grade_score.score) / sum(lecture.credit)
+sum(grade_score.score * lecture.credit)
+
+년도	integer
+학기	integer
+전공여부	string
+
+student
+department
+user
+3개 join
+
+professor
+department
+user
+3개 join
+
