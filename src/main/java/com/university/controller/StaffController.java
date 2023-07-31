@@ -7,12 +7,17 @@ import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.university.dto.CollegeFormDto;
 import com.university.dto.DepartmentDto;
@@ -140,7 +145,49 @@ public class StaffController {
 	
 	// 단과대 정보 수정 페이지
 	@GetMapping(value = "/staffs/management/modify/college/{collegeId}")
-	public String collegeModifyForm(Model model, @PathVariable Long collegeId) {
+	public String collegeModifyForm(Model model, @PathVariable Long collegeId, RedirectAttributes redirectAttributes) {
+		
+		try {
+			CollegeFormDto collegeFormDto = staffService.findCollegeById(collegeId);
+			model.addAttribute("collegeFormDto", collegeFormDto);			
+		} catch (Exception e) {
+			e.printStackTrace();
+			redirectAttributes.addFlashAttribute("errorMessage", "단과대 정보를 가져오는데 문제가 발생했습니다.");
+			return "redirect:/staffs/management/list/college";
+		}
+		
 		return "staff/collegeModify";
+	}
+	
+	// 단과대 정보 수정
+	@PostMapping(value = "/staffs/management/modify/college/{collegeId}")
+	public String collegeModify(@Valid CollegeFormDto collegeFormDto, BindingResult bindingResult, @PathVariable Long collegeId, Model model) {
+		if(bindingResult.hasErrors()) {
+			return "staff/collegeModify";
+		}
+		
+		try {
+			staffService.updateCollege(collegeFormDto);
+		} catch (Exception e) {
+			e.printStackTrace();
+			model.addAttribute("errorMessage", e.getMessage());
+			return "staff/collegeModify";
+		}
+		
+		return "redirect:/staffs/management/list/college";
+	}
+	
+	// 단과대 삭제
+	@DeleteMapping(value = "/staffs/management/delete/college/{collegeId}")
+	public @ResponseBody ResponseEntity collegeDelete(@PathVariable Long collegeId) {
+		
+		try {
+			staffService.deleteCollege(collegeId);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new ResponseEntity<String>("단과대 삭제 중 문제가 발생했습니다.", HttpStatus.FORBIDDEN);
+		}
+		
+		return new ResponseEntity<Long>(collegeId, HttpStatus.OK);
 	}
 }

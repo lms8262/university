@@ -251,7 +251,12 @@ public class ProfessorController {
 			 return new ResponseEntity<String>("강의를 수강 중인 학생이 아닙니다.", HttpStatus.FORBIDDEN);
 		 }
 		 
-		 professorService.deleteScore(lectureId, studentId);
+		 try {
+			 professorService.deleteScore(lectureId, studentId);			
+		 } catch (Exception e) {
+			e.printStackTrace();
+			return new ResponseEntity<String>("성적 삭제 중 문제가 발생했습니다.", HttpStatus.FORBIDDEN);
+		 }
 		 
 		 return new ResponseEntity<Long>(lectureId, HttpStatus.OK);
 	 }

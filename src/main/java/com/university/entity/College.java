@@ -34,4 +34,9 @@ public class College {
 		
 		return college;
 	}
+	
+	public void updateCollege(String name, String collegeCode) {
+		this.name = name;
+		this.collegeCode = collegeCode;
+	}
 }

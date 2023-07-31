@@ -15,9 +15,12 @@ import com.university.dto.UserSearchDto;
 import com.university.entity.College;
 import com.university.exception.OverlapException;
 import com.university.repository.CollegeRepository;
+import com.university.repository.DepartmentRepository;
+import com.university.repository.LectureRoomRepository;
 import com.university.repository.ProfessorRepository;
 import com.university.repository.StudentRepository;
 
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -28,6 +31,8 @@ public class StaffService {
 	private final StudentRepository studentRepository;
 	private final ProfessorRepository professorRepository; 
 	private final CollegeRepository collegeRepository;
+	private final DepartmentRepository departmentRepository;
+	private final LectureRoomRepository lectureRoomRepository;
 	
 	// 학생 명단 조회
 	public Page<StudentInfoDto> getStudentInfoList(UserSearchDto userSearchDto, Pageable pageable) {
@@ -50,11 +55,23 @@ public class StaffService {
 		return collegeFromDtoList;
 	}
 	
+	// 단과대명 중복 체크
+	private boolean checkEqualCollegeName(String collegeName) {
+		College college = collegeRepository.findByName(collegeName);
+		
+		// 이미 사용중인 단과대명일때
+		if(college != null) {
+			return false;
+		}
+		
+		return true;
+	}
+	
 	// 단과대 코드 중복 체크
 	private boolean checkEqualCollegeCode(String collegeCode) {
 		College college = collegeRepository.findByCollegeCode(collegeCode);
 		
-		// 이미 등록된 코드일때
+		// 이미 사용중인 코드일때
 		if(college != null) {
 			return false;
 		}
@@ -65,6 +82,10 @@ public class StaffService {
 	// 신규 단과대 생성
 	@Transactional
 	public void createCollege(CollegeFormDto collegeFormDto) {
+		if(!checkEqualCollegeName(collegeFormDto.getCollegeName())) {
+			throw new OverlapException("이미 사용중인 단과대명입니다.");
+		}
+		
 		if(!checkEqualCollegeCode(collegeFormDto.getCollegeCode())) {
 			throw new OverlapException("이미 사용중인 단과대 코드입니다.");
 		}
@@ -73,4 +94,36 @@ public class StaffService {
 		collegeRepository.save(college);
 	}
 	
+	// 단과대 정보 수정시 기존 정보 가져오기
+	public CollegeFormDto findCollegeById(Long collegeId) {
+		College college = collegeRepository.findById(collegeId).orElseThrow(EntityNotFoundException::new);
+		return CollegeFormDto.of(college);
+	}
+	
+	// 단과대 정보 수정
+	@Transactional
+	public void updateCollege(CollegeFormDto collegeFormDto) {
+		if(collegeRepository.findByNameAndIdNot(collegeFormDto.getCollegeName(), collegeFormDto.getCollegeId()) != null) {
+			throw new OverlapException("이미 사용중인 단과대명입니다.");
+		}
+		
+		if(collegeRepository.findByCollegeCodeAndIdNot(collegeFormDto.getCollegeCode(), collegeFormDto.getCollegeId()) != null) {
+			throw new OverlapException("이미 사용중인 단과대 코드입니다.");
+		}
+		
+		College college = collegeRepository.findById(collegeFormDto.getCollegeId()).orElseThrow(EntityNotFoundException::new);
+		college.updateCollege(collegeFormDto.getCollegeName(), collegeFormDto.getCollegeCode());
+	}
+	
+	// 단과대 삭제(단과대 테이블 참조중인 테이블 fk null로 바꿔주기)
+	@Transactional
+	public void deleteCollege(Long collegeId) {
+		College college = collegeRepository.findById(collegeId).orElseThrow(EntityNotFoundException::new);
+		
+		// College 테이블 참조중인 테이블 fk null로 바꾸기
+		departmentRepository.setCollegeNull(college);
+		lectureRoomRepository.setLectureRoomNull(college);
+		
+		collegeRepository.delete(college);
+	}
 }

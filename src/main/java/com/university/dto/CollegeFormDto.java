@@ -1,7 +1,5 @@
 package com.university.dto;
 
-import org.hibernate.validator.constraints.Length;
-
 import com.university.entity.College;
 
 import jakarta.validation.constraints.NotEmpty;
