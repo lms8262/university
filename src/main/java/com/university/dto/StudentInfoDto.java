@@ -25,7 +25,9 @@ public class StudentInfoDto {
 		this.tel = user.getTel();
 		this.email = user.getEmail();
 		this.address = user.getAddress();
-		this.departmentName = student.getDepartment().getName();
+		if(student.getDepartment() != null) {			
+			this.departmentName = student.getDepartment().getName();
+		}
 		this.grade = student.getGrade();
 		this.semester = student.getSemester();
 	}

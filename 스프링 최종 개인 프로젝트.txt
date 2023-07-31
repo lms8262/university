@@ -162,3 +162,8 @@ user
 
 @Valid CollegeFormDto collegeFormDto, BindingResult bindingResult, 
 
+department
+학과 id
+학과명
+단과대명
+department college join

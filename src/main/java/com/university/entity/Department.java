@@ -30,4 +30,16 @@ public class Department {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "college_id")
 	private College college;
+	
+	public static Department createDepartment(String name, College college) {
+		Department department = new Department();
+		department.setName(name);
+		department.setCollege(college);
+		return department;
+	}
+	
+	public void updateDepartment(String name, College college) {
+		this.name = name;
+		this.college = college;
+	}
 }

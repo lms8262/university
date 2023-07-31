@@ -1,10 +1,150 @@
 <!DOCTYPE html>
-<html>
-<head>
-<meta charset="UTF-8">
-<title>Insert title here</title>
-</head>
-<body>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{layouts/layout1}">
 
-</body>
+<head>
+	<meta name="_csrf" th:content="${_csrf.token}" />
+	<meta name="_csrf_header" th:content="${_csrf.headerName}" />
+</head>
+
+<!-- 각 페이지의 CSS가 작성될 위치 -->
+<th:block layout:fragment="css">
+	<style>
+		h3 {
+			font-size: 28px;
+		}
+		
+		h2 {
+			font-size: 32px;
+		}
+		
+		.mgmt_btn {
+			text-align: center;
+			font-weight: bold;
+		}
+		
+		.mgmt_btn button, .insert_btn {
+			background-color: #cadfe3;
+			padding: 3px;
+			border: 1px solid cadetblue;
+			border-radius: 10px;
+		}
+		
+		.table {
+			width: inherit;
+		}
+	</style>
+</th:block>
+
+<div layout:fragment="content">
+	<div class="d-flex">
+		<aside class="sidebar d-flex flex-column align-items-center">
+			<div class="sidebar_subject">
+				<h3>학사관리</h3>
+			</div>
+			<div class="sidebar_list">
+				<ul>
+					<li><a href="/staffs/management/list/student">학생 명단 조회</a></li>
+					<li><a href="/staffs/management/list/professor">교수 명단 조회</a></li>
+					<li><a href="/staffs/management/list/college">단과대 관리</a></li>
+					<li><a href="/staffs/management/list/department" class="active_tab">학과 관리</a></li>
+					<li><a>강의실 관리</a></li>
+					<li><a>강의 관리</a></li>
+				</ul>
+			</div>
+		</aside>
+
+		<main>
+			<div class="main_subject">
+				<h2>학과 관리</h2>
+			</div>
+			<div class="main_content">
+			
+				<div>
+					<button class="insert_btn" onclick="location.href='/staffs/management/register/department'">학과 등록</button>
+				</div>
+			
+				<div>
+					<table class="table table-bordered border-secondary-subtle">
+						<thead>
+						    <tr class="table-secondary">
+						      <th scope="col">학과 번호</th>
+						      <th scope="col">학과명</th>
+						      <th scope="col">소속 단과대명</th>
+						      <th scope="col">수정</th>
+						      <th scope="col">삭제</th>
+						    </tr>
+					  	</thead>
+					  	<tbody>	  		
+							<tr th:each="department : ${departmentList}">
+								<td scope="row" th:text="${department.departmentId}"></td>
+								<td th:text="${department.departmentName}"></td>
+								<td th:text="${department.collegeName}"></td>
+								<td class="mgmt_btn">
+									<button type="button" th:onclick="|location.href='@{/staffs/management/modify/department/}@{${department.departmentId}}'|">수정</button>
+								</td>
+								<td class="mgmt_btn">
+									<button type="button" th:onclick="deleteDepartment([[${department.departmentId}]])">삭제</button>
+								</td>
+							</tr>
+					  	</tbody>
+					</table>
+				</div>
+				
+			</div>
+		</main>
+	</div>
+</div>
+
+<!-- 각 페이지의 자바스크립트가 작성될 위치 -->
+<th:block layout:fragment="script">
+	<script th:inline="javascript">
+		$(document).ready(function() {
+			var errorMessage = [[${errorMessage}]];
+	    	if(errorMessage != null){
+	        	alert(errorMessage);
+	    	}
+			
+			$(".uni_mgmt").addClass("active_tab");
+		});
+		
+		function deleteDepartment(departmentId) {
+			const deleteConf = confirm("학과를 삭제하시겠습니까?");
+			
+			if(!deleteConf) return; // 취소버튼 누를시
+			
+			var token = $("meta[name='_csrf']").attr("content");
+	        var header = $("meta[name='_csrf_header']").attr("content");
+	        
+	        var url = "/staffs/management/delete/department/" + departmentId;
+			
+			$.ajax({
+	            url : url,
+	            type : "DELETE",
+	            contentType : "application/json",
+	            beforeSend : function(xhr){
+	                // 데이터를 전송하기 전에 헤더에 csrf값을 설정
+	                xhr.setRequestHeader(header, token);
+	            },
+	            dataType : "json",
+	            cache   : false,
+	            success  : function(result, status){
+	            	alert("학과를 삭제했습니다.");
+	            	
+		            location.href = '/staffs/management/list/department';
+	            },
+	            error : function(jqXHR, status, error){
+	                if(jqXHR.status == '401'){
+	                    alert('로그인 후 이용해주세요');
+	                    location.href='/users/login';
+	                } else{
+	                    alert(jqXHR.responseText);
+	                }
+	            }
+	        });
+		}
+	</script>
+</th:block>
+
 </html>

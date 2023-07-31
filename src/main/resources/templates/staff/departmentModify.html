@@ -19,7 +19,7 @@
 			font-weight: bold;
 		}
 		
-		.mgmt_btn button, .insert_btn {
+		.mgmt_btn button, .update_btn {
 			background-color: #cadfe3;
 			padding: 3px;
 			border: 1px solid cadetblue;
@@ -50,8 +50,8 @@
 				<ul>
 					<li><a href="/staffs/management/list/student">학생 명단 조회</a></li>
 					<li><a href="/staffs/management/list/professor">교수 명단 조회</a></li>
-					<li><a href="/staffs/management/list/college" class="active_tab">단과대 관리</a></li>
-					<li><a href="/staffs/management/list/department">학과 관리</a></li>
+					<li><a href="/staffs/management/list/college">단과대 관리</a></li>
+					<li><a href="/staffs/management/list/department" class="active_tab">학과 관리</a></li>
 					<li><a>강의실 관리</a></li>
 					<li><a>강의 관리</a></li>
 				</ul>
@@ -60,26 +60,29 @@
 
 		<main>
 			<div class="main_subject">
-				<h2>신규 단과대 등록</h2>
+				<h2>학과 정보 수정</h2>
 			</div>
 			<div class="main_content">
 			
 				<div>
-					<form action="/staffs/management/register/college" method="post" th:object="${collegeFormDto}">
+					<form th:action="'/staffs/management/modify/department/' + ${departmentId}" method="post" th:object="${departmentFormDto}">
+						<input type="hidden" th:field="*{departmentId}">
+						
 						<div>						
-							<label th:for="collegeName">단과대명</label>
-							<input type="text" maxlength="15" th:field="*{collegeName}">
-							<p th:if="${#fields.hasErrors('collegeName')}" th:errors="*{collegeName}" class="fieldError"></p>
+							<label th:for="departmentName">학과명</label>
+							<input type="text" maxlength="15" th:field="*{departmentName}">
+							<p th:if="${#fields.hasErrors('departmentName')}" th:errors="*{departmentName}" class="fieldError"></p>
 						</div>
 						
 						<div>						
-							<label th:for="collegeCode">단과대 코드</label>
-							<input type="text" maxlength="1" th:field="*{collegeCode}">
-							<p th:if="${#fields.hasErrors('collegeCode')}" th:errors="*{collegeCode}" class="fieldError"></p>
+							<label th:for="collegeId">소속 단과대</label>
+							<select th:field="*{collegeId}">
+								<option th:each="college : ${collegeList}" th:value="${college.collegeId}">[[${college.collegeName}]]</option>
+							</select>
 						</div>
 						
 						<div>						
-							<button type="submit" class="insert_btn">등록</button>
+							<button type="submit" class="update_btn">수정</button>
 						</div>
 						
 						<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">

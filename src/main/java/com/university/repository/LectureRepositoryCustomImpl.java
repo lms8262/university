@@ -44,6 +44,11 @@ public class LectureRepositoryCustomImpl implements LectureRepositoryCustom {
 		return departmentId == 0 ? null : QLecture.lecture.department.id.eq(departmentId);
 	}
 	
+	// 소속 학과가 없을때 처리
+	private BooleanExpression departmentIdEqOrLectureTypeEq(Long departmentId) {
+		return departmentId == 0 ? null : (QLecture.lecture.department == null ? null : QLecture.lecture.department.id.eq(departmentId).or(QLecture.lecture.type.eq("교양")));
+	}
+	
 	// 검색어(강의명)가 빈문자열 일때 처리
 	private BooleanExpression lectureNameLike(String lectureName) {
 		return StringUtils.isEmpty(lectureName) ? null : QLecture.lecture.name.like("%" + lectureName + "%");
@@ -149,8 +154,7 @@ public class LectureRepositoryCustomImpl implements LectureRepositoryCustom {
 				.join(lecture.lectureRoom, lectureRoom)
 				.join(lecture.lectureCode, lectureCode)
 				.join(user).on(lecture.professor.id.eq(user.id))
-				.where(lecture.department.id.eq(departmentId)
-						.or(lecture.type.eq("교양")))
+				.where(departmentIdEqOrLectureTypeEq(departmentId))
 				.where(lectureYearEq(SemesterUtil.CURRENT_YEAR))
 				.where(lectureSemesterEq(SemesterUtil.CURRENT_SEMESTER))
 				.orderBy(lecture.type.desc())
@@ -164,8 +168,7 @@ public class LectureRepositoryCustomImpl implements LectureRepositoryCustom {
 				.join(lecture.department, department)
 				.join(lecture.lectureRoom, lectureRoom)
 				.join(user).on(lecture.professor.id.eq(user.id))
-				.where(lecture.department.id.eq(departmentId)
-						.or(lecture.type.eq("교양")))
+				.where(departmentIdEqOrLectureTypeEq(departmentId))
 				.where(lectureYearEq(SemesterUtil.CURRENT_YEAR))
 				.where(lectureSemesterEq(SemesterUtil.CURRENT_SEMESTER))
 				.fetchOne();

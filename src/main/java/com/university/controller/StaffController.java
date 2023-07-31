@@ -21,6 +21,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.university.dto.CollegeFormDto;
 import com.university.dto.DepartmentDto;
+import com.university.dto.DepartmentFormDto;
 import com.university.dto.ProfessorInfoDto;
 import com.university.dto.StaffInfoDto;
 import com.university.dto.StudentInfoDto;
@@ -148,7 +149,7 @@ public class StaffController {
 	public String collegeModifyForm(Model model, @PathVariable Long collegeId, RedirectAttributes redirectAttributes) {
 		
 		try {
-			CollegeFormDto collegeFormDto = staffService.findCollegeById(collegeId);
+			CollegeFormDto collegeFormDto = staffService.findCollegeInfoById(collegeId);
 			model.addAttribute("collegeFormDto", collegeFormDto);			
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -190,4 +191,95 @@ public class StaffController {
 		
 		return new ResponseEntity<Long>(collegeId, HttpStatus.OK);
 	}
+	
+	// 학과 목록
+	@GetMapping(value = "/staffs/management/list/department")
+	public String departmentList(Model model) {
+		List<DepartmentFormDto> departmentList = staffService.getDepartmentList();
+		
+		model.addAttribute("departmentList", departmentList);
+		return "staff/departmentMgmt";
+	}
+	
+	// 학과 신규등록 페이지
+	@GetMapping(value = "/staffs/management/register/department")
+	public String departmentRegisterForm(Model model) {
+		List<CollegeFormDto> collegeList = staffService.getCollegeList();
+		
+		model.addAttribute("collegeList", collegeList);
+		model.addAttribute("departmentFormDto", new DepartmentFormDto());
+		return "staff/departmentRegister";
+	}
+	
+	// 학과 신규 등록
+	@PostMapping(value = "/staffs/management/register/department")
+	public String departmentRegister(@Valid DepartmentFormDto departmentFormDto, BindingResult bindingResult, Model model) {
+		if(bindingResult.hasErrors()) {
+			return "staff/departmentRegister";
+		}
+		
+		try {
+			staffService.createDepartment(departmentFormDto);
+		} catch (Exception e) {
+			e.printStackTrace();
+			model.addAttribute("errorMessage", e.getMessage());
+			List<CollegeFormDto> collegeList = staffService.getCollegeList();
+			model.addAttribute("collegeList", collegeList);
+			return "staff/departmentRegister";
+		}
+				
+		return "redirect:/staffs/management/list/department";
+	}
+	
+	// 학과 정보 수정 페이지
+	@GetMapping(value = "/staffs/management/modify/department/{departmentId}")
+	public String departmentModifyForm(Model model, @PathVariable Long departmentId, RedirectAttributes redirectAttributes) {
+		List<CollegeFormDto> collegeList = staffService.getCollegeList();
+		model.addAttribute("collegeList", collegeList);
+		
+		try {
+			DepartmentFormDto departmentFormDto = staffService.findDepartmentInfoById(departmentId);
+			model.addAttribute("departmentFormDto", departmentFormDto);
+		} catch (Exception e) {
+			e.printStackTrace();
+			redirectAttributes.addFlashAttribute("errorMessage", "학과 정보를 가져오는데 문제가 발생했습니다.");
+			return "redirect:/staffs/management/list/department"; 
+		}
+		
+		return "staff/departmentModify";
+	}
+	
+	// 학과 정보 수정
+	@PostMapping(value = "/staffs/management/modify/department/{departmentId}")
+	public String departmentModify(@Valid DepartmentFormDto departmentFormDto, BindingResult bindingResult, @PathVariable Long departmentId, Model model) {
+		if(bindingResult.hasErrors()) {
+			return "staff/departmentModify";
+		}
+		
+		try {
+			staffService.updateDepartment(departmentFormDto);
+		} catch (Exception e) {
+			e.printStackTrace();
+			model.addAttribute("errorMessage", e.getMessage());
+			List<CollegeFormDto> collegeList = staffService.getCollegeList();
+			model.addAttribute("collegeList", collegeList);
+			return "staff/departmentModify";
+		}
+		
+		return "redirect:/staffs/management/list/department"; 
+	}
+	
+	@DeleteMapping(value = "/staffs/management/delete/department/{departmentId}")
+	public @ResponseBody ResponseEntity departmentDelete(@PathVariable Long departmentId) {
+		
+		try {
+			staffService.deleteDepartment(departmentId);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new ResponseEntity<String>("학과 삭제 중 문제가 발생했습니다.", HttpStatus.FORBIDDEN);
+		}
+		
+		return new ResponseEntity<Long>(departmentId, HttpStatus.OK);
+	}
+	
 }

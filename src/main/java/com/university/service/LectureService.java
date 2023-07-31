@@ -34,7 +34,11 @@ public class LectureService {
 	// 수강 신청 가능 강의 목록 출력
 	public Page<LectureScheduleDto> getRegistrationAbleLectureList(Long userId, Pageable pageable) {
 		Student student = studentRepository.findById(userId).orElseThrow(EntityNotFoundException::new);
-		Long departmentId = student.getDepartment().getId();
+		Long departmentId = 0L;
+		if(student.getDepartment() != null) {			
+			departmentId = student.getDepartment().getId();
+		}
+		
 		return lectureRepository.getRegistrationAbleLectureList(departmentId, pageable);
 	}
 	
