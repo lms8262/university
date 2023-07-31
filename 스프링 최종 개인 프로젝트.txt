@@ -157,6 +157,8 @@ department
 user
 3개 join
 
+연관관계 테이블 삭제관련
 @OnDelete(action = OnDeleteAction.CASCADE)
+
 @Valid CollegeFormDto collegeFormDto, BindingResult bindingResult, 
 
