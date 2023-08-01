@@ -2,6 +2,8 @@ package com.university.entity;
 
 import java.time.LocalDate;
 
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -37,5 +39,6 @@ public class Professor {
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "department_id")
+	@OnDelete(action = OnDeleteAction.CASCADE)
 	private Department department;
 }

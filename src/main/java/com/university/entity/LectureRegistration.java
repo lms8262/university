@@ -1,5 +1,8 @@
 package com.university.entity;
 
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
@@ -22,11 +25,13 @@ public class LectureRegistration {
 	@Id
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "student_id")
+	@OnDelete(action = OnDeleteAction.CASCADE)
 	private Student student;
 	
 	@Id
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "lecture_id")
+	@OnDelete(action = OnDeleteAction.CASCADE)
 	private Lecture lecture;
 	
 	// 수강신청용 정적 팩토리 메소드

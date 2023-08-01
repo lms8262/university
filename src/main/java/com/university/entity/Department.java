@@ -1,5 +1,8 @@
 package com.university.entity;
 
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -28,7 +31,8 @@ public class Department {
 	private String name;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "college_id")
+	@JoinColumn(name = "college_id", nullable = false)
+	@OnDelete(action = OnDeleteAction.CASCADE)
 	private College college;
 	
 	public static Department createDepartment(String name, College college) {

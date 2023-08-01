@@ -10,11 +10,17 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.university.dto.CollegeFormDto;
 import com.university.dto.DepartmentFormDto;
+import com.university.dto.LectureRoomDto;
+import com.university.dto.LectureRoomFormDto;
 import com.university.dto.ProfessorInfoDto;
 import com.university.dto.StudentInfoDto;
 import com.university.dto.UserSearchDto;
 import com.university.entity.College;
 import com.university.entity.Department;
+import com.university.entity.LectureRoom;
+import com.university.entity.Professor;
+import com.university.entity.Student;
+import com.university.entity.User;
 import com.university.exception.OverlapException;
 import com.university.repository.CollegeRepository;
 import com.university.repository.DepartmentRepository;
@@ -22,6 +28,7 @@ import com.university.repository.LectureRepository;
 import com.university.repository.LectureRoomRepository;
 import com.university.repository.ProfessorRepository;
 import com.university.repository.StudentRepository;
+import com.university.repository.UserRepository;
 
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -37,6 +44,7 @@ public class StaffService {
 	private final DepartmentRepository departmentRepository;
 	private final LectureRoomRepository lectureRoomRepository;
 	private final LectureRepository lectureRepository;
+	private final UserRepository userRepository;
 	
 	// 학생 명단 조회
 	public Page<StudentInfoDto> getStudentInfoList(UserSearchDto userSearchDto, Pageable pageable) {
@@ -119,14 +127,23 @@ public class StaffService {
 		college.updateCollege(collegeFormDto.getCollegeName(), collegeFormDto.getCollegeCode());
 	}
 	
-	// 단과대 삭제(단과대 테이블 참조중인 테이블 fk null로 바꿔주기)
+	// 단과대 삭제(관련된 하위 데이터 모두 삭제됨)
 	@Transactional
 	public void deleteCollege(Long collegeId) {
 		College college = collegeRepository.findById(collegeId).orElseThrow(EntityNotFoundException::new);
 		
-		// College 테이블 참조중인 테이블 fk null로 바꾸기
-		departmentRepository.setCollegeNull(college);
-		lectureRoomRepository.setLectureRoomNull(college);
+		// 연관관계 없는 user 테이블 데이터 직접 삭제
+		List<Long> userIdList = new ArrayList<>();
+		List<Department> departmentList = departmentRepository.findByCollege_Id(collegeId);
+		for(Department department : departmentList) {
+			for(Professor professor : professorRepository.findByDepartment_Id(department.getId())) {
+				userIdList.add(professor.getId());
+			}
+			for(Student student : studentRepository.findByDepartment_Id(department.getId())) {
+				userIdList.add(student.getId());
+			}
+		}
+		userRepository.deleteAllById(userIdList);
 		
 		collegeRepository.delete(college);
 	}
@@ -178,16 +195,61 @@ public class StaffService {
 		department.updateDepartment(departmentFormDto.getDepartmentName(), college);
 	}
 	
-	// 학과 삭제(학과 테이블 참조중인 테이블 fk null로 바꿔주기)
+	// 학과 삭제(관련된 하위 데이터 모두 삭제됨)
 	@Transactional
 	public void deleteDepartment(Long departmentId) {
 		Department department = departmentRepository.findById(departmentId).orElseThrow(EntityNotFoundException::new);
 		
-		// Department 테이블 참조중인 테이블 fk null로 바꾸기
-		studentRepository.setDepartmentNull(department);
-		professorRepository.setDepartmentNull(department);
-		lectureRepository.setDepartmentNull(department);
+		// 연관관계 없는 user 테이블 데이터 직접 삭제
+		List<Long> userIdList = new ArrayList<>();
+		for(Professor professor : professorRepository.findByDepartment_Id(department.getId())) {
+			userIdList.add(professor.getId());
+		}
+		for(Student student : studentRepository.findByDepartment_Id(department.getId())) {
+			userIdList.add(student.getId());
+		}
+		userRepository.deleteAllById(userIdList);
 		
 		departmentRepository.delete(department);
+	}
+	
+	// 강의실 리스트 조회
+	public Page<LectureRoomDto> getLectureRoomList(Pageable pageable) {				
+		return lectureRoomRepository.getLectureRoomList(pageable);
+	}
+	
+	// 강의실 중복 여부 체크
+	private boolean checkEqualLectureRoom(String lectureRoomId) {
+		LectureRoom lectureRoom = lectureRoomRepository.findById(lectureRoomId).orElse(null);
+		
+		// 이미 존재하는 강의실 일때
+		if(lectureRoom != null) {
+			return false;
+		}
+		
+		return true;
+	}
+	
+	// 신규 강의실 생성
+	@Transactional
+	public void createLectureRoom(LectureRoomFormDto lectureRoomFormDto) {
+		College college = collegeRepository.findById(lectureRoomFormDto.getCollegeId()).orElseThrow(EntityNotFoundException::new);
+		String lectureRoomId = college.getCollegeCode() + lectureRoomFormDto.getLectureRoomNumber();
+		
+		if(!checkEqualLectureRoom(lectureRoomId)) {
+			throw new OverlapException("이미 존재하는 강의실입니다.");
+		}
+		
+		LectureRoom lectureRoom = new LectureRoom();
+		lectureRoom.setId(lectureRoomId);
+		lectureRoom.setCollege(college);
+		
+		lectureRoomRepository.save(lectureRoom);
+	}
+	
+	// 강의실 정보 수정시 기존 정보 가져오기
+	public LectureRoomFormDto findLectureRoomInfoById(String lectureRoomId) {
+		LectureRoom lectureRoom = lectureRoomRepository.findById(lectureRoomId).orElseThrow(EntityNotFoundException::new);
+		return LectureRoomFormDto.of(lectureRoom);
 	}
 }

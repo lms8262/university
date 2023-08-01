@@ -49,7 +49,7 @@
 					<li><a href="/staffs/management/list/professor">교수 명단 조회</a></li>
 					<li><a href="/staffs/management/list/college">단과대 관리</a></li>
 					<li><a href="/staffs/management/list/department" class="active_tab">학과 관리</a></li>
-					<li><a>강의실 관리</a></li>
+					<li><a href="/staffs/management/list/lectureRoom">강의실 관리</a></li>
 					<li><a>강의 관리</a></li>
 				</ul>
 			</div>
@@ -110,7 +110,8 @@
 		});
 		
 		function deleteDepartment(departmentId) {
-			const deleteConf = confirm("학과를 삭제하시겠습니까?");
+			alert("학과 삭제시 학과에 관련된 강의, 교수, 학생 데이터 및 관련된 수강 데이터가 모두 삭제됩니다.");
+			const deleteConf = confirm("정말로 학과를 삭제하시겠습니까?");
 			
 			if(!deleteConf) return; // 취소버튼 누를시
 			

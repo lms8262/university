@@ -1,10 +1,134 @@
 <!DOCTYPE html>
-<html>
-<head>
-<meta charset="UTF-8">
-<title>Insert title here</title>
-</head>
-<body>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{layouts/layout1}">
 
-</body>
+<head>
+	<meta name="_csrf" th:content="${_csrf.token}" />
+	<meta name="_csrf_header" th:content="${_csrf.headerName}" />
+</head>
+
+<!-- 각 페이지의 CSS가 작성될 위치 -->
+<th:block layout:fragment="css">
+	<style>
+		h3 {
+			font-size: 28px;
+		}
+		
+		h2 {
+			font-size: 32px;
+		}
+		
+		.mgmt_btn {
+			text-align: center;
+			font-weight: bold;
+		}
+		
+		.mgmt_btn button, .insert_btn {
+			background-color: #cadfe3;
+			padding: 3px;
+			border: 1px solid cadetblue;
+			border-radius: 10px;
+		}
+		
+		.table {
+			width: inherit;
+		}
+	</style>
+</th:block>
+
+<div layout:fragment="content">
+	<div class="d-flex">
+		<aside class="sidebar d-flex flex-column align-items-center">
+			<div class="sidebar_subject">
+				<h3>학사관리</h3>
+			</div>
+			<div class="sidebar_list">
+				<ul>
+					<li><a href="/staffs/management/list/student">학생 명단 조회</a></li>
+					<li><a href="/staffs/management/list/professor">교수 명단 조회</a></li>
+					<li><a href="/staffs/management/list/college">단과대 관리</a></li>
+					<li><a href="/staffs/management/list/department">학과 관리</a></li>
+					<li><a href="/staffs/management/list/lectureRoom" class="active_tab">강의실 관리</a></li>
+					<li><a>강의 관리</a></li>
+				</ul>
+			</div>
+		</aside>
+
+		<main>
+			<div class="main_subject">
+				<h2>강의실 관리</h2>
+			</div>
+			<div class="main_content">
+			
+				<div>
+					<button class="insert_btn" onclick="location.href='/staffs/management/register/lectureRoom'">강의실 등록</button>
+				</div>
+			
+				<div>
+					<table class="table table-bordered border-secondary-subtle">
+						<thead>
+						    <tr class="table-secondary">
+						      <th scope="col">강의실 번호</th>
+						      <th scope="col">소속 단과대명</th>
+						      <th scope="col">수정</th>
+						      <th scope="col">삭제</th>
+						    </tr>
+					  	</thead>
+					  	<tbody>	  		
+							<tr th:each="lectureRoom : ${lectureRooms.getContent()}">
+								<td scope="row" th:text="${lectureRoom.lectureRoomId}"></td>
+								<td th:text="${lectureRoom.collegeName}"></td>
+								<td class="mgmt_btn">
+									<button type="button"  th:onclick="|location.href='@{/staffs/management/modify/lectureRoom/}@{${lectureRoom.lectureRoomId}}'|">수정</button>
+								</td>
+								<td class="mgmt_btn">
+									<button type="button">삭제</button>
+								</td>
+							</tr>
+					  	</tbody>
+					</table>
+				</div>
+				
+				<div style="margin-left: 40px">
+					<nav aria-label="Page navigation"
+					th:with="start=${(lectureRooms.number / maxPage) * maxPage +1},
+					end=${(lectureRooms.totalPages == 0)? 1:
+					(start + (maxPage -1) < lectureRooms.totalPages ?
+					start + (maxPage -1) : lectureRooms.totalPages)}">
+						<ul class="pagination">
+						    <li class="page-item" th:classappend="${lectureRooms.first} ? 'disabled'">
+						    	<a class="page-link" th:href="@{'/staffs/management/list/lectureRoom/' + ${lectureRooms.number -1}}">이전</a>
+						    </li>
+						    <li class="page-item" 
+						    	th:each="page : ${#numbers.sequence(start, end)}"
+			    				th:classappend="${lectureRooms.number eq page -1} ? 'active_page'">
+						    	<a class="page-link" th:href="@{'/staffs/management/list/lectureRoom/' + ${page -1}}">[[${page}]]</a>
+									    </li>
+						    <li class="page-item" th:classappend="${lectureRooms.last} ? 'disabled'">
+						    	<a class="page-link" th:href="@{'/staffs/management/list/lectureRoom/' + ${lectureRooms.number +1}}">다음</a>
+						    </li>
+						</ul>
+					</nav>
+				</div>
+				
+			</div>
+		</main>
+	</div>
+</div>
+
+<!-- 각 페이지의 자바스크립트가 작성될 위치 -->
+<th:block layout:fragment="script">
+	<script th:inline="javascript">
+		$(document).ready(function() {
+			var errorMessage = [[${errorMessage}]];
+	    	if(errorMessage != null){
+	        	alert(errorMessage);
+	    	}
+			
+			$(".uni_mgmt").addClass("active_tab");
+		});
+	</script>
+</th:block>
+
 </html>

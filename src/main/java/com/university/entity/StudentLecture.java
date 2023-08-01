@@ -38,6 +38,7 @@ public class StudentLecture {
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "grade")
+	@OnDelete(action = OnDeleteAction.CASCADE)
 	private GradeScore gradeScore;
 	
 	public static StudentLecture createStudentLecture(Student student, Lecture lecture, GradeScore gradeScore) {

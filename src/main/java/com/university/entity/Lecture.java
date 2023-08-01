@@ -2,6 +2,8 @@ package com.university.entity;
 
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import com.university.exception.OutOfCapacityException;
 
@@ -63,18 +65,22 @@ public class Lecture {
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "department_id")
+	@OnDelete(action = OnDeleteAction.CASCADE)
 	private Department department;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "lecture_room_id")
+	@OnDelete(action = OnDeleteAction.CASCADE)
 	private LectureRoom lectureRoom;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "professor_id")
+	@OnDelete(action = OnDeleteAction.CASCADE)
 	private Professor professor;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "lecture_code_id")
+	@OnDelete(action = OnDeleteAction.CASCADE)
 	private LectureCode lectureCode;
 	
 	// 수강신청시 수강인원 추가

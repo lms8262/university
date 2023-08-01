@@ -22,6 +22,8 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.university.dto.CollegeFormDto;
 import com.university.dto.DepartmentDto;
 import com.university.dto.DepartmentFormDto;
+import com.university.dto.LectureRoomDto;
+import com.university.dto.LectureRoomFormDto;
 import com.university.dto.ProfessorInfoDto;
 import com.university.dto.StaffInfoDto;
 import com.university.dto.StudentInfoDto;
@@ -215,6 +217,8 @@ public class StaffController {
 	@PostMapping(value = "/staffs/management/register/department")
 	public String departmentRegister(@Valid DepartmentFormDto departmentFormDto, BindingResult bindingResult, Model model) {
 		if(bindingResult.hasErrors()) {
+			List<CollegeFormDto> collegeList = staffService.getCollegeList();
+			model.addAttribute("collegeList", collegeList);
 			return "staff/departmentRegister";
 		}
 		
@@ -253,6 +257,8 @@ public class StaffController {
 	@PostMapping(value = "/staffs/management/modify/department/{departmentId}")
 	public String departmentModify(@Valid DepartmentFormDto departmentFormDto, BindingResult bindingResult, @PathVariable Long departmentId, Model model) {
 		if(bindingResult.hasErrors()) {
+			List<CollegeFormDto> collegeList = staffService.getCollegeList();
+			model.addAttribute("collegeList", collegeList);
 			return "staff/departmentModify";
 		}
 		
@@ -269,6 +275,7 @@ public class StaffController {
 		return "redirect:/staffs/management/list/department"; 
 	}
 	
+	// 학과 삭제
 	@DeleteMapping(value = "/staffs/management/delete/department/{departmentId}")
 	public @ResponseBody ResponseEntity departmentDelete(@PathVariable Long departmentId) {
 		
@@ -280,6 +287,89 @@ public class StaffController {
 		}
 		
 		return new ResponseEntity<Long>(departmentId, HttpStatus.OK);
+	}
+	
+	// 강의실 목록
+	@GetMapping(value = {"/staffs/management/list/lectureRoom", "/staffs/management/list/lectureRoom/{page}"})
+	public String lectureRoomList(@PathVariable("page") Optional<Integer> page, Model model) {
+		Pageable pageable = PageRequest.of(page.isPresent() ? page.get() : 0, 10);
+		Page<LectureRoomDto> lectureRooms = staffService.getLectureRoomList(pageable);
+		
+		model.addAttribute("lectureRooms", lectureRooms);
+		model.addAttribute("maxPage", 5);
+		return "staff/lectureRoomMgmt";
+	}
+	
+	// 강의실 신규등록 페이지
+	@GetMapping(value = "/staffs/management/register/lectureRoom")
+	public String lectureRoomRegisterForm(Model model) {
+		List<CollegeFormDto> collegeList = staffService.getCollegeList();
+		model.addAttribute("collegeList", collegeList);
+		
+		model.addAttribute("lectureRoomFormDto", new LectureRoomFormDto());
+		return "staff/lectureRoomRegister";
+	}
+	
+	// 강의실 신규 등록
+	@PostMapping(value = "/staffs/management/register/lectureRoom")
+	public String lectureRoomRegister(@Valid LectureRoomFormDto lectureRoomFormDto, BindingResult bindingResult, Model model) {
+		if(bindingResult.hasErrors()) {
+			List<CollegeFormDto> collegeList = staffService.getCollegeList();
+			model.addAttribute("collegeList", collegeList);
+			return "staff/lectureRoomRegister";
+		}
+		
+		try {
+			staffService.createLectureRoom(lectureRoomFormDto);
+		} catch (Exception e) {
+			e.printStackTrace();
+			model.addAttribute("errorMessage", e.getMessage());
+			List<CollegeFormDto> collegeList = staffService.getCollegeList();
+			model.addAttribute("collegeList", collegeList);
+			return "staff/lectureRoomRegister";
+		}
+		
+		return "redirect:/staffs/management/list/lectureRoom";
+	}
+	
+	// 강의실 정보 수정 페이지
+	@GetMapping(value = "/staffs/management/modify/lectureRoom/{lectureRoomId}")
+	public String lectureRoomModifyForm(Model model, @PathVariable String lectureRoomId, RedirectAttributes redirectAttributes) {
+		List<CollegeFormDto> collegeList = staffService.getCollegeList();
+		model.addAttribute("collegeList", collegeList);
+		
+		try {
+			LectureRoomFormDto lectureRoomFormDto = staffService.findLectureRoomInfoById(lectureRoomId);
+			model.addAttribute("lectureRoomFormDto", lectureRoomFormDto);
+		} catch (Exception e) {
+			e.printStackTrace();
+			redirectAttributes.addFlashAttribute("errorMessage", "강의실 정보를 가져오는데 문제가 발생했습니다.");
+			return "redirect:/staffs/management/list/lectureRoom";
+		}
+		
+		return "staff/lectureRoomModify";
+	}
+	
+	// 강의실 정보 수정
+	@PostMapping(value = "/staffs/management/modify/lectureRoom/{lectureRoomId}")
+	public String lectureRoomModify(@Valid LectureRoomFormDto lectureRoomFormDto, BindingResult bindingResult, @PathVariable String lectureRoomId, Model model) {
+		if(bindingResult.hasErrors()) {
+			List<CollegeFormDto> collegeList = staffService.getCollegeList();
+			model.addAttribute("collegeList", collegeList);
+			return "staff/lectureRoomModify";
+		}
+		
+		try {
+			// 업데이트 메소드(삭제도 해야함)
+		} catch (Exception e) {
+			e.printStackTrace();
+			model.addAttribute("errorMessage", e.getMessage());
+			List<CollegeFormDto> collegeList = staffService.getCollegeList();
+			model.addAttribute("collegeList", collegeList);
+			return "staff/lectureRoomModify";
+		}
+		
+		return "redirect:/staffs/management/list/lectureRoom";
 	}
 	
 }
