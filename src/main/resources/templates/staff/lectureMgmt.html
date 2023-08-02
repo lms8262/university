@@ -1,10 +1,204 @@
 <!DOCTYPE html>
-<html>
-<head>
-<meta charset="UTF-8">
-<title>Insert title here</title>
-</head>
-<body>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{layouts/layout1}">
 
-</body>
+<head>
+	<meta name="_csrf" th:content="${_csrf.token}" />
+	<meta name="_csrf_header" th:content="${_csrf.headerName}" />
+</head>
+
+<!-- 각 페이지의 CSS가 작성될 위치 -->
+<th:block layout:fragment="css">
+	<style>
+		h3 {
+			font-size: 28px;
+		}
+		
+		h2 {
+			font-size: 32px;
+		}
+		
+		.mgmt_btn {
+			text-align: center;
+			font-weight: bold;
+		}
+		
+		.mgmt_btn button, .insert_btn {
+			background-color: #cadfe3;
+			padding: 3px;
+			border: 1px solid cadetblue;
+			border-radius: 10px;
+		}
+		
+		.table {
+			width: inherit;
+		}
+	</style>
+</th:block>
+
+<div layout:fragment="content">
+	<div class="d-flex">
+		<aside class="sidebar d-flex flex-column align-items-center">
+			<div class="sidebar_subject">
+				<h3>학사관리</h3>
+			</div>
+			<div class="sidebar_list">
+				<ul>
+					<li><a href="/staffs/management/list/student">학생 명단 조회</a></li>
+					<li><a href="/staffs/management/list/professor">교수 명단 조회</a></li>
+					<li><a href="/staffs/management/list/college">단과대 관리</a></li>
+					<li><a href="/staffs/management/list/department">학과 관리</a></li>
+					<li><a href="/staffs/management/list/lectureRoom">강의실 관리</a></li>
+					<li><a href="/staffs/management/list/lecture" class="active_tab">강의 관리</a></li>
+				</ul>
+			</div>
+		</aside>
+
+		<main>
+			<div class="main_subject">
+				<h2>강의 관리</h2>
+			</div>
+			<div class="main_content">
+			
+				<div>
+					<button class="insert_btn" onclick="location.href='/staffs/management/register/lecture'">강의 등록</button>
+				</div>
+				
+				<form action="/staffs/management/list/lecture/0" method="get">
+					<div class="search_form" th:objcet="${lectureSearchDto}">
+						<label th:for="type">강의구분</label>
+						<select th:name="type" th:id="type">
+							<option value="">전체</option>
+							<option value="전공">전공</option>
+							<option value="교양">교양</option>
+						</select>
+						
+						<label th:for="departmentId">개설학과</label>
+						<select th:name="departmentId" th:id="departmentId">
+							<option value="0">전체</option>
+							<option th:each="department : ${departments}" th:value="${department.id}" th:text="${department.name}"></option>
+						</select>
+						
+						<label th:for="lectureName">강의명</label>
+						<input type="text" th:name="lectureName" th:id="lectureName">
+						
+						<button type="submit">&nbsp;<span>조회</span>&nbsp;<i class="fa-solid fa-magnifying-glass"></i>&nbsp;</button>
+					</div>
+				</form>
+				
+				<div>
+					<table class="table table-bordered border-secondary-subtle">
+						<thead>
+						    <tr class="table-secondary">
+						      <th scope="col">강의번호</th>
+						      <th scope="col">강의명</th>
+						      <th scope="col">강의코드</th>
+						      <th scope="col">학과번호</th>
+						      <th scope="col">교수번호</th>
+						      <th scope="col">강의실</th>
+						      <th scope="col">구분</th>
+						      <th scope="col">이수학점</th>
+						      <th scope="col">연도</th>
+						      <th scope="col">학기</th>
+						      <th scope="col">요일시간</th>
+						      <th scope="col">현재인원</th>
+						      <th scope="col">정원</th>
+						      <th scope="col">수정</th>
+						      <th scope="col">삭제</th>
+						    </tr>
+					  	</thead>
+					  	<tbody>	  		
+							<tr th:each="lecture : ${lectures.getContent()}">
+								<td scope="row" th:text="${lecture.lectureId}"></td>
+								<td th:text="${lecture.lectureName}"></td>
+								<td th:text="${lecture.lectureCodeId}"></td>
+								<td th:text="${lecture.departmentId}"></td>
+								<td th:text="${lecture.professorId}"></td>
+								<td th:text="${lecture.lectureRoomId}"></td>
+								<td th:text="${lecture.type}"></td>
+								<td th:text="${lecture.credit}"></td>
+								<td th:text="${lecture.year}"></td>
+								<td th:text="${lecture.semester}"></td>
+								<td th:if="${lecture.startTime} < 10" th:text="|${lecture.day} 0${lecture.startTime}:00-${lecture.endTime}:00|"></td>
+								<td th:unless="${lecture.startTime} < 10" th:text="|${lecture.day} ${lecture.startTime}:00-${lecture.endTime}:00|"></td>
+								<td th:text="${lecture.numOfStudent}"></td>
+								<td th:text="${lecture.capacity}"></td>
+								<td class="mgmt_btn">
+									<button type="button">수정</button>
+								</td>
+								<td class="mgmt_btn">
+									<button type="button">삭제</button>
+								</td>
+							</tr>
+					  	</tbody>
+					</table>
+				</div>
+				
+				<div class="d-flex justify-content-center">
+					<nav aria-label="Page navigation"
+					th:with="start=${(lectures.number / maxPage) * maxPage +1},
+					end=${(lectures.totalPages == 0)? 1:
+					(start + (maxPage -1) < lectures.totalPages ?
+					start + (maxPage -1) : lectures.totalPages)}">
+						<ul class="pagination">
+						    <li class="page-item" th:classappend="${lectures.first} ? 'disabled'">
+						    	<a class="page-link" th:href="@{'/staffs/management/list/lecture/' + ${lectures.number -1}
+						    	 + '?type=' + ${lectureSearchDto.type}
+						    	 + '&departmentId=' + ${lectureSearchDto.departmentId}
+						    	 + '&lectureName=' + ${lectureSearchDto.lectureName}}">이전</a>
+						    </li>
+						    <li class="page-item" 
+						    	th:each="page : ${#numbers.sequence(start, end)}"
+			    				th:classappend="${lectures.number eq page -1} ? 'active_page'">
+						    	<a class="page-link" th:href="@{'/staffs/management/list/lecture/' + ${page -1}
+						    	 + '?type=' + ${lectureSearchDto.type}
+						    	 + '&departmentId=' + ${lectureSearchDto.departmentId}
+						    	 + '&lectureName=' + ${lectureSearchDto.lectureName}}">[[${page}]]</a>
+									    </li>
+						    <li class="page-item" th:classappend="${lectures.last} ? 'disabled'">
+						    	<a class="page-link" th:href="@{'/staffs/management/list/lecture/' + ${lectures.number +1}
+						    	 + '?type=' + ${lectureSearchDto.type}
+						    	 + '&departmentId=' + ${lectureSearchDto.departmentId}
+						    	 + '&lectureName=' + ${lectureSearchDto.lectureName}}">다음</a>
+						    </li>
+						</ul>
+					</nav>
+				</div>
+				
+			</div>
+		</main>
+	</div>
+</div>
+
+<!-- 각 페이지의 자바스크립트가 작성될 위치 -->
+<th:block layout:fragment="script">
+	<script th:inline="javascript">
+		$(document).ready(function() {
+			var errorMessage = [[${errorMessage}]];
+	    	if(errorMessage != null){
+	        	alert(errorMessage);
+	    	}
+	    	
+			$(".uni_mgmt").addClass("active_tab");
+			
+	    	if([[${lectureSearchDto.type}]] == "") {
+				$("#type").val("").prop("selected", true);
+			} else {
+				$("#type").val([[${lectureSearchDto.type}]]).prop("selected", true);
+			}
+			
+			if([[${lectureSearchDto.departmentId}]] == 0) {
+				$("#departmentId").val(0).prop("selected", true);
+			} else {
+				$("#departmentId").val([[${lectureSearchDto.departmentId}]]).prop("selected", true);
+			}
+			
+			$("#lectureName").val([[${lectureSearchDto.lectureName}]]);
+		});
+		
+		
+	</script>
+</th:block>
+
 </html>

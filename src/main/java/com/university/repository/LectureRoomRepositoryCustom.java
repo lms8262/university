@@ -6,5 +6,5 @@ import org.springframework.data.domain.Pageable;
 import com.university.dto.LectureRoomDto;
 
 public interface LectureRoomRepositoryCustom {
-	Page<LectureRoomDto> getLectureRoomList(Pageable pageable);
+	Page<LectureRoomDto> getLectureRoomList(Long collegeId, Pageable pageable);
 }

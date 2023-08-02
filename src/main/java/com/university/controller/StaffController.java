@@ -16,14 +16,20 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.university.dto.CollegeDto;
 import com.university.dto.CollegeFormDto;
 import com.university.dto.DepartmentDto;
 import com.university.dto.DepartmentFormDto;
+import com.university.dto.LectureCodeDto;
+import com.university.dto.LectureFormDto;
 import com.university.dto.LectureRoomDto;
 import com.university.dto.LectureRoomFormDto;
+import com.university.dto.LectureScheduleDto;
+import com.university.dto.LectureSearchDto;
 import com.university.dto.ProfessorInfoDto;
 import com.university.dto.StaffInfoDto;
 import com.university.dto.StudentInfoDto;
@@ -291,11 +297,15 @@ public class StaffController {
 	
 	// 강의실 목록
 	@GetMapping(value = {"/staffs/management/list/lectureRoom", "/staffs/management/list/lectureRoom/{page}"})
-	public String lectureRoomList(@PathVariable("page") Optional<Integer> page, Model model) {
+	public String lectureRoomList(@RequestParam(defaultValue = "0") Long collegeId, @PathVariable("page") Optional<Integer> page, Model model) {
+		List<CollegeDto> colleges = staffService.getCollegeListForSearchLectureRoom();
 		Pageable pageable = PageRequest.of(page.isPresent() ? page.get() : 0, 10);
-		Page<LectureRoomDto> lectureRooms = staffService.getLectureRoomList(pageable);
+		Page<LectureRoomDto> lectureRooms = staffService.getLectureRoomList(collegeId, pageable);
 		
+		
+		model.addAttribute("colleges", colleges);
 		model.addAttribute("lectureRooms", lectureRooms);
+		model.addAttribute("collegeId", collegeId);
 		model.addAttribute("maxPage", 5);
 		return "staff/lectureRoomMgmt";
 	}
@@ -332,44 +342,72 @@ public class StaffController {
 		return "redirect:/staffs/management/list/lectureRoom";
 	}
 	
-	// 강의실 정보 수정 페이지
-	@GetMapping(value = "/staffs/management/modify/lectureRoom/{lectureRoomId}")
-	public String lectureRoomModifyForm(Model model, @PathVariable String lectureRoomId, RedirectAttributes redirectAttributes) {
-		List<CollegeFormDto> collegeList = staffService.getCollegeList();
-		model.addAttribute("collegeList", collegeList);
+	// 강의실 수정은 테이블 설계 잘못해서 넣기 어려움
+	
+	// 강의실 삭제
+	@DeleteMapping(value = "/staffs/management/delete/lectureRoom/{lectureRoomId}")
+	public @ResponseBody ResponseEntity lectureRoomDelete(@PathVariable String lectureRoomId) {
 		
 		try {
-			LectureRoomFormDto lectureRoomFormDto = staffService.findLectureRoomInfoById(lectureRoomId);
-			model.addAttribute("lectureRoomFormDto", lectureRoomFormDto);
+			staffService.deleteLectureRoom(lectureRoomId);
 		} catch (Exception e) {
 			e.printStackTrace();
-			redirectAttributes.addFlashAttribute("errorMessage", "강의실 정보를 가져오는데 문제가 발생했습니다.");
-			return "redirect:/staffs/management/list/lectureRoom";
+			return new ResponseEntity<String>("강의실 삭제 중 문제가 발생했습니다.", HttpStatus.FORBIDDEN);
 		}
 		
-		return "staff/lectureRoomModify";
+		return new ResponseEntity<String>(lectureRoomId, HttpStatus.OK);
+	}
+		
+	// 강의 목록
+	@GetMapping(value = {"/staffs/management/list/lecture", "/staffs/management/list/lecture/{page}"})
+	public String lectureList(LectureSearchDto lectureSearchDto, @PathVariable("page") Optional<Integer> page, Model model) {
+		List<DepartmentDto> departments = departmentService.findAllDepartmentList();
+		Pageable pageable = PageRequest.of(page.isPresent() ? page.get() : 0, 10);
+		Page<LectureFormDto> lectures = staffService.getLectureListOfMgmtPage(lectureSearchDto, pageable);
+		
+		model.addAttribute("departments", departments);
+		model.addAttribute("lectures", lectures);
+		model.addAttribute("lectureSearchDto", lectureSearchDto);
+		model.addAttribute("maxPage", 5);
+		return "staff/lectureMgmt";
 	}
 	
-	// 강의실 정보 수정
-	@PostMapping(value = "/staffs/management/modify/lectureRoom/{lectureRoomId}")
-	public String lectureRoomModify(@Valid LectureRoomFormDto lectureRoomFormDto, BindingResult bindingResult, @PathVariable String lectureRoomId, Model model) {
+	// 강의 신규등록 페이지
+	@GetMapping(value = "/staffs/management/register/lecture")
+	public String lectureRegisterForm(Model model) {
+		List<LectureCodeDto> lectureCodeList = staffService.getLectureCodeList();
+		List<DepartmentDto> departmentList = departmentService.findAllDepartmentList();
+		
+		
+		model.addAttribute("lectureCodeList", lectureCodeList);
+		model.addAttribute("departmentList", departmentList);
+		model.addAttribute("lectureFormDto", new LectureFormDto());
+		return "staff/lectureRegister";
+	}
+	
+	// 강의 신규 등록
+	@PostMapping(value = "/staffs/management/register/lecture")
+	public String lectureRegister(@Valid LectureFormDto lectureFormDto, BindingResult bindingResult, Model model) {
 		if(bindingResult.hasErrors()) {
-			List<CollegeFormDto> collegeList = staffService.getCollegeList();
-			model.addAttribute("collegeList", collegeList);
-			return "staff/lectureRoomModify";
+			List<LectureCodeDto> lectureCodeList = staffService.getLectureCodeList();
+			List<DepartmentDto> departmentList = departmentService.findAllDepartmentList();		
+			model.addAttribute("lectureCodeList", lectureCodeList);
+			model.addAttribute("departmentList", departmentList);
+			return "staff/lectureRegister";
 		}
 		
 		try {
-			// 업데이트 메소드(삭제도 해야함)
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 			model.addAttribute("errorMessage", e.getMessage());
-			List<CollegeFormDto> collegeList = staffService.getCollegeList();
-			model.addAttribute("collegeList", collegeList);
-			return "staff/lectureRoomModify";
+			List<LectureCodeDto> lectureCodeList = staffService.getLectureCodeList();
+			List<DepartmentDto> departmentList = departmentService.findAllDepartmentList();		
+			model.addAttribute("lectureCodeList", lectureCodeList);
+			model.addAttribute("departmentList", departmentList);
+			return "staff/lectureRegister";
 		}
 		
-		return "redirect:/staffs/management/list/lectureRoom";
+		return "redirect:/staffs/management/list/lecture";
 	}
-	
 }

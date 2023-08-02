@@ -30,7 +30,4 @@ public class LectureRoom {
 	@OnDelete(action = OnDeleteAction.CASCADE)
 	private College college;
 	
-	public void updateLectureRoom() {
-		
-	}
 }

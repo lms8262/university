@@ -50,7 +50,7 @@
 					<li><a href="/staffs/management/list/college" class="active_tab">단과대 관리</a></li>
 					<li><a href="/staffs/management/list/department">학과 관리</a></li>
 					<li><a href="/staffs/management/list/lectureRoom">강의실 관리</a></li>
-					<li><a>강의 관리</a></li>
+					<li><a href="/staffs/management/list/lecture">강의 관리</a></li>
 				</ul>
 			</div>
 		</aside>
@@ -128,7 +128,6 @@
 	                // 데이터를 전송하기 전에 헤더에 csrf값을 설정
 	                xhr.setRequestHeader(header, token);
 	            },
-	            dataType : "json",
 	            cache   : false,
 	            success  : function(result, status){
 	            	alert("단과대를 삭제했습니다.");

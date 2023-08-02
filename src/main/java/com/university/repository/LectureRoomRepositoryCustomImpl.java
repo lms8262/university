@@ -6,6 +6,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Wildcard;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.university.dto.LectureRoomDto;
@@ -22,9 +23,14 @@ public class LectureRoomRepositoryCustomImpl implements LectureRoomRepositoryCus
 	public LectureRoomRepositoryCustomImpl(EntityManager em) {
 		this.queryFactory = new JPAQueryFactory(em);
 	}
-
+	
+	// 검색 조건(단과대) 설정
+	private BooleanExpression collegeIdEq(Long collegeId) {
+		return collegeId == 0 ? null : QLectureRoom.lectureRoom.college.id.eq(collegeId);
+	}
+	
 	@Override
-	public Page<LectureRoomDto> getLectureRoomList(Pageable pageable) {
+	public Page<LectureRoomDto> getLectureRoomList(Long collegeId, Pageable pageable) {
 		QLectureRoom lectureRoom = QLectureRoom.lectureRoom;
 		QCollege college = QCollege.college;
 		
@@ -37,6 +43,7 @@ public class LectureRoomRepositoryCustomImpl implements LectureRoomRepositoryCus
 						)
 				.from(lectureRoom)
 				.join(lectureRoom.college, college)
+				.where(collegeIdEq(collegeId))
 				.orderBy(lectureRoom.id.asc())
 				.offset(pageable.getOffset())
 				.limit(pageable.getPageSize())
@@ -46,6 +53,7 @@ public class LectureRoomRepositoryCustomImpl implements LectureRoomRepositoryCus
 				.select(Wildcard.count)
 				.from(lectureRoom)
 				.join(lectureRoom.college, college)
+				.where(collegeIdEq(collegeId))
 				.fetchOne();
 		
 		return new PageImpl<>(content, pageable, total);

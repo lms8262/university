@@ -167,3 +167,35 @@ department
 학과명
 단과대명
 department college join
+
+강의 생성시 입력받을 부분
+강의 수정 가능한 부분
+강의명 lectureName
+강의코드 lectureCodeId
+학과번호 departmentId
+교수번호 professorId
+강의실 lectureRoomId
+구분 type
+이수학점 credit
+연도 year
+학기 semester
+요일 day
+시작시간 startTime
+종료시간 endTime
+정원 capacity
+
+신규 강의 생성시 체크해야할것들
+사용중인 강의실인지 체크(연도 학기 요일로 기존 강의 list select
+강의실 번호 같은 경우
+시간 겹치는지 체크)
+
+교수가 이미 강의중인 시간인지 체크(연도 학기 요일로 기존 강의 list select
+교수번호 같은 경우
+시간 겹치는지 체크)
+
+
+수정시 hidden으로 넘길거
+강의번호 lectureId
+현재인원 numOfStudent
+
+강의코드추가

@@ -50,7 +50,7 @@
 					<li><a href="/staffs/management/list/college">단과대 관리</a></li>
 					<li><a href="/staffs/management/list/department">학과 관리</a></li>
 					<li><a href="/staffs/management/list/lectureRoom" class="active_tab">강의실 관리</a></li>
-					<li><a>강의 관리</a></li>
+					<li><a href="/staffs/management/list/lecture">강의 관리</a></li>
 				</ul>
 			</div>
 		</aside>
@@ -64,14 +64,25 @@
 				<div>
 					<button class="insert_btn" onclick="location.href='/staffs/management/register/lectureRoom'">강의실 등록</button>
 				</div>
-			
+				
+				<form action="/staffs/management/list/lectureRoom/0" method="get">
+					<div class="search_form">
+						<label th:for="collegeId">단과대</label>
+						<select th:name="collegeId" th:id="collegeId">
+							<option value="0">전체</option>
+							<option th:each="college : ${colleges}" th:value="${college.collegeId}" th:text="${college.collegeName}"></option>
+						</select>
+						
+						<button type="submit">&nbsp;<span>조회</span>&nbsp;<i class="fa-solid fa-magnifying-glass"></i>&nbsp;</button>
+					</div>
+				</form>
+				
 				<div>
 					<table class="table table-bordered border-secondary-subtle">
 						<thead>
 						    <tr class="table-secondary">
 						      <th scope="col">강의실 번호</th>
 						      <th scope="col">소속 단과대명</th>
-						      <th scope="col">수정</th>
 						      <th scope="col">삭제</th>
 						    </tr>
 					  	</thead>
@@ -80,17 +91,14 @@
 								<td scope="row" th:text="${lectureRoom.lectureRoomId}"></td>
 								<td th:text="${lectureRoom.collegeName}"></td>
 								<td class="mgmt_btn">
-									<button type="button"  th:onclick="|location.href='@{/staffs/management/modify/lectureRoom/}@{${lectureRoom.lectureRoomId}}'|">수정</button>
-								</td>
-								<td class="mgmt_btn">
-									<button type="button">삭제</button>
+									<button type="button" th:onclick="deleteLectureRoom([[${lectureRoom.lectureRoomId}]])">삭제</button>
 								</td>
 							</tr>
 					  	</tbody>
 					</table>
 				</div>
 				
-				<div style="margin-left: 40px">
+				<div>
 					<nav aria-label="Page navigation"
 					th:with="start=${(lectureRooms.number / maxPage) * maxPage +1},
 					end=${(lectureRooms.totalPages == 0)? 1:
@@ -98,15 +106,18 @@
 					start + (maxPage -1) : lectureRooms.totalPages)}">
 						<ul class="pagination">
 						    <li class="page-item" th:classappend="${lectureRooms.first} ? 'disabled'">
-						    	<a class="page-link" th:href="@{'/staffs/management/list/lectureRoom/' + ${lectureRooms.number -1}}">이전</a>
+						    	<a class="page-link" th:href="@{'/staffs/management/list/lectureRoom/' + ${lectureRooms.number -1}
+						    	+ '?collegeId=' + ${collegeId}}">이전</a>
 						    </li>
 						    <li class="page-item" 
 						    	th:each="page : ${#numbers.sequence(start, end)}"
 			    				th:classappend="${lectureRooms.number eq page -1} ? 'active_page'">
-						    	<a class="page-link" th:href="@{'/staffs/management/list/lectureRoom/' + ${page -1}}">[[${page}]]</a>
+						    	<a class="page-link" th:href="@{'/staffs/management/list/lectureRoom/' + ${page -1}
+						    	+ '?collegeId=' + ${collegeId}}">[[${page}]]</a>
 									    </li>
 						    <li class="page-item" th:classappend="${lectureRooms.last} ? 'disabled'">
-						    	<a class="page-link" th:href="@{'/staffs/management/list/lectureRoom/' + ${lectureRooms.number +1}}">다음</a>
+						    	<a class="page-link" th:href="@{'/staffs/management/list/lectureRoom/' + ${lectureRooms.number +1}
+						    	+ '?collegeId=' + ${collegeId}}">다음</a>
 						    </li>
 						</ul>
 					</nav>
@@ -125,9 +136,51 @@
 	    	if(errorMessage != null){
 	        	alert(errorMessage);
 	    	}
+	    	
+	    	if([[${collegeId}]] == null) {
+	    		$("#collegeId").val(0).prop("selected", true);
+	    	} else {    		
+		    	$("#collegeId").val([[${collegeId}]]);
+	    	}
 			
 			$(".uni_mgmt").addClass("active_tab");
 		});
+		
+		function deleteLectureRoom(LectureRoomId) {
+			alert("강의실 삭제시 강의실에 관련된 강의 데이터 및 관련된 수강 데이터가 모두 삭제됩니다.");
+			const deleteConf = confirm("정말로 강의실을 삭제하시겠습니까?");
+			
+			if(!deleteConf) return; // 취소버튼 누를시
+			
+			var token = $("meta[name='_csrf']").attr("content");
+	        var header = $("meta[name='_csrf_header']").attr("content");
+	        
+	        var url = "/staffs/management/delete/lectureRoom/" + LectureRoomId;
+			
+			$.ajax({
+	            url : url,
+	            type : "DELETE",
+	            contentType : "application/json",
+	            beforeSend : function(xhr){
+	                // 데이터를 전송하기 전에 헤더에 csrf값을 설정
+	                xhr.setRequestHeader(header, token);
+	            },
+	            cache   : false,
+	            success  : function(result, status){
+	            	alert("강의실을 삭제했습니다.");
+	            	
+		            location.href='/staffs/management/list/lectureRoom';
+	            },
+	            error : function(jqXHR, status, error){
+	                if(jqXHR.status == '401'){
+	                    alert('로그인 후 이용해주세요');
+	                    location.href='/users/login';
+	                } else{
+	                    alert(jqXHR.responseText);
+	                }
+	            }
+	        });
+		}
 	</script>
 </th:block>
 

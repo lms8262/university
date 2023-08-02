@@ -10,10 +10,12 @@ import org.thymeleaf.util.StringUtils;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Wildcard;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import com.university.dto.LectureFormDto;
 import com.university.dto.LectureScheduleDto;
 import com.university.dto.LectureSearchDto;
 import com.university.dto.ProfessorLectureDto;
 import com.university.dto.ProfessorLectureSearchDto;
+import com.university.dto.QLectureFormDto;
 import com.university.dto.QLectureScheduleDto;
 import com.university.dto.QProfessorLectureDto;
 import com.university.dto.QProfessorLectureSearchDto;
@@ -265,5 +267,50 @@ public class LectureRepositoryCustomImpl implements LectureRepositoryCustom {
 		
 		return content;
 	}
+
+	@Override
+	public Page<LectureFormDto> getLectureListOfMgmtPage(LectureSearchDto lectureSearchDto, Pageable pageable) {
+		QLecture lecture = QLecture.lecture;
+		
+		List<LectureFormDto> content = queryFactory
+				.select(
+					new QLectureFormDto(
+							lecture.id, 
+							lecture.name, 
+							lecture.lectureCode.id, 
+							lecture.department.id, 
+							lecture.professor.id, 
+							lecture.lectureRoom.id, 
+							lecture.type, 
+							lecture.credit, 
+							lecture.year, 
+							lecture.semester, 
+							lecture.day, 
+							lecture.startTime, 
+							lecture.endTime, 
+							lecture.numOfStudent, 
+							lecture.capacity
+							)
+						)
+				.from(lecture)
+				.where(lectureTypeEq(lectureSearchDto.getType()))
+				.where(departmentIdEq(lectureSearchDto.getDepartmentId()))
+				.where(lectureNameLike(lectureSearchDto.getLectureName()))
+				.orderBy(lecture.id.asc())
+				.offset(pageable.getOffset())
+				.limit(pageable.getPageSize())
+				.fetch();
+		
+		Long total = queryFactory
+				.select(Wildcard.count)
+				.from(lecture)
+				.where(lectureTypeEq(lectureSearchDto.getType()))
+				.where(departmentIdEq(lectureSearchDto.getDepartmentId()))
+				.where(lectureNameLike(lectureSearchDto.getLectureName()))
+				.fetchOne();
+		
+		return new PageImpl<>(content, pageable, total);
+	}
+	
 	
 }

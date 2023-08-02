@@ -5,25 +5,33 @@ import java.util.List;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.thymeleaf.util.StringUtils;
 
+import com.university.dto.CollegeDto;
 import com.university.dto.CollegeFormDto;
 import com.university.dto.DepartmentFormDto;
+import com.university.dto.LectureCodeDto;
+import com.university.dto.LectureFormDto;
 import com.university.dto.LectureRoomDto;
 import com.university.dto.LectureRoomFormDto;
+import com.university.dto.LectureSearchDto;
 import com.university.dto.ProfessorInfoDto;
 import com.university.dto.StudentInfoDto;
 import com.university.dto.UserSearchDto;
 import com.university.entity.College;
 import com.university.entity.Department;
+import com.university.entity.Lecture;
+import com.university.entity.LectureCode;
 import com.university.entity.LectureRoom;
 import com.university.entity.Professor;
 import com.university.entity.Student;
-import com.university.entity.User;
 import com.university.exception.OverlapException;
 import com.university.repository.CollegeRepository;
 import com.university.repository.DepartmentRepository;
+import com.university.repository.LectureCodeRepository;
 import com.university.repository.LectureRepository;
 import com.university.repository.LectureRoomRepository;
 import com.university.repository.ProfessorRepository;
@@ -45,6 +53,7 @@ public class StaffService {
 	private final LectureRoomRepository lectureRoomRepository;
 	private final LectureRepository lectureRepository;
 	private final UserRepository userRepository;
+	private final LectureCodeRepository lectureCodeRepository;
 	
 	// 학생 명단 조회
 	public Page<StudentInfoDto> getStudentInfoList(UserSearchDto userSearchDto, Pageable pageable) {
@@ -214,8 +223,8 @@ public class StaffService {
 	}
 	
 	// 강의실 리스트 조회
-	public Page<LectureRoomDto> getLectureRoomList(Pageable pageable) {				
-		return lectureRoomRepository.getLectureRoomList(pageable);
+	public Page<LectureRoomDto> getLectureRoomList(Long collegeId, Pageable pageable) {				
+		return lectureRoomRepository.getLectureRoomList(collegeId, pageable);
 	}
 	
 	// 강의실 중복 여부 체크
@@ -247,9 +256,74 @@ public class StaffService {
 		lectureRoomRepository.save(lectureRoom);
 	}
 	
-	// 강의실 정보 수정시 기존 정보 가져오기
-	public LectureRoomFormDto findLectureRoomInfoById(String lectureRoomId) {
+	// 강의실 삭제(관련된 하위 데이터 모두 삭제됨)
+	@Transactional
+	public void deleteLectureRoom(String lectureRoomId) {
 		LectureRoom lectureRoom = lectureRoomRepository.findById(lectureRoomId).orElseThrow(EntityNotFoundException::new);
-		return LectureRoomFormDto.of(lectureRoom);
+		lectureRoomRepository.delete(lectureRoom);
+	}
+	
+	// 강의실 검색용 단과대 목록 불러오기
+	public List<CollegeDto> getCollegeListForSearchLectureRoom() {
+		List<College> collegeList = collegeRepository.findAll();
+		List<CollegeDto> colleges = new ArrayList<>();
+		for(College college : collegeList) {
+			CollegeDto collegedto = CollegeDto.of(college);
+			colleges.add(collegedto);
+		}
+		return colleges;
+	}
+	
+	// 강의 리스트 조회
+	public Page<LectureFormDto> getLectureListOfMgmtPage(LectureSearchDto lectureSearchDto, Pageable pageable) {
+		return lectureRepository.getLectureListOfMgmtPage(lectureSearchDto, pageable);
+	}
+	
+	// 강의코드 목록 가져오기
+	public List<LectureCodeDto> getLectureCodeList() {
+		List<LectureCode> lectureCodeList =  lectureCodeRepository.findAll(Sort.by(Sort.Direction.ASC, "id"));
+		List<LectureCodeDto> lectureCodeDtoList = new ArrayList<>();
+		for(LectureCode lectureCode : lectureCodeList) {
+			LectureCodeDto lectureCodeDto = new LectureCodeDto();
+			lectureCodeDto.setLectureCodeId(lectureCode.getId());
+			lectureCodeDto.setLectureCodeDetail(lectureCode.getDetail());
+			lectureCodeDtoList.add(lectureCodeDto);
+		}
+		return lectureCodeDtoList;
+	}
+	
+	// 신규 강의 생성
+	@Transactional
+	public void createLecture(LectureFormDto lectureFormDto) {
+		Integer year = lectureFormDto.getYear();
+		Integer semester = lectureFormDto.getSemester();
+		String day = lectureFormDto.getDay();
+		Integer startTime = lectureFormDto.getStartTime();
+		Integer endTime = lectureFormDto.getEndTime();
+		
+		Professor professor = professorRepository.findById(lectureFormDto.getProfessorId()).orElse(null);
+		if(professor == null) {
+			
+		}
+		
+		LectureRoom LectureRoom = lectureRoomRepository.findById(lectureFormDto.getLectureRoomId()).orElse(null);
+		if(LectureRoom == null) {
+			
+		}
+		
+		List<Lecture> lectureList = lectureRepository.findByYearAndSemesterAndDay(year, semester, day);
+		
+		for(Lecture lec : lectureList) {
+			// 같은 강의실일때
+			if(StringUtils.equals(lec.getLectureRoom().getId(), lectureFormDto.getLectureRoomId())) {
+				if((startTime <= lec.getStartTime() && lec.getStartTime() < endTime)
+						||(startTime < lec.getEndTime() && lec.getEndTime() < endTime)) {
+					throw new OverlapException("해당 시간에 이미 사용중인 강의실입니다.");
+				}
+			}
+			
+			// 같은 교수일때
+			
+		}
 	}
 }
