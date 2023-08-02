@@ -303,12 +303,12 @@ public class StaffService {
 		
 		Professor professor = professorRepository.findById(lectureFormDto.getProfessorId()).orElse(null);
 		if(professor == null) {
-			
+			throw new EntityNotFoundException("존재하지 않는 교수번호입니다."); 
 		}
 		
 		LectureRoom LectureRoom = lectureRoomRepository.findById(lectureFormDto.getLectureRoomId()).orElse(null);
 		if(LectureRoom == null) {
-			
+			throw new EntityNotFoundException("존재하지 않는 강의실번호입니다.");
 		}
 		
 		List<Lecture> lectureList = lectureRepository.findByYearAndSemesterAndDay(year, semester, day);
