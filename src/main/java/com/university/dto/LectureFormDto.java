@@ -1,6 +1,7 @@
 package com.university.dto;
 
 import com.querydsl.core.annotations.QueryProjection;
+import com.university.entity.Lecture;
 
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
@@ -75,6 +76,27 @@ public class LectureFormDto {
 		this.endTime = endTime;
 		this.numOfStudent = numOfStudent;
 		this.capacity = capacity;
+	}
+	
+	public static LectureFormDto of(Lecture lecture) {
+		LectureFormDto lectureFormDto = new LectureFormDto();
+		lectureFormDto.setLectureId(lecture.getId());
+		lectureFormDto.setLectureName(lecture.getName());
+		lectureFormDto.setLectureCodeId(lecture.getLectureCode().getId());
+		lectureFormDto.setDepartmentId(lecture.getDepartment().getId());
+		lectureFormDto.setProfessorId(lecture.getProfessor().getId());
+		lectureFormDto.setLectureRoomId(lecture.getLectureRoom().getId());
+		lectureFormDto.setType(lecture.getType());
+		lectureFormDto.setCredit(lecture.getCredit());
+		lectureFormDto.setYear(lecture.getYear());
+		lectureFormDto.setSemester(lecture.getSemester());
+		lectureFormDto.setDay(lecture.getDay());
+		lectureFormDto.setStartTime(lecture.getStartTime());
+		lectureFormDto.setEndTime(lecture.getEndTime());
+		lectureFormDto.setNumOfStudent(lecture.getNumOfStudent());
+		lectureFormDto.setCapacity(lecture.getCapacity());
+		
+		return lectureFormDto;
 	}
 	
 }

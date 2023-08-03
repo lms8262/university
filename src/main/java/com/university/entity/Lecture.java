@@ -16,7 +16,11 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
@@ -26,6 +30,9 @@ import lombok.ToString;
 @Setter
 @ToString
 @DynamicInsert
+@Builder
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
 public class Lecture {
 	
 	@Id
@@ -96,4 +103,23 @@ public class Lecture {
 	public void removeNumOfStudent() {
 		numOfStudent--;
 	}
+
+	public void updateLecture(String name, Integer credit, Integer capacity, String type,
+			Integer year, Integer semester, String day, Integer startTime, Integer endTime, Department department,
+			LectureRoom lectureRoom, Professor professor, LectureCode lectureCode) {
+		this.name = name;
+		this.credit = credit;
+		this.capacity = capacity;
+		this.type = type;
+		this.year = year;
+		this.semester = semester;
+		this.day = day;
+		this.startTime = startTime;
+		this.endTime = endTime;
+		this.department = department;
+		this.lectureRoom = lectureRoom;
+		this.professor = professor;
+		this.lectureCode = lectureCode;
+	}
+	
 }

@@ -194,7 +194,7 @@ department college join
 시간 겹치는지 체크)
 
 
-수정시 hidden으로 넘길거
+수정시 hidden으로 넘길거(필요없을듯)
 강의번호 lectureId
 현재인원 numOfStudent
 

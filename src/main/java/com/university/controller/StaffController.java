@@ -378,7 +378,6 @@ public class StaffController {
 		List<LectureCodeDto> lectureCodeList = staffService.getLectureCodeList();
 		List<DepartmentDto> departmentList = departmentService.findAllDepartmentList();
 		
-		
 		model.addAttribute("lectureCodeList", lectureCodeList);
 		model.addAttribute("departmentList", departmentList);
 		model.addAttribute("lectureFormDto", new LectureFormDto());
@@ -397,7 +396,7 @@ public class StaffController {
 		}
 		
 		try {
-			
+			staffService.createLecture(lectureFormDto);
 		} catch (Exception e) {
 			e.printStackTrace();
 			model.addAttribute("errorMessage", e.getMessage());
@@ -409,5 +408,65 @@ public class StaffController {
 		}
 		
 		return "redirect:/staffs/management/list/lecture";
+	}
+	
+	// 강의 정보 수정 페이지
+	@GetMapping(value = "/staffs/management/modify/lecture/{lectureId}")
+	public String lectureModifyForm(Model model, @PathVariable Long lectureId, RedirectAttributes redirectAttributes) {
+		List<LectureCodeDto> lectureCodeList = staffService.getLectureCodeList();
+		List<DepartmentDto> departmentList = departmentService.findAllDepartmentList();
+		model.addAttribute("lectureCodeList", lectureCodeList);
+		model.addAttribute("departmentList", departmentList);
+		
+		try {
+			LectureFormDto lectureFormDto = staffService.findLectureInfoById(lectureId);
+			model.addAttribute("lectureFormDto", lectureFormDto);
+		} catch (Exception e) {
+			e.printStackTrace();
+			redirectAttributes.addFlashAttribute("errorMessage", "강의 정보를 가져오는데 문제가 발생했습니다.");
+			return "redirect:/staffs/management/list/lecture";
+		}
+		
+		return "staff/lectureModify";
+	}
+	
+	// 강의 정보 수정
+	@PostMapping(value = "/staffs/management/modify/lecture/{lectureId}")
+	public String lectureModify(@Valid LectureFormDto lectureFormDto, BindingResult bindingResult, @PathVariable Long lectureId, Model model) {
+		if(bindingResult.hasErrors()) {
+			List<LectureCodeDto> lectureCodeList = staffService.getLectureCodeList();
+			List<DepartmentDto> departmentList = departmentService.findAllDepartmentList();
+			model.addAttribute("lectureCodeList", lectureCodeList);
+			model.addAttribute("departmentList", departmentList);
+			return "staff/lectureModify";
+		}
+		
+		try {
+			staffService.updateLecture(lectureFormDto, lectureId);
+		} catch (Exception e) {
+			e.printStackTrace();
+			model.addAttribute("errorMessage", e.getMessage());
+			List<LectureCodeDto> lectureCodeList = staffService.getLectureCodeList();
+			List<DepartmentDto> departmentList = departmentService.findAllDepartmentList();
+			model.addAttribute("lectureCodeList", lectureCodeList);
+			model.addAttribute("departmentList", departmentList);
+			return "staff/lectureModify";
+		}
+		
+		return "redirect:/staffs/management/list/lecture";
+	}
+	
+	// 강의 삭제
+	@DeleteMapping(value = "/staffs/management/delete/lecture/{lectureId}")
+	public @ResponseBody ResponseEntity lectureDelete(@PathVariable Long lectureId) {
+		
+		try {
+			staffService.deleteLecture(lectureId);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new ResponseEntity<String>("강의 삭제 중 문제가 발생했습니다.", HttpStatus.FORBIDDEN);
+		}
+		
+		return new ResponseEntity<Long>(lectureId, HttpStatus.OK);
 	}
 }

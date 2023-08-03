@@ -2,7 +2,6 @@ package com.university.service;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -301,20 +300,28 @@ public class StaffService {
 		Integer startTime = lectureFormDto.getStartTime();
 		Integer endTime = lectureFormDto.getEndTime();
 		
-		Professor professor = professorRepository.findById(lectureFormDto.getProfessorId()).orElse(null);
-		if(professor == null) {
-			throw new EntityNotFoundException("존재하지 않는 교수번호입니다."); 
+		Professor professor = professorRepository.findById(lectureFormDto.getProfessorId())
+												 .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 교수번호입니다."));
+		Long professorId = professor.getId();
+		Long departmentId = professor.getDepartment().getId();
+		
+		// 전공 과목일때 해당학과 교수인지 체크
+		if(StringUtils.equals(lectureFormDto.getType(), "전공")) {			
+			if(!departmentId.equals(lectureFormDto.getDepartmentId())) {
+				throw new IllegalStateException("전공 과목은 해당학과 교수만 강의 할 수 있습니다.");
+			}
 		}
 		
-		LectureRoom LectureRoom = lectureRoomRepository.findById(lectureFormDto.getLectureRoomId()).orElse(null);
-		if(LectureRoom == null) {
-			throw new EntityNotFoundException("존재하지 않는 강의실번호입니다.");
-		}
+		LectureRoom LectureRoom = lectureRoomRepository.findById(lectureFormDto.getLectureRoomId())
+													   .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 강의실번호입니다."));
+		
+		LectureCode lectureCode = lectureCodeRepository.findById(lectureFormDto.getLectureCodeId())
+													   .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 강의코드입니다."));
 		
 		List<Lecture> lectureList = lectureRepository.findByYearAndSemesterAndDay(year, semester, day);
 		
 		for(Lecture lec : lectureList) {
-			// 같은 강의실일때
+			// 같은 강의실일때 시간 중복 체크
 			if(StringUtils.equals(lec.getLectureRoom().getId(), lectureFormDto.getLectureRoomId())) {
 				if((startTime <= lec.getStartTime() && lec.getStartTime() < endTime)
 						||(startTime < lec.getEndTime() && lec.getEndTime() < endTime)) {
@@ -322,8 +329,108 @@ public class StaffService {
 				}
 			}
 			
-			// 같은 교수일때
-			
+			// 같은 교수일때 시간 중복 체크
+			if(lec.getProfessor().getId().equals(professorId)) {
+				if((startTime <= lec.getStartTime() && lec.getStartTime() < endTime)
+						||(startTime < lec.getEndTime() && lec.getEndTime() < endTime)) {
+					throw new OverlapException("해당 시간에 이미 강의중인 교수입니다.");
+				}
+			}
 		}
+		
+		Lecture newLecture = Lecture.builder()
+									.id(lectureFormDto.getLectureId())
+									.name(lectureFormDto.getLectureName())
+									.credit(lectureFormDto.getCredit())
+									.capacity(lectureFormDto.getCapacity())
+									.type(lectureFormDto.getType())
+									.year(lectureFormDto.getYear())
+									.semester(lectureFormDto.getSemester())
+									.day(lectureFormDto.getDay())
+									.startTime(lectureFormDto.getStartTime())
+									.endTime(lectureFormDto.getEndTime())
+									.department(professor.getDepartment())
+									.lectureRoom(LectureRoom)
+									.professor(professor)
+									.lectureCode(lectureCode)
+									.build();
+		
+		lectureRepository.save(newLecture);
+	}
+	
+	// 강의 수정시 기존 정보 가져오기
+	public LectureFormDto findLectureInfoById(Long lectureId) {
+		Lecture lecture = lectureRepository.findById(lectureId)
+				.orElseThrow(()-> new EntityNotFoundException("존재하지 않는 강의입니다."));
+		return LectureFormDto.of(lecture);
+	}
+	
+	// 강의 정보 수정
+	@Transactional
+	public void updateLecture(LectureFormDto lectureFormDto, Long lectureId) {
+		if(lectureFormDto.getCapacity() < lectureFormDto.getNumOfStudent()) {
+			throw new IllegalStateException("정원은 현재 인원보다 커야합니다.");
+		}
+		String name = lectureFormDto.getLectureName();
+		Integer credit = lectureFormDto.getCredit();
+		Integer capacity = lectureFormDto.getCapacity();
+		String type = lectureFormDto.getType();
+		Integer year = lectureFormDto.getYear();
+		Integer semester = lectureFormDto.getSemester();
+		String day = lectureFormDto.getDay();
+		Integer startTime = lectureFormDto.getStartTime();
+		Integer endTime = lectureFormDto.getEndTime();
+		
+		Professor professor = professorRepository.findById(lectureFormDto.getProfessorId())
+												 .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 교수번호입니다."));
+		Long professorId = professor.getId();
+		Department department = professor.getDepartment();
+		Long departmentId = department.getId();
+		
+		// 전공 과목일때 해당학과 교수인지 체크
+		if(StringUtils.equals(lectureFormDto.getType(), "전공")) {			
+			if(!departmentId.equals(lectureFormDto.getDepartmentId())) {
+				throw new IllegalStateException("전공 과목은 해당학과 교수만 강의 할 수 있습니다.");
+			}
+		}
+		
+		LectureRoom LectureRoom = lectureRoomRepository.findById(lectureFormDto.getLectureRoomId())
+				   .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 강의실번호입니다."));
+
+		LectureCode lectureCode = lectureCodeRepository.findById(lectureFormDto.getLectureCodeId())
+				   .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 강의코드입니다."));
+		
+		List<Lecture> lectureList = lectureRepository.findByYearAndSemesterAndDayAndIdNot(year, semester, day, lectureId);
+		
+		for(Lecture lec : lectureList) {
+			// 같은 강의실일때 시간 중복 체크
+			if(StringUtils.equals(lec.getLectureRoom().getId(), lectureFormDto.getLectureRoomId())) {
+				if((startTime <= lec.getStartTime() && lec.getStartTime() < endTime)
+						||(startTime < lec.getEndTime() && lec.getEndTime() < endTime)) {
+					throw new OverlapException("해당 시간에 이미 사용중인 강의실입니다.");
+				}
+			}
+			
+			// 같은 교수일때 시간 중복 체크
+			if(lec.getProfessor().getId().equals(professorId)) {
+				if((startTime <= lec.getStartTime() && lec.getStartTime() < endTime)
+						||(startTime < lec.getEndTime() && lec.getEndTime() < endTime)) {
+					throw new OverlapException("해당 시간에 이미 강의중인 교수입니다.");
+				}
+			}
+		}
+		
+		Lecture lecture = lectureRepository.findById(lectureId)
+				.orElseThrow(()-> new EntityNotFoundException("존재하지 않는 강의입니다."));
+		
+		lecture.updateLecture(name, credit, capacity, type, year, semester, day, startTime, endTime, department, LectureRoom, professor, lectureCode);
+	}
+	
+	// 강의 삭제(관련된 하위 데이터 모두 삭제됨)
+	@Transactional
+	public void deleteLecture(Long lectureId) {
+		Lecture lecture = lectureRepository.findById(lectureId)
+				.orElseThrow(()-> new EntityNotFoundException("존재하지 않는 강의입니다."));
+		lectureRepository.delete(lecture);
 	}
 }

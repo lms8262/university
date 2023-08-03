@@ -61,6 +61,11 @@ public class LectureRepositoryCustomImpl implements LectureRepositoryCustom {
 		return semester == null ? null : QLecture.lecture.semester.eq(semester);
 	}
 	
+	// 검색할때 특정 강의 제외하기 위한 조건 처리
+	private BooleanExpression lectureIdNotEq(Long lectureId) {
+		return lectureId == null ? null : QLecture.lecture.id.ne(lectureId);
+	}
+	
 	// 강의 시간표 리스트(이번학기) 가져오기 + 페이징
 	@Override
 	public Page<LectureScheduleDto> getLectureScheduleList(LectureSearchDto lectureSearchDto, Pageable pageable) {
